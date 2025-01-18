@@ -3,3 +3,5 @@
 <template>
   <NuxtLayout name="page-layout">main page</NuxtLayout>
 </template>
+
+
