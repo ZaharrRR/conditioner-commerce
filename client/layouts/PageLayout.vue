@@ -1,7 +1,20 @@
 <template>
-  <div>
+  <div class="layout">
     <AppHeader />
-    <slot />
+    <main>
+      <slot />
+    </main>
     <AppFooter />
   </div>
 </template>
+
+<style scoped>
+.layout {
+}
+
+main {
+  width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+}
+</style>
