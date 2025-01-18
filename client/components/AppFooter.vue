@@ -1,3 +1,3 @@
 <template>
-  <footer>footer</footer>
+  <footer class="bg-[var(--blue)]">footer</footer>
 </template>
