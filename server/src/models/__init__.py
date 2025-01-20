@@ -1,2 +1,2 @@
-from base import Base
-from enums import AirConditionerType
+from base import Base  # noqa: F401
+from enums import AirConditionerType  # noqa: F401

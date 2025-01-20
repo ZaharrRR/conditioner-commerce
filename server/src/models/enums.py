@@ -4,11 +4,11 @@ import enum
 class AirConditionerType(enum.Enum):
     """Enum типов кондиционеров"""
 
-    WALL_MOUNTED = "wall_mounted"  #Настенные кондиционеры (стандартные сплит-системы)
-    PORTABLE = "portable"  #Переносные мобильные кондиционеры
-    WINDOW = "window"  #Оконные кондиционеры (устанавливаются в окно)
-    CASSETTE = "cassette"  #Кассетные кондиционеры (встраиваются в потолок)
-    DUCT = "duct"  #Канальные кондиционеры (для вентиляционных систем)
-    FLOOR_CEILING = "floor_ceiling"  #Напольно-потолочные кондиционеры (гибкое крепление)
-    MULTI_SPLIT = "multi_split"  #Мульти-сплит системы (несколько внутренних блоков)
-    VRF = "vrf"  #VRF-системы (многофункциональные для больших зданий)
+    WALL_MOUNTED = "wall_mounted"  # Настенные кондиционеры
+    PORTABLE = "portable"  # Переносные мобильные кондиционеры
+    WINDOW = "window"  # Оконные кондиционеры
+    CASSETTE = "cassette"  # Кассетные кондиционеры
+    DUCT = "duct"  # Канальные кондиционеры
+    FLOOR_CEILING = "floor_ceiling"  # Напольно-потолочные кондиционеры
+    MULTI_SPLIT = "multi_split"  # Мульти-сплит системы
+    VRF = "vrf"  # VRF-системы
