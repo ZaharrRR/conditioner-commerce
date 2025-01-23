@@ -17,6 +17,7 @@
   "devDependencies": {
     "@nuxt/icon": "^1.10.3",
     "@nuxtjs/tailwindcss": "^6.13.1",
-    "@pinia/nuxt": "^0.9.0"
+    "@pinia/nuxt": "^0.9.0",
+    "sass-embedded": "^1.83.4"
   }
 }

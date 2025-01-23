@@ -1,32 +1,29 @@
 <template>
-  <footer class="bg-[var(--blue)]">
-    <div class="top py-4 px-7 flex items-center justify-evenly text-white">
-      <img src="/logo.svg" alt="" />
+  <footer class="footer">
+    <div class="footer-top">
+      <img src="/logo.svg" alt="Логотип" class="footer-logo" loading="lazy" />
 
-      <div class="block">
-        <p class="title">Контакты</p>
-        <p class="text">603890, Россия, Тюмень, улица Пушкина, 52</p>
-
-        <p class="title">+7 (999) 999-99-99</p>
-        <p class="text">sibirskyholod@mail.com</p>
-        <p class="text">Режим работы: ежедневно c 8:00 до 19:00</p>
+      <div class="footer-block">
+        <p class="footer-title">Контакты</p>
+        <p class="footer-text">603890, Россия, Тюмень, улица Пушкина, 52</p>
+        <p class="footer-title">+7 (999) 999-99-99</p>
+        <p class="footer-text">sibirskyholod@mail.com</p>
+        <p class="footer-text">Режим работы: ежедневно c 8:00 до 19:00</p>
       </div>
 
-      <div class="block" v-for="item in links" :key="item.title">
-        <p class="title">{{ item.title }}</p>
+      <div class="footer-block" v-for="item in links" :key="item.title">
+        <p class="footer-title">{{ item.title }}</p>
 
-        <p class="link" v-for="el in item.links" :key="el.label">
+        <p class="footer-link" v-for="el in item.links" :key="el.label">
           {{ el.label }}
         </p>
       </div>
     </div>
 
-    <div
-      class="bottom p-6 flex items-center justify-between text-white bg-[var(--blue-dark)]"
-    >
-      <span class="text-sm">© 2025 ООО “СИБирский хохол”</span>
-      <span class="text-sm">Политка конфиденциальности</span>
-      <span class="text-sm">Условия пользования</span>
+    <div class="footer-bottom">
+      <span class="footer-bottom-text">© 2025 ООО “СИБирский хохол”</span>
+      <span class="footer-bottom-text">Политика конфиденциальности</span>
+      <span class="footer-bottom-text">Условия пользования</span>
     </div>
   </footer>
 </template>
@@ -99,13 +96,41 @@ const links = [
 ];
 </script>
 
-<style scoped>
-.title {
-  font-weight: bold;
-}
+<style lang="scss" scoped>
+.footer {
+  @apply bg-[var(--blue)];
 
-.text,
-.link {
-  font-size: 10px;
+  .footer-top {
+    @apply py-4 px-7 flex items-center justify-evenly text-white;
+
+    .footer-logo {
+      @apply w-auto h-auto; // Настройте размер логотипа по необходимости
+    }
+
+    .footer-block {
+      @apply flex flex-col;
+
+      .footer-title {
+        @apply font-bold;
+      }
+
+      .footer-text,
+      .footer-link {
+        @apply text-xs;
+      }
+
+      .footer-link {
+        @apply cursor-pointer hover:underline; // Добавьте стили для ссылок
+      }
+    }
+  }
+
+  .footer-bottom {
+    @apply p-6 flex items-center justify-between text-white bg-[var(--blue-dark)];
+
+    .footer-bottom-text {
+      @apply text-sm;
+    }
+  }
 }
 </style>
