@@ -58,7 +58,7 @@ const reasons = [
 <style lang="scss" scoped>
 .reasons {
   .reasons-grid {
-    @apply grid grid-cols-2 gap-3;
+    @apply grid gap-3 grid-cols-2;
 
     .reason-item {
       @apply flex flex-col items-center w-[60%] mx-auto;

@@ -1,29 +1,49 @@
 <template>
   <footer class="footer">
     <div class="footer-top">
-      <img src="/logo.svg" alt="Логотип" class="footer-logo" loading="lazy" />
+      <NuxtImg
+        src="/logo.svg"
+        alt="Логотип компании Сибирский холод"
+        class="footer-logo"
+        loading="lazy"
+      />
 
       <div class="footer-block">
-        <p class="footer-title">Контакты</p>
+        <h3 class="footer-title">Контакты</h3>
         <p class="footer-text">603890, Россия, Тюмень, улица Пушкина, 52</p>
-        <p class="footer-title">+7 (999) 999-99-99</p>
-        <p class="footer-text">sibirskyholod@mail.com</p>
+        <p class="footer-text">
+          Телефон:
+          <a href="tel:+79999999999" class="footer-link">+7 (999) 999-99-99</a>
+        </p>
+        <p class="footer-text">
+          Email:
+          <a href="mailto:sibirskyholod@mail.com" class="footer-link"
+            >sibirskyholod@mail.com</a
+          >
+        </p>
         <p class="footer-text">Режим работы: ежедневно c 8:00 до 19:00</p>
       </div>
 
       <div class="footer-block" v-for="item in links" :key="item.title">
-        <p class="footer-title">{{ item.title }}</p>
-
-        <p class="footer-link" v-for="el in item.links" :key="el.label">
+        <h3 class="footer-title">{{ item.title }}</h3>
+        <a
+          class="footer-link"
+          v-for="el in item.links"
+          :key="el.label"
+          :href="el.link"
+          :aria-label="el.label"
+        >
           {{ el.label }}
-        </p>
+        </a>
       </div>
     </div>
 
     <div class="footer-bottom">
       <span class="footer-bottom-text">© 2025 ООО “СИБирский хохол”</span>
-      <span class="footer-bottom-text">Политика конфиденциальности</span>
-      <span class="footer-bottom-text">Условия пользования</span>
+      <a class="footer-bottom-text" href="/privacy-policy"
+        >Политика конфиденциальности</a
+      >
+      <a class="footer-bottom-text" href="/terms-of-use">Условия пользования</a>
     </div>
   </footer>
 </template>
@@ -104,7 +124,7 @@ const links = [
     @apply py-4 px-7 flex items-center justify-evenly text-white;
 
     .footer-logo {
-      @apply w-auto h-auto; // Настройте размер логотипа по необходимости
+      @apply w-auto h-full;
     }
 
     .footer-block {
@@ -120,7 +140,7 @@ const links = [
       }
 
       .footer-link {
-        @apply cursor-pointer hover:underline; // Добавьте стили для ссылок
+        @apply cursor-pointer hover:underline;
       }
     }
   }

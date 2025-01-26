@@ -1,7 +1,6 @@
 <template>
-  <section class="section">
+  <section class="section" :class="className">
     <h2 class="section__label">{{ label }}</h2>
-
     <div class="section__content">
       <slot></slot>
     </div>
@@ -11,6 +10,7 @@
 <script setup lang="ts">
 defineProps({
   label: String,
+  className: String,
 });
 </script>
 
