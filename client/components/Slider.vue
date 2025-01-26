@@ -12,26 +12,90 @@
 
 <style lang="scss" scoped>
 .slider-container {
-  @apply flex justify-center mb-10;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
 
   .slider {
-    @apply relative w-full h-[500px] shadow-[0px_5px_10px_-5px_rgba(34,60,80,0.6)];
+    position: relative;
+    width: 100%;
+    height: 500px;
+    box-shadow: 0px 5px 10px -5px rgba(34, 60, 80, 0.6);
+    overflow: hidden;
 
     .slider-image {
-      @apply w-full h-full bg-[url('/slider-1.png')] bg-cover;
+      width: 100%;
+      height: 100%;
+      background-image: url("/images/slider-1.png");
+      background-size: cover;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .slider-overlay {
-      @apply absolute inset-0 w-full h-full pointer-events-none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
 
       .slider-gradient-left {
-        @apply absolute top-0 left-0 w-[20%] h-full bg-gradient-to-r from-white/30 to-transparent backdrop-blur-sm;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        backdrop-filter: blur(4px);
+        animation: slideInLeft 1s ease-in-out;
       }
 
       .slider-gradient-right {
-        @apply absolute top-0 right-0 w-[20%] h-full bg-gradient-to-l from-white/30 to-transparent backdrop-blur-sm;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20%;
+        height: 100%;
+        background: linear-gradient(
+          to left,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        backdrop-filter: blur(4px);
+        animation: slideInRight 1s ease-in-out;
       }
     }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 </style>

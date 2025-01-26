@@ -14,14 +14,40 @@
 
 <style lang="scss" scoped>
 .search-bar {
-  @apply bg-white w-[40%] flex rounded-lg p-2;
+  background-color: white;
+  width: 40%;
+  display: flex;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
 
   .search-input {
-    @apply border-none outline-none flex-1 px-4;
+    border: none;
+    outline: none;
+    flex: 1;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-size: 16px;
   }
 
   .search-button {
-    @apply bg-[var(--blue)] flex items-center  font-bold px-1  text-white rounded hover:bg-[var(--blue-dark)];
+    background-color: var(--blue);
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    padding: 8px 16px;
+    color: white;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--blue-dark);
+    }
   }
 }
 </style>

@@ -63,38 +63,61 @@ const loadMore = () => {
 
 <style lang="scss" scoped>
 .new {
-  @apply flex flex-col items-center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   .new__cards {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    width: 100%;
 
     .card {
-      @apply bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+      }
 
       .card__image {
-        @apply w-full h-48 object-cover;
+        width: 100%;
+        height: 192px;
+        object-fit: cover;
       }
 
       .card__content {
-        @apply p-4;
+        padding: 16px;
 
         .card__title {
-          @apply text-lg font-semibold text-gray-800;
+          font-size: 18px;
+          font-weight: 600;
+          color: #1a202c;
         }
 
         .card__description {
-          @apply text-sm text-gray-600 mt-2;
+          font-size: 14px;
+          color: #4a5568;
+          margin-top: 8px;
         }
 
         .card__price {
-          @apply text-xl font-bold text-[var(--blue)] mt-2;
+          font-size: 20px;
+          font-weight: bold;
+          color: var(--blue);
+          margin-top: 8px;
         }
       }
     }
   }
 
   .new__more-button {
-    @apply mt-8;
+    margin-top: 32px;
   }
 }
 </style>

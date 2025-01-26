@@ -39,7 +39,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span class="footer-bottom-text">© 2025 ООО “СИБирский хохол”</span>
+      <span class="footer-bottom-text">© 2025 ООО “СИБирский холод”</span>
       <a class="footer-bottom-text" href="/privacy-policy"
         >Политика конфиденциальности</a
       >
@@ -118,38 +118,63 @@ const links = [
 
 <style lang="scss" scoped>
 .footer {
-  @apply bg-[var(--blue)];
+  background-color: var(--blue);
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
 
   .footer-top {
-    @apply py-4 px-7 flex items-center justify-evenly text-white;
+    padding: 32px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    color: white;
 
     .footer-logo {
-      @apply w-auto h-full;
+      width: auto;
+      height: 80px;
     }
 
     .footer-block {
-      @apply flex flex-col;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
 
       .footer-title {
-        @apply font-bold;
+        font-weight: bold;
+        margin-bottom: 8px;
       }
 
       .footer-text,
       .footer-link {
-        @apply text-xs;
+        font-size: 14px;
       }
 
       .footer-link {
-        @apply cursor-pointer hover:underline;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: var(--blue-light);
+          text-decoration: underline;
+        }
       }
     }
   }
 
   .footer-bottom {
-    @apply p-6 flex items-center justify-between text-white bg-[var(--blue-dark)];
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    background-color: var(--blue-dark);
 
     .footer-bottom-text {
-      @apply text-sm;
+      font-size: 14px;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--blue-light);
+      }
     }
   }
 }

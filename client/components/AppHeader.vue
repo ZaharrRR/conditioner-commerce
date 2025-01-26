@@ -21,24 +21,45 @@ import HeaderSearch from "@/components/HeaderSearch.vue";
 
 <style lang="scss" scoped>
 .header {
-  @apply bg-[var(--blue-dark)];
+  background-color: var(--blue-dark);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   .header-container {
-    @apply flex justify-between items-center px-6 py-6 w-[1280px] mx-auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 24px;
+    width: 1280px;
+    margin: 0 auto;
 
     .header-logo {
-      @apply w-auto h-auto;
+      width: auto;
+      height: auto;
     }
   }
 
   .nav-container {
-    @apply bg-[var(--blue)] text-white;
+    background-color: var(--blue);
+    color: white;
 
     .nav-links {
-      @apply flex gap-16 px-6 py-2 w-fit mx-auto;
+      display: flex;
+      gap: 64px;
+      padding: 8px 24px;
+      width: fit-content;
+      margin: 0 auto;
 
       .nav-link {
-        @apply text-white no-underline hover:text-[var(--blue-light)] transition-colors;
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+
+        &:hover {
+          background-color: var(--blue-light);
+          color: white;
+        }
       }
     }
   }

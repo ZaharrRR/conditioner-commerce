@@ -13,7 +13,7 @@
         </h2>
       </div>
 
-      <NuxtImg class="about-us-image" src="/aboutus.png" alt="about" />
+      <NuxtImg class="about-us-image" src="/images/aboutus.png" alt="about" />
     </div>
   </Section>
 </template>
@@ -24,22 +24,52 @@ import Section from "./Section.vue";
 
 <style lang="scss" scoped>
 .about-us {
-  @apply flex gap-6;
+  display: flex;
+  gap: 24px;
+  align-items: center;
 
   .about-us-title {
-    @apply text-4xl font-bold;
+    font-size: 36px;
+    font-weight: bold;
+    animation: fadeIn 1s ease-in-out;
 
     .blue-text {
-      @apply text-[var(--blue)];
+      color: var(--blue);
     }
   }
 
   .about-us-description {
-    @apply font-light text-xl w-[80%] mt-2;
+    font-weight: 300;
+    font-size: 20px;
+    width: 80%;
+    margin-top: 8px;
+    animation: fadeIn 1.5s ease-in-out;
   }
 
   .about-us-image {
-    @apply size-[270px];
+    width: 270px;
+    height: 270px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slideInRight 1s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 </style>

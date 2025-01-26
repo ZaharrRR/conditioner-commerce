@@ -58,31 +58,68 @@ const reasons = [
 <style lang="scss" scoped>
 .reasons {
   .reasons-grid {
-    @apply grid gap-3 grid-cols-2;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
 
     .reason-item {
-      @apply flex flex-col items-center w-[60%] mx-auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 16px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: translateY(-10px);
+      }
 
       .reason-icon {
-        @apply size-[64px] text-[var(--blue)];
+        width: 64px;
+        height: 64px;
+        color: var(--blue);
+        animation: fadeIn 1s ease-in-out;
       }
 
       .reason-title {
-        @apply text-xl font-bold text-[var(--blue)];
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--blue);
+        margin-top: 8px;
       }
 
       .reason-description {
-        @apply text-center;
+        font-size: 16px;
+        color: #4a5568;
+        margin-top: 8px;
       }
     }
   }
 
   .reasons-content {
-    @apply w-[80%] mx-auto mt-12;
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 48px;
 
     .reasons-desc {
-      @apply text-center text-xl font-bold text-[var(--blue)] opacity-80;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--blue);
+      opacity: 0.8;
     }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 </style>
