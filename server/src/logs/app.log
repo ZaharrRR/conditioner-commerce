@@ -1,0 +1,11 @@
+2025-02-16 14:19:43 | INFO | FastAPI сервер запущен!
+2025-02-16 14:21:54 | INFO | FastAPI сервер запущен!
+2025-02-16 14:22:11 | ERROR | ❌Ошибка при получение всех записей Attribute: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "attributes" does not exist
+[SQL: SELECT attributes.name, attributes.id, attributes.created_at, attributes.updated_at 
+FROM attributes]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-02-16 14:22:49 | INFO | FastAPI сервер запущен!
+2025-02-16 14:22:59 | INFO | ✅ Найдено 0 записей.
+2025-02-16 14:54:48 | INFO | ✅ Найдено 0 записей
+2025-02-16 16:10:28 | INFO | FastAPI сервер запущен!
+2025-02-16 16:16:11 | WARNING | ⚠️ Продукты не найдены
