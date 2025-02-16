@@ -1,11 +1,16 @@
 <template>
   <NuxtLayout name="page-layout">
     <div class="delivery-page">
-      <h1>Доставка кондиционеров и климатического оборудования</h1>
-      <p class="intro-text">
-        Мы заботимся о вашем комфорте и предлагаем быструю и удобную доставку
-        кондиционеров и сопутствующих товаров по вашему адресу.
-      </p>
+      <div class="delivery-intro">
+        <div>
+          <h1>Доставка кондиционеров и климатического оборудования</h1>
+          <p class="intro-text">
+            Мы заботимся о вашем комфорте и предлагаем быструю и удобную
+            доставку кондиционеров и сопутствующих товаров по вашему адресу.
+          </p>
+        </div>
+        <Icon name="game-icons:cardboard-box-closed" class="icon" />
+      </div>
 
       <div class="delivery-options">
         <div class="delivery-card">
@@ -19,7 +24,10 @@
         </div>
 
         <div class="delivery-card">
-          <Icon name="mdi:rocket-launch" class="icon" />
+          <Icon
+            name="material-symbols:delivery-truck-bolt-outline-rounded"
+            class="icon"
+          />
           <h2>Экспресс-доставка</h2>
           <p><strong>Срок:</strong> 1–2 рабочих дня</p>
           <p>
@@ -40,6 +48,7 @@
       </div>
 
       <div class="installation-info">
+        <Icon name="iconamoon:lightning-1" class="icon" />
         <h2>Установка в день доставки</h2>
         <p>
           Если вы заказали установку кондиционера, наши мастера могут установить
@@ -67,18 +76,28 @@ const orderDelivery = () => {
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
-  color: #333;
 
-  h1 {
-    font-size: 32px;
-    margin-bottom: 20px;
-    color: #007bff;
-  }
+  .delivery-intro {
+    display: flex;
+    gap: 48px;
+    align-items: center;
 
-  .intro-text {
-    font-size: 18px;
-    margin-bottom: 40px;
-    line-height: 1.6;
+    h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .intro-text {
+      font-size: 24px;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .icon {
+      font-size: 400px;
+      color: var(--blue);
+    }
   }
 
   .delivery-options {
@@ -102,15 +121,14 @@ const orderDelivery = () => {
       }
 
       .icon {
-        font-size: 48px;
-        color: #007bff;
-        margin-bottom: 15px;
+        font-size: 100px;
+        color: var(--blue);
       }
 
       h2 {
         font-size: 24px;
+        font-weight: 700;
         margin-bottom: 15px;
-        color: #007bff;
       }
 
       p {
@@ -137,6 +155,11 @@ const orderDelivery = () => {
       font-size: 16px;
       color: #555;
       line-height: 1.6;
+    }
+
+    .icon {
+      font-size: 200px;
+      color: var(--blue);
     }
   }
 
