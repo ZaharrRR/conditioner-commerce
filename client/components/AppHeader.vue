@@ -9,7 +9,7 @@
         <NuxtLink to="/products" class="nav-link">Товары</NuxtLink>
         <NuxtLink to="/" class="nav-link">Услуги</NuxtLink>
         <NuxtLink to="/delivery" class="nav-link">Доставка</NuxtLink>
-        <NuxtLink to="/" class="nav-link">Контакты</NuxtLink>
+        <NuxtLink to="/contacts" class="nav-link">Контакты</NuxtLink>
       </nav>
     </div>
   </header>
