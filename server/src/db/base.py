@@ -11,6 +11,8 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 class Base(AsyncAttrs, DeclarativeBase):
     """Декларативный базовый класс"""
 
+    __abstract__ = True
+
     id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
@@ -18,9 +20,9 @@ class Base(AsyncAttrs, DeclarativeBase):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), onupdate=func.now()
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    @declared_attr.directive()
+    @declared_attr.directive
     def __tablename__(cls) -> str:
         return cls.__name__.lower() + "s"

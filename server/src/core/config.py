@@ -49,6 +49,16 @@ class RedisConfig(ConfigBase):
     model_config = SettingsConfigDict(env_prefix="redis_")
 
 
+class S3Config(ConfigBase):
+    access_key: str
+    secret_key: str
+    bucket_name: str
+    endpoint: str
+    region: str
+
+    model_config = SettingsConfigDict(env_prefix="s3_")
+
+
 class Settings(BaseSettings):
     """Глобальные настройки"""
 
@@ -56,6 +66,7 @@ class Settings(BaseSettings):
     telegram: TelegramConfig = Field(default_factory=TelegramConfig)
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
     redis: RedisConfig = Field(default_factory=RedisConfig)
+    s3: S3Config = Field(default_factory=S3Config)
 
     def get_db_url(self) -> str:
         return (
