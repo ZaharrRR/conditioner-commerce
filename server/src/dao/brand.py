@@ -89,7 +89,9 @@ class BrandDAO:
             logger.error(f"❌Ошибка при удаление записи Brand: {e}")
             raise e
 
-    async def update_brand(self, brand_id: UUID, brand_update: BrandUpdate) -> Optional[BrandRead]:
+    async def update_brand(
+        self, brand_id: UUID, brand_update: BrandUpdate
+    ) -> Optional[BrandRead]:
         """Обновляет Brand по id"""
 
         logger.debug(f"🔄 Обновление Brand с ID {brand_id}")
@@ -106,7 +108,6 @@ class BrandDAO:
             await self.session.flush()
             await self.session.commit()
 
-
             await self.session.refresh(brand)
             logger.info("✅ Запись Brand обновлена")
             return BrandRead.model_validate(brand)
@@ -115,4 +116,3 @@ class BrandDAO:
             logger.error(f"❌ Ошибка при обновлении Brand с ID {brand_id}: {e}")
             await self.session.rollback()
             raise e
-

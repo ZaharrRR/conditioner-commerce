@@ -1,35 +1,29 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
-from fastapi.params import Form, File
+from fastapi.params import File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core import logger
 from dao import BrandDAO
 from db.database import get_session
-from schemas import BrandRead, BrandCreate, BrandUpdate
+from schemas import BrandCreate, BrandRead, BrandUpdate
 
-router = APIRouter(
-    prefix="/brand",
-    tags=["Brand"]
-)
+router = APIRouter(prefix="/brand", tags=["Brand"])
 
 
 @router.post("/create", response_model=BrandRead, status_code=201)
 async def create_brand(
-        name: str = Form(...),
-        description: str = Form(""),
-        logo: UploadFile = File(...),
-        session: AsyncSession = Depends(get_session)
+    name: str = Form(...),
+    description: str = Form(""),
+    logo: UploadFile = File(...),
+    session: AsyncSession = Depends(get_session),
 ):
     brand_dao = BrandDAO(session)
 
     try:
-        content = await logo.read()
-        logo_url = ''
+        logo_url = ""
 
         brand_data = BrandCreate(name=name, description=description, logo_url=logo_url)
-
 
         new_brand = await brand_dao.create_brand(brand_data)
 
@@ -46,21 +40,25 @@ async def create_brand(
     "/all",
     response_model=list[BrandRead],
     summary="Получение всех записей Brand",
-    status_code=200
+    status_code=200,
 )
-async def get_all_brands(session: AsyncSession = Depends(get_session)) -> list[BrandRead]:
+async def get_all_brands(
+    session: AsyncSession = Depends(get_session),
+) -> list[BrandRead]:
     brand_dao = BrandDAO(session)
     brands = await brand_dao.get_brands()
     return brands
 
 
 @router.get(
-    '/get-by-id/{brand_id}',
+    "/get-by-id/{brand_id}",
     response_model=BrandRead,
     summary="Получение записи Brand по id",
     status_code=200,
 )
-async def get_brand_by_id(brand_id: UUID, session: AsyncSession = Depends(get_session)) -> BrandRead:
+async def get_brand_by_id(
+    brand_id: UUID, session: AsyncSession = Depends(get_session)
+) -> BrandRead:
     brand_dao = BrandDAO(session)
     brand = await brand_dao.get_brand_by_id(brand_id)
     if not brand:
@@ -71,21 +69,23 @@ async def get_brand_by_id(brand_id: UUID, session: AsyncSession = Depends(get_se
 
 
 @router.patch(
-    '/update-logo/{brand_id}',
+    "/update-logo/{brand_id}",
     response_model=BrandRead,
-    summary="Обновление logo url Brand"
+    summary="Обновление logo url Brand",
 )
 async def update_brand_logo(session: AsyncSession = Depends(get_session)) -> BrandRead:
     pass
 
 
 @router.delete(
-    '/delete/{brand_id}',
+    "/delete/{brand_id}",
     response_model=None,
     status_code=204,
-    summary="Удаление записи Brand по id"
+    summary="Удаление записи Brand по id",
 )
-async def delete_brand_by_id(brand_id: UUID, session: AsyncSession = Depends(get_session)) -> HTTPException:
+async def delete_brand_by_id(
+    brand_id: UUID, session: AsyncSession = Depends(get_session)
+) -> HTTPException:
     brand_dao = BrandDAO(session)
     deleted = await brand_dao.delete_brand_by_id(brand_id)
     if not deleted:
@@ -94,10 +94,14 @@ async def delete_brand_by_id(brand_id: UUID, session: AsyncSession = Depends(get
 
 
 @router.patch(
-    '/update/{brand_id}',
+    "/update/{brand_id}",
     response_model=BrandRead,
 )
-async def update_brand_by_id(brand_id: UUID, brand_update: BrandUpdate, session: AsyncSession = Depends(get_session)) -> BrandRead:
+async def update_brand_by_id(
+    brand_id: UUID,
+    brand_update: BrandUpdate,
+    session: AsyncSession = Depends(get_session),
+) -> BrandRead:
     brand_dao = BrandDAO(session)
     updated_brand = await brand_dao.update_brand(brand_id, brand_update)
 

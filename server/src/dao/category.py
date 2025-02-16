@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import logger
 from models import Category
-from schemas import CategoryCreate, CategoryRead
+from schemas import CategoryCreate, CategoryRead, CategoryUpdate
 
 
 class CategoryDAO:
@@ -66,7 +66,9 @@ class CategoryDAO:
             )
             return record
         except SQLAlchemyError as e:
-            logger.error(f"❌Ошибка при получение записи Category с ID {category_id}: {e}")
+            logger.error(
+                f"❌Ошибка при получение записи Category с ID {category_id}: {e}"
+            )
             raise e
 
     async def get_category_by_name(self, category_name: str) -> CategoryRead:
@@ -81,7 +83,9 @@ class CategoryDAO:
             )
             return CategoryRead.model_validate(record)
         except SQLAlchemyError as e:
-            logger.error(f"❌Ошибка при получение записи Category с name {category_name}: {e}")
+            logger.error(
+                f"❌Ошибка при получение записи Category с name {category_name}: {e}"
+            )
             raise e
 
     async def delete_category_by_id(self, category_id: UUID) -> bool:
@@ -103,3 +107,8 @@ class CategoryDAO:
         except SQLAlchemyError as e:
             logger.error(f"❌Ошибка при удаление записи Category: {e}")
             raise e
+
+    async def update_category_by_id(self, category_id: UUID, data: CategoryUpdate):
+        """Обновляет категории"""
+
+        pass
