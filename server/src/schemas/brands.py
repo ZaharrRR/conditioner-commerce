@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Annotated, Optional
-from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+
+from pydantic import BaseModel, ConfigDict, Field, UUID4
 
 
 class BrandBase(BaseModel):
@@ -28,7 +28,7 @@ class BrandUpdate(BrandBase):
 class BrandRead(BrandBase):
     """Схема для чтения Brand"""
 
-    id: UUID
+    id: UUID4
     created_at: datetime
     updated_at: datetime
 

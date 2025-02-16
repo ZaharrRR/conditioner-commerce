@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Annotated, Optional
-from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, UUID4
 
 
 class AttributeBase(BaseModel):
@@ -24,7 +23,7 @@ class AttributeUpdate(AttributeBase):
 class AttributeRead(AttributeBase):
     """Схема для чтения Attribute"""
 
-    id: UUID
+    id: Annotated[UUID4, Field(...)]
     created_at: datetime
     updated_at: datetime
 

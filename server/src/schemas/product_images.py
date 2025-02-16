@@ -1,12 +1,11 @@
 from datetime import datetime
 from typing import Annotated
-from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, UUID4
 
 
 class ProductImageBase(BaseModel):
-    product_id: UUID
+    product_id: UUID4
     image_url: Annotated[str, Field(min_length=1, max_length=500)]
 
 
@@ -19,7 +18,7 @@ class ProductImageCreate(ProductImageBase):
 class ProductImageRead(ProductImageBase):
     """Схема для чтения ProductImage"""
 
-    id: UUID
+    id: UUID4
     created_at: datetime
     updated_at: datetime
 

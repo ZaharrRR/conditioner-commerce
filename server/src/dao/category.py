@@ -37,9 +37,9 @@ class CategoryDAO:
         except SQLAlchemyError as e:
             logger.error(f"❌ Ошибка при создание Brand: {e}")
             await self.session.rollback()
-            raise e
+            raise RuntimeError("Database error")
 
-    async def get_all_categories(self) -> list[Category]:
+    async def get_all_categories(self):
         """Получает всех записей Category"""
 
         logger.debug("🔎 Получение всех записей Brand")
@@ -51,7 +51,7 @@ class CategoryDAO:
             return records
         except SQLAlchemyError as e:
             logger.error(f"❌ Ошибка при получение всех записей Category: {e}")
-            raise e
+            raise RuntimeError("Database error")
 
     async def get_category_by_id(self, category_id: UUID) -> CategoryRead:
         """Получает Category по id"""
@@ -69,7 +69,7 @@ class CategoryDAO:
             logger.error(
                 f"❌Ошибка при получение записи Category с ID {category_id}: {e}"
             )
-            raise e
+            raise RuntimeError("Database error")
 
     async def get_category_by_name(self, category_name: str) -> CategoryRead:
         """Получает Category по name"""
@@ -86,7 +86,7 @@ class CategoryDAO:
             logger.error(
                 f"❌Ошибка при получение записи Category с name {category_name}: {e}"
             )
-            raise e
+            raise RuntimeError("Database error")
 
     async def delete_category_by_id(self, category_id: UUID) -> bool:
         """Удаляет запись Category по id"""

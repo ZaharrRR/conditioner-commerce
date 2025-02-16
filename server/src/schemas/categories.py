@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Annotated, Optional
-from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, UUID4
 
 
 class CategoryBase(BaseModel):
@@ -26,7 +25,7 @@ class CategoryUpdate(CategoryBase):
 class CategoryRead(CategoryBase):
     """Схема для чтения Category"""
 
-    id: UUID
+    id: UUID4
     created_at: datetime
     updated_at: datetime
 

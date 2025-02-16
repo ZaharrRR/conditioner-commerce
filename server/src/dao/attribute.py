@@ -35,6 +35,7 @@ class AttributeDAO:
             raise ValueError(f"Attribute '{attribute.name}' already exists")
         except SQLAlchemyError as e:
             logger.error(f"❌Ошибка при создание Attribute: {e}")
+            raise RuntimeError("Database error")
             await self.session.rollback()
 
     async def get_attribute_by_id(self, attribute_id: UUID) -> Optional[AttributeRead]:
@@ -53,7 +54,7 @@ class AttributeDAO:
             logger.error(
                 f"❌Ошибка при получение записи Attribute с ID {attribute_id}: {e}"
             )
-            raise e
+            raise RuntimeError("Database error")
 
     async def get_attributes(self) -> list[AttributeRead]:
         """Получает все записи Attribute"""
@@ -67,7 +68,7 @@ class AttributeDAO:
             return records
         except SQLAlchemyError as e:
             logger.error(f"❌Ошибка при получение всех записей Attribute: {e}")
-            raise e
+            raise RuntimeError("Database error")
 
     async def delete_attribute_by_id(self, attribute_id: UUID) -> bool:
         """Удаляет запись Attribute по id"""
@@ -87,4 +88,4 @@ class AttributeDAO:
             return True
         except SQLAlchemyError as e:
             logger.error(f"❌Ошибка при удаление записи Attribute: {e}")
-            raise e
+            raise RuntimeError("Database error")

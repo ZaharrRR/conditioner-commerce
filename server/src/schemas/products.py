@@ -1,16 +1,16 @@
 from datetime import datetime
 from decimal import Decimal
 from typing import Annotated, Optional
-from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+
+from pydantic import BaseModel, ConfigDict, Field, UUID4
 
 
 class ProductBase(BaseModel):
-    name: Annotated[str, Field(min_length=1, max_length=200)]
-    price: Annotated[Decimal, Field(gt=0)]
-    brand_id: UUID
-    category_id: UUID
+    name: Annotated[str, Field(min_length=1, max_length=200, description="Названия продукта")]
+    price: Annotated[Decimal, Field(gt=0, description="Цена продукта")]
+    brand_id: Annotated[UUID4, Field(description="Валидный UUID для Brand")]
+    category_id: Annotated[UUID4, Field(description="Валидный UUID для Category")]
 
 
 class ProductCreate(ProductBase):
@@ -29,8 +29,18 @@ class ProductUpdate(BaseModel):
 class ProductRead(ProductBase):
     """Схема для чтения Product"""
 
-    id: UUID
+    id: UUID4
     created_at: datetime
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ProductReadWithRelations(BaseModel):
+    id: UUID4
+    name: Annotated[str, Field(...)]
+    price: Annotated[Decimal, Field(...)]
+    brand_name: Annotated[str, Field(...)]
+    category_name: Annotated[str, Field(...)]
+    created_at: datetime
+    updated_at: datetime

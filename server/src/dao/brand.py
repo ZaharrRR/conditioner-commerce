@@ -28,7 +28,7 @@ class BrandDAO:
             await self.session.commit()
 
             logger.info(f"Brand создан с ID {new_brand.id}")
-            return new_brand
+            return BrandRead.model_validate(new_brand)
         except IntegrityError:
             await self.session.rollback()
             logger.warning(
@@ -38,6 +38,7 @@ class BrandDAO:
         except SQLAlchemyError as e:
             logger.error(f"❌ Ошибка при создание Brand: {e}")
             await self.session.rollback()
+            raise RuntimeError("Database error")
 
     async def get_brand_by_id(self, brand_id: UUID) -> Optional[BrandRead]:
         """Получает Brand по id"""
@@ -67,7 +68,7 @@ class BrandDAO:
             return records
         except SQLAlchemyError as e:
             logger.error(f"❌ Ошибка при получение всех записей Brand: {e}")
-            raise e
+            raise RuntimeError("Database error")
 
     async def delete_brand_by_id(self, brand_id: UUID) -> bool:
         """Удаляет запись Brand"""
@@ -87,10 +88,10 @@ class BrandDAO:
             return True
         except SQLAlchemyError as e:
             logger.error(f"❌Ошибка при удаление записи Brand: {e}")
-            raise e
+            raise RuntimeError("Database error")
 
     async def update_brand(
-        self, brand_id: UUID, brand_update: BrandUpdate
+            self, brand_id: UUID, brand_update: BrandUpdate
     ) -> Optional[BrandRead]:
         """Обновляет Brand по id"""
 
@@ -115,4 +116,4 @@ class BrandDAO:
         except SQLAlchemyError as e:
             logger.error(f"❌ Ошибка при обновлении Brand с ID {brand_id}: {e}")
             await self.session.rollback()
-            raise e
+            raise RuntimeError("Database error")

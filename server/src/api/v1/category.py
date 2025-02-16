@@ -8,7 +8,7 @@ from dao.category import CategoryDAO
 from db.database import get_session
 from schemas import CategoryCreate, CategoryRead, CategoryUpdate
 
-router = APIRouter(prefix="/category/", tags=["Category"])
+router = APIRouter(prefix="/category", tags=["Category"])
 
 
 @router.post("/create", response_model=CategoryCreate, status_code=201)
