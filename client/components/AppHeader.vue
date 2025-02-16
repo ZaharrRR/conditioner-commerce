@@ -6,9 +6,9 @@
     </div>
     <div class="nav-container">
       <nav class="nav-links">
-        <NuxtLink to="/" class="nav-link">Товары</NuxtLink>
+        <NuxtLink to="/products" class="nav-link">Товары</NuxtLink>
         <NuxtLink to="/" class="nav-link">Услуги</NuxtLink>
-        <NuxtLink to="/" class="nav-link">Доставка</NuxtLink>
+        <NuxtLink to="/delivery" class="nav-link">Доставка</NuxtLink>
         <NuxtLink to="/" class="nav-link">Контакты</NuxtLink>
       </nav>
     </div>
