@@ -49,11 +49,13 @@
 
       <div class="installation-info">
         <Icon name="iconamoon:lightning-1" class="icon" />
-        <h2>Установка в день доставки</h2>
-        <p>
-          Если вы заказали установку кондиционера, наши мастера могут установить
-          его сразу после доставки.
-        </p>
+        <div>
+          <h2>Установка в день доставки</h2>
+          <p>
+            Если вы заказали установку кондиционера, наши мастера могут
+            установить его сразу после доставки.
+          </p>
+        </div>
       </div>
 
       <button class="order-button" @click="orderDelivery">
@@ -140,25 +142,29 @@ const orderDelivery = () => {
   }
 
   .installation-info {
-    background-color: #f9f9f9;
+    display: flex;
+    gap: 20px;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 40px;
+    text-align: center;
 
     h2 {
-      font-size: 24px;
+      font-size: 48px;
+      font-weight: 700;
       margin-bottom: 15px;
-      color: #007bff;
     }
 
     p {
-      font-size: 16px;
+      font-size: 20px;
       color: #555;
       line-height: 1.6;
+      width: 60%;
+      margin: 0 auto;
     }
 
     .icon {
-      font-size: 200px;
+      font-size: 250px;
       color: var(--blue);
     }
   }

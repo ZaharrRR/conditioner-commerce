@@ -9,3 +9,13 @@ FROM attributes]
 2025-02-16 14:54:48 | INFO | ✅ Найдено 0 записей
 2025-02-16 16:10:28 | INFO | FastAPI сервер запущен!
 2025-02-16 16:16:11 | WARNING | ⚠️ Продукты не найдены
+2025-02-16 17:58:01 | INFO | FastAPI сервер запущен!
+2025-02-23 17:34:16 | INFO | FastAPI сервер запущен!
+2025-02-23 17:46:21 | ERROR | ❌ Ошибка SQLAlchemy при получении списка Product: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "products" does not exist
+[SQL: SELECT products.id, products.name, products.price, brands.name AS brand_name, categories.name AS category_name, products.created_at, products.updated_at 
+FROM products JOIN brands ON products.brand_id = brands.id JOIN categories ON products.category_id = categories.id]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-02-23 17:46:43 | ERROR | ❌ Ошибка при получение всех записей Brand: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "brands" does not exist
+[SQL: SELECT brands.name, brands.description, brands.logo_url, brands.id, brands.created_at, brands.updated_at 
+FROM brands]
+(Background on this error at: https://sqlalche.me/e/20/f405)

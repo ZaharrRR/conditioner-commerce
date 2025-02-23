@@ -16,7 +16,7 @@
         ><a
           href="https://yandex.ru/maps/55/tyumen/?ll=65.547998%2C57.159990&utm_medium=mapframe&utm_source=maps&z=14"
           style="color: #eee; font-size: 12px; position: absolute; top: 14px"
-          >Яндекс Карты — транспорт, навигация, поиск мест</a
+          >Яндекс Карты — транспорт, навигация, поиск мест</a
         ><iframe
           src="https://yandex.ru/map-widget/v1/?ll=65.547998%2C57.159990&z=14"
           width="560"
@@ -87,23 +87,36 @@ import UButton from "~/components/UI/UButton.vue";
   align-items: center;
   flex-direction: column;
   width: 100%;
+  padding: 40px 0;
 
-  .time-icon {
+  .time-icon,
+  .locate-icon,
+  .geo-icon {
     color: var(--blue);
+    transition: transform 0.3s ease;
   }
-  .locate-icon {
-    color: var(--blue);
-  }
+
   .geo-icon {
     font-size: 40px;
-    color: var(--blue);
   }
+
   h1 {
     font-size: 40px;
     font-weight: 700;
+    margin-bottom: 20px;
   }
+
   p {
     margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  &:hover {
+    .geo-icon,
+    .time-icon,
+    .locate-icon {
+      transform: scale(1.1);
+    }
   }
 }
 
@@ -113,33 +126,45 @@ import UButton from "~/components/UI/UButton.vue";
   align-items: center;
   flex-direction: column;
   width: 100%;
+  padding: 40px 0;
 
   .contact-buttons {
     display: flex;
     gap: 24px;
+    margin-top: 20px;
   }
+
   .contact-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 16px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-10px);
+    }
   }
-  .telegam-icon {
-    color: var(--blue);
-    font-size: 100px;
-  }
+
+  .telegam-icon,
   .call-icon {
     color: var(--blue);
     font-size: 100px;
+    transition: color 0.3s ease;
   }
+
   p {
     width: 60%;
     text-align: center;
+    font-size: 18px;
   }
+
   h1 {
     font-size: 40px;
     font-weight: 700;
+    margin-bottom: 20px;
   }
+
   .phone-icon {
     color: var(--blue);
   }
@@ -150,6 +175,9 @@ import UButton from "~/components/UI/UButton.vue";
   align-items: center;
   flex-direction: column;
   margin-top: 16px;
+  padding: 40px 0;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   h1 {
     font-size: 40px;
@@ -158,6 +186,28 @@ import UButton from "~/components/UI/UButton.vue";
 
   .rocket-icon {
     color: var(--blue);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: rotate(45deg);
+    }
   }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.contact-button:hover .telegam-icon,
+.contact-button:hover .call-icon {
+  animation: float 1.5s ease-in-out infinite;
 }
 </style>
