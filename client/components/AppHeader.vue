@@ -1,13 +1,15 @@
 <template>
   <header class="header">
     <div class="header-container">
-      <img src="/logo.svg" alt="Логотип" class="header-logo" loading="lazy" />
+      <NuxtLink to="/">
+        <img src="/logo.svg" alt="Логотип" class="header-logo" loading="lazy" />
+      </NuxtLink>
       <HeaderSearch />
     </div>
     <div class="nav-container">
       <nav class="nav-links">
         <NuxtLink to="/products" class="nav-link">Товары</NuxtLink>
-        <NuxtLink to="/" class="nav-link">Услуги</NuxtLink>
+        <NuxtLink to="/services" class="nav-link">Услуги</NuxtLink>
         <NuxtLink to="/delivery" class="nav-link">Доставка</NuxtLink>
         <NuxtLink to="/contacts" class="nav-link">Контакты</NuxtLink>
       </nav>
