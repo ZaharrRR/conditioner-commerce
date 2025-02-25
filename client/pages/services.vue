@@ -2,11 +2,35 @@
   <NuxtLayout name="page-layout">
     <div class="services-page">
       <div class="services-intro">
-        <h1>Наши услуги</h1>
-        <p class="intro-text">
-          Обеспечьте своему оборудованию долгую и надёжную работу с помощью
-          наших профессиональных услуг.
-        </p>
+        <h1 class="intro-text">
+          Обеспечьте своему оборудованию долгую и надёжную работу.
+        </h1>
+        <div class="process-info">
+          <div class="process-steps">
+            <div class="step">
+              <h3><span>1.</span> Заявка</h3>
+              <p>Вы оставляете заявку на сайте или звоните нам.</p>
+            </div>
+            <div class="step">
+              <h3><span>2.</span> Диагностика</h3>
+              <p>
+                Специалист выезжает к вам, проводит диагностику и определяет
+                объём работ.
+              </p>
+            </div>
+            <div class="step">
+              <h3><span>3.</span> Ремонт и обслуживание</h3>
+              <p>Выполняем необходимые работы в кратчайшие сроки.</p>
+            </div>
+            <div class="step">
+              <h3><span>4.</span> Проверка и гарантия</h3>
+              <p>
+                Проверяем работоспособность оборудования и предоставляем
+                гарантию на выполненные работы.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="services-overview">
@@ -70,34 +94,6 @@
           </div>
         </div>
       </div>
-
-      <div class="process-info">
-        <h2>Как мы работаем</h2>
-        <div class="process-steps">
-          <div class="step">
-            <h3>1. Заявка</h3>
-            <p>Вы оставляете заявку на сайте или звоните нам.</p>
-          </div>
-          <div class="step">
-            <h3>2. Диагностика</h3>
-            <p>
-              Специалист выезжает к вам, проводит диагностику и определяет объём
-              работ.
-            </p>
-          </div>
-          <div class="step">
-            <h3>3. Ремонт и обслуживание</h3>
-            <p>Выполняем необходимые работы в кратчайшие сроки.</p>
-          </div>
-          <div class="step">
-            <h3>4. Проверка и гарантия</h3>
-            <p>
-              Проверяем работоспособность оборудования и предоставляем гарантию
-              на выполненные работы.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   </NuxtLayout>
 </template>
@@ -113,12 +109,18 @@ const orderService = (serviceName) => {
 .services-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
   font-family: Arial, sans-serif;
+  display: flex;
 
   .services-intro {
-    text-align: center;
+    text-align: left;
+    padding: 20px;
+    max-width: 350px;
     margin-bottom: 40px;
+    border: solid;
+    border-color: #007bff;
+    border-width: 5px;
+    border-radius: 20px;
 
     h1 {
       font-size: 48px;
@@ -127,15 +129,16 @@ const orderService = (serviceName) => {
     }
 
     .intro-text {
-      font-size: 24px;
-      color: #555;
-      line-height: 1.6;
+      font-size: 36px;
+      color: black;
+      line-height: 1;
     }
   }
 
   .services-overview {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    margin-left: 20px;
     gap: 20px;
     margin-bottom: 40px;
 
@@ -206,16 +209,7 @@ const orderService = (serviceName) => {
   }
 
   .process-info {
-    background-color: #f9f9f9;
-    padding: 40px;
-    border-radius: 10px;
-    text-align: center;
-
-    h2 {
-      font-size: 32px;
-      margin-bottom: 40px;
-      color: #007bff;
-    }
+    text-align: left;
 
     .process-steps {
       display: grid;
@@ -223,16 +217,17 @@ const orderService = (serviceName) => {
       gap: 20px;
 
       .step {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
         padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        span {
+          color: #007bff;
+          font-weight: 900;
+        }
 
         h3 {
           font-size: 20px;
           font-weight: 700;
-          margin-bottom: 15px;
+          margin-bottom: 5px;
         }
 
         p {
