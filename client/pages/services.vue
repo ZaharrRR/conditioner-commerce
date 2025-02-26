@@ -29,22 +29,6 @@
                 гарантию на выполненные работы.
               </p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="services-overview">
-        <div
-          class="service-card"
-          style="background-image: url('/images/install.png')"
-        >
-          <div class="card-content">
-            <h2>Установка сплит-системы</h2>
-            <p>
-              Профессиональная установка сплит-системы с гарантией качества. Мы
-              обеспечиваем правильный монтаж и настройку оборудования для его
-              долгой и надежной работы.
-            </p>
             <button
               class="service-button"
               @click="orderService('Установка сплит-системы')"
@@ -53,24 +37,31 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <div class="services-overview">
+        <div
+          class="service-card-install"
+          style="background-image: url('/images/install.png')"
+        >
+          <div class="card-content">
+            <h2>УСТАНОВКА СПЛИТ-СИСТЕМЫ</h2>
+            <p>
+              Профессиональная установка сплит-системы с гарантией качества.
+            </p>
+          </div>
+        </div>
 
         <div
           class="service-card"
           style="background-image: url('/images/maintenance.png')"
         >
           <div class="card-content">
-            <h2>Обслуживание кондиционеров</h2>
+            <h2>ОБСЛУЖИВАНИЕ КОНДИЦИОНЕРОВ</h2>
             <p>
               Регулярное техническое обслуживание для поддержания
-              работоспособности вашего кондиционера. Мы проводим чистку,
-              диагностику и профилактику для предотвращения поломок.
+              работоспособности вашего кондиционера.
             </p>
-            <button
-              class="service-button"
-              @click="orderService('Обслуживание кондиционеров')"
-            >
-              Заказать услугу
-            </button>
           </div>
         </div>
 
@@ -79,18 +70,8 @@
           style="background-image: url('/images/repair.png')"
         >
           <div class="card-content">
-            <h2>Ремонт холодильного оборудования</h2>
-            <p>
-              Быстрый и качественный ремонт холодильных установок. Наши
-              специалисты оперативно устраняют неисправности и возвращают
-              оборудование в рабочее состояние.
-            </p>
-            <button
-              class="service-button"
-              @click="orderService('Ремонт холодильного оборудования')"
-            >
-              Заказать услугу
-            </button>
+            <h2>РЕМОНТ ХОЛОДИЛЬНОГО ОБОРУДОВАНИЯ</h2>
+            <p>Быстрый и качественный ремонт холодильных установок.</p>
           </div>
         </div>
       </div>
@@ -133,79 +114,107 @@ const orderService = (serviceName) => {
       color: black;
       line-height: 1;
     }
+
+    button {
+      background-color: blue($color: #6896eb);
+      border-radius: 15px;
+    }
   }
 
   .services-overview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    margin-left: 20px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
     gap: 20px;
+    margin-left: 20px;
     margin-bottom: 40px;
+  }
 
-    .service-card {
-      background-size: cover;
-      background-position: center;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      min-height: 300px;
-      display: flex;
-      align-items: flex-end;
+  /* Первая карточка на всю ширину */
+  .service-card-install {
+    grid-column: 1 / 3;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 100px;
+    display: flex;
+    align-items: flex-end;
+  }
 
-      &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1;
-      }
+  /* Остальные карточки */
+  .service-card {
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+    display: flex;
+    align-items: flex-end;
+  }
 
-      .card-content {
-        position: relative;
-        z-index: 2;
-        color: #fff;
-        text-align: center;
-        width: 100%;
+  .service-card::before,
+  .service-card-install::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(217, 217, 217, 0) 0%,
+      rgba(104, 150, 235, 0.8) 80%
+    );
+    z-index: 1;
+  }
 
-        h2 {
-          font-size: 24px;
-          font-weight: 700;
-          margin-bottom: 15px;
-        }
+  .card-content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    width: 100%;
+  }
 
-        p {
-          font-size: 16px;
-          line-height: 1.6;
-          margin-bottom: 20px;
-        }
+  .card-content h2 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
 
-        .service-button {
-          padding: 10px 20px;
-          background-color: #007bff;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          font-size: 16px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
+  .card-content p {
+    font-size: 16px;
+    line-height: 1.4;
+  }
 
-          &:hover {
-            background-color: #0056b3;
-          }
-        }
-      }
+  .service-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      }
-    }
+  .service-button:hover {
+    background-color: #0056b3;
+  }
+
+  .service-card:hover,
+  .service-card-install:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
 
   .process-info {
@@ -214,7 +223,6 @@ const orderService = (serviceName) => {
     .process-steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
 
       .step {
         padding: 20px;
