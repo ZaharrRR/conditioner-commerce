@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import List
 
@@ -6,13 +7,18 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # корневая директория проекта
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+env = os.getenv("ENV", "production")
+if env == "development":
+    env_file = f"{BASE_DIR}/.env.dev"
+else:
+    env_file = f"{BASE_DIR}/.env.prod"
 
 
 class ConfigBase(BaseSettings):
     """Базовые настройки конфига"""
 
     model_config = SettingsConfigDict(
-        env_file=f"{BASE_DIR}/.env", env_file_encoding="utf-8", extra="ignore"
+        env_file=f"{env_file}", env_file_encoding="utf-8", extra="ignore"
     )
 
 
