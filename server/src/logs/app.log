@@ -19,3 +19,7 @@ FROM products JOIN brands ON products.brand_id = brands.id JOIN categories ON pr
 [SQL: SELECT brands.name, brands.description, brands.logo_url, brands.id, brands.created_at, brands.updated_at 
 FROM brands]
 (Background on this error at: https://sqlalche.me/e/20/f405)
+2025-02-23 20:22:22 | ERROR | ❌ Ошибка SQLAlchemy при получении списка Product: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "products" does not exist
+[SQL: SELECT products.id, products.name, products.price, brands.name AS brand_name, categories.name AS category_name, products.created_at, products.updated_at 
+FROM products JOIN brands ON products.brand_id = brands.id JOIN categories ON products.category_id = categories.id]
+(Background on this error at: https://sqlalche.me/e/20/f405)
