@@ -46,16 +46,21 @@ import HeaderSearch from "@/components/HeaderSearch.vue";
 
     .nav-links {
       display: flex;
-      gap: 64px;
+      gap: 20px;
       padding: 8px 24px;
       width: fit-content;
       margin: 0 auto;
 
       .nav-link {
         color: white;
+        font-weight: 600;
+        width: 120px;
+        display: flex;
+        justify-content: center;
+        background-color: var(--blue-dark);
         text-decoration: none;
         padding: 8px 16px;
-        border-radius: 4px;
+        border-radius: 10px;
         transition: background-color 0.3s ease, color 0.3s ease;
 
         &:hover {
