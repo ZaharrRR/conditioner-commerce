@@ -91,7 +91,7 @@ import UButton from "~/components/UI/UButton.vue";
 }
 
 .product-info h1 {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 500;
   margin-bottom: 10px;
 }
@@ -108,20 +108,19 @@ import UButton from "~/components/UI/UButton.vue";
   margin-top: 20px;
   background-color: var(--blue);
   border-radius: 10px;
-  padding: 15px;
+  padding: 5px 10px;
 }
 
 .product-spec h2 {
   color: white;
   font-weight: 600;
-  padding-left: 15px;
-  font-size: 20px;
+  font-size: 24px;
+  padding-left: 10px;
 }
 
 .spec-icons {
   display: flex;
   justify-content: space-around;
-  padding: 10px 20px;
 }
 
 .spec-icon {
@@ -130,14 +129,15 @@ import UButton from "~/components/UI/UButton.vue";
 }
 
 .spec-icon p {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   color: white;
+  line-height: 1;
 }
 
 .icon {
-  width: 50px;
-  height: 50px;
+  width: 75px;
+  height: 75px;
   color: white;
 }
 
