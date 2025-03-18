@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import Optional
 from uuid import UUID
 
@@ -7,7 +6,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import logger
-from models import Brand, Category, Product
+from models import Brand, Category, Product, ProductAttribute, Attribute
 from schemas import ProductCreate, ProductRead, ProductReadWithRelations
 
 
@@ -30,15 +29,24 @@ class ProductDAO:
                 logger.warning(f"⚠️ Категория с ID {data.category_id} не найдена")
                 raise ValueError(f"Category with ID {data.category_id} not found")
 
-            new_product = Product(
-                name=data.name,
-                price=Decimal(data.price),
-                brand_id=data.brand_id,
-                category_id=data.category_id
-            )
-
+            new_product = Product(**data.model_dump())
             self.session.add(new_product)
             await self.session.flush()
+
+            if data.attributes:
+                for attribute_data in data.attributes:
+                    attribute = await self.session.get(Attribute, attribute_data["attribute_id"])
+                    if not attribute:
+                        logger.warning(f"⚠️ Атрибут с ID {attribute_data['attribute_id']} не найден")
+                        raise ValueError(f"Attribute with ID {attribute_data['attribute_id']} not found")
+
+                    product_attribute = ProductAttribute(
+                        product_id=new_product.id,
+                        attribute_id=attribute.id,
+                        value=attribute_data["value"]
+                    )
+                    self.session.add(product_attribute)
+
             await self.session.commit()
 
             logger.info(f"✅ Продукт создан с ID {new_product.id}")
@@ -47,7 +55,7 @@ class ProductDAO:
         except IntegrityError:
             await self.session.rollback()
             logger.warning(f"⚠️ Продукт с таким именем уже существует: {data.name}")
-            raise ValueError(f"Product '{data.name}' already exists")
+            raise ValueError(f"Product '{data.name}' already exists, {e}")
 
         except SQLAlchemyError as e:
             await self.session.rollback()

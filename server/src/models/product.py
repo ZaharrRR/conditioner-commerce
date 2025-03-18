@@ -12,6 +12,8 @@ class Product(Base):
 
     name: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    description: Mapped[str] = mapped_column(String(200), nullable=False)
+
     brand_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("brands.id"), nullable=False)
     category_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("categories.id"), nullable=False
@@ -26,3 +28,4 @@ class Product(Base):
     attributes: Mapped[list["ProductAttribute"]] = relationship(
         "ProductAttribute", back_populates="product", cascade="all, delete-orphan"
     )
+    orders: Mapped[list["Order"]] = relationship("Order", back_populates="product", cascade="all, delete-orphan")
