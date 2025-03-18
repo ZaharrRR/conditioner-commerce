@@ -7,10 +7,12 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
     "@nuxt/image": "^1.9.0",
+    "axios": "^1.8.2",
     "nuxt": "^3.15.2",
     "vue": "latest",
     "vue-router": "latest"

@@ -10,31 +10,33 @@
 
       <div class="footer-block">
         <h3 class="footer-title">Контакты</h3>
-        <p class="footer-text">603890, Россия, Тюмень, улица Пушкина, 52</p>
         <p class="footer-text">
-          Телефон:
-          <a href="tel:+79999999999" class="footer-link">+7 (999) 999-99-99</a>
+          625042, Россия, Тюмень, улица Федюнинского 60к1
         </p>
         <p class="footer-text">
+          Телефон:
+          <a href="tel:89124303333" class="footer-link">+7 (912) 243-33-33</a>
+        </p>
+        <!-- <p class="footer-text">
           Email:
           <a href="mailto:sibirskyholod@mail.com" class="footer-link"
             >sibirskyholod@mail.com</a
           >
-        </p>
-        <p class="footer-text">Режим работы: ежедневно c 8:00 до 19:00</p>
+        </p> -->
+        <p class="footer-text">Режим работы: ежедневно c 8:00 до 20:00</p>
       </div>
 
       <div class="footer-block" v-for="item in links" :key="item.title">
         <h3 class="footer-title">{{ item.title }}</h3>
-        <a
+        <RouterLink
           class="footer-link"
           v-for="el in item.links"
           :key="el.label"
-          :href="el.link"
+          :to="el.link"
           :aria-label="el.label"
         >
           {{ el.label }}
-        </a>
+        </RouterLink>
       </div>
     </div>
 
@@ -55,19 +57,19 @@ const links = [
     links: [
       {
         label: "Кондиционеры",
-        link: "/",
+        link: "/products",
       },
       {
         label: "Сплит-системы",
-        link: "/",
+        link: "/products",
       },
       {
         label: "Холодильное оборудование",
-        link: "/",
+        link: "/products",
       },
       {
         label: "Вентиляционное оборудование",
-        link: "/",
+        link: "/products",
       },
     ],
   },
@@ -76,19 +78,15 @@ const links = [
     links: [
       {
         label: "Монтаж и сервис",
-        link: "/",
+        link: "/services",
       },
       {
         label: "Обслуживание",
-        link: "/",
+        link: "/services",
       },
       {
-        label: "Чето еще хз",
-        link: "/",
-      },
-      {
-        label: "Чето еще хз 2",
-        link: "/",
+        label: "Ремонт",
+        link: "/services",
       },
     ],
   },
@@ -97,19 +95,19 @@ const links = [
     links: [
       {
         label: "О нас",
-        link: "/",
+        link: "/contacts",
       },
       {
         label: "Доставка и оплата",
-        link: "/",
+        link: "/delivery",
       },
       {
         label: "Обратная связь",
-        link: "/",
+        link: "/contacts",
       },
       {
         label: "Вопросы и ответы",
-        link: "/",
+        link: "/contacts",
       },
     ],
   },

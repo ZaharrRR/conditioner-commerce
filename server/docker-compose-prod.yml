@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:15
+    image: postgres:17.2-alpine3.20
     container_name: prod_postgres
     environment:
       POSTGRES_USER: postgres

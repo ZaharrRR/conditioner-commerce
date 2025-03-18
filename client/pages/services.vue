@@ -116,7 +116,7 @@ const orderService = (serviceName) => {
     }
 
     button {
-      background-color: blue($color: #6896eb);
+      background-color: #6896eb;
       border-radius: 15px;
     }
   }
