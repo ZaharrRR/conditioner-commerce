@@ -9,14 +9,14 @@ from pydantic import BaseModel, ConfigDict, Field, UUID4
 class ProductBase(BaseModel):
     name: Annotated[str, Field(min_length=1, max_length=200, description="Названия продукта")]
     price: Annotated[Decimal, Field(gt=0, description="Цена продукта")]
+    description: Annotated[str, Field(..., description="Описание продукта")]
     brand_id: Annotated[UUID4, Field(description="Валидный UUID для Brand")]
     category_id: Annotated[UUID4, Field(description="Валидный UUID для Category")]
 
 
 class ProductCreate(ProductBase):
     """Схема для создания Attribute"""
-
-    pass
+    attributes: Annotated[Optional[list[UUID4]], Field(default_factory=list, description="Список UUID аттрибутов")] = []
 
 
 class ProductUpdate(BaseModel):
