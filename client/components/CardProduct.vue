@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
+  <RouterLink :to="`/products/${product.id}`" class="card">
     <img
-      :src="product.image"
+      :src="product.image ? product.image : `/images/hisense.png`"
       :alt="product.name"
       class="card__image"
       loading="lazy"
@@ -9,13 +9,17 @@
 
     <div class="card__content">
       <h3 class="card__content-title">{{ product.name }}</h3>
-      <p class="card__content-description">{{ product.description }}</p>
+      <p class="card__content-description">
+        {{ product.description ? product.description : "Описание..." }}
+      </p>
       <p class="card__content-price">{{ product.price }} ₽</p>
     </div>
-  </div>
+  </RouterLink>
 </template>
 
 <script setup>
+import { RouterLink } from "vue-router";
+
 defineProps({
   product: Object,
 });

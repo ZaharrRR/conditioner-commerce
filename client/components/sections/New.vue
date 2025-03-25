@@ -2,7 +2,12 @@
   <Section label="Новинки">
     <div class="new">
       <div class="new__cards">
-        <div class="card" v-for="(product, index) in products" :key="index">
+        <RouterLink
+          to="/products/1"
+          class="card"
+          v-for="(product, index) in products"
+          :key="index"
+        >
           <img
             :src="product.image"
             :alt="product.name"
@@ -14,11 +19,13 @@
             <p class="card__description">{{ product.description }}</p>
             <p class="card__price">{{ product.price }} ₽</p>
           </div>
-        </div>
+        </RouterLink>
       </div>
 
       <div class="new__more-button">
-        <UButton @click="loadMore">Показать больше</UButton>
+        <RouterLink to="/products">
+          <UButton>Показать больше</UButton></RouterLink
+        >
       </div>
     </div>
   </Section>
@@ -66,11 +73,6 @@ const products = [
     image: "/images/hisense.png",
   },
 ];
-
-const loadMore = () => {
-  // Логика для загрузки дополнительных товаров
-  console.log("Загрузить больше товаров");
-};
 </script>
 
 <style lang="scss" scoped>

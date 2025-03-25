@@ -1,10 +1,10 @@
 <template>
   <NuxtLayout name="page-layout">
-    <div class="product-box">
-      <img src="/images/hisense.png" alt="Hisense AS-24HR4SBADC005" />
+    <div class="product-box" v-if="product">
+      <img src="/images/hisense.png" :alt="product.name" />
       <div class="product-info">
-        <h1>Hisense AS-24HR4SBADC005</h1>
-        <p>66,890 ₽</p>
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.price }} ₽</p>
         <UButton>Оставить заявку</UButton>
 
         <div class="product-spec">
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Контент с описанием и характеристиками -->
-    <div class="product-content">
+    <div class="product-content" v-if="product">
       <div class="description">
         <h2>Описание</h2>
         <h3>Сплит-система Hisense AS-24HR4SBA6DC00S</h3>
@@ -61,11 +61,27 @@
         <a href="#">Подробнее...</a>
       </div>
     </div>
+    <Services />
   </NuxtLayout>
 </template>
 
 <script setup>
+import { onMounted, ref } from "vue";
+
+import { getProductById } from "@/api/products";
+
+import { useRoute } from "vue-router";
+
+const router = useRoute();
+
 import UButton from "~/components/UI/UButton.vue";
+import Services from "~/components/sections/Services.vue";
+
+const product = ref(null);
+
+onMounted(async () => {
+  product.value = await getProductById(router.params.id);
+});
 </script>
 
 <style scoped>
@@ -87,7 +103,7 @@ import UButton from "~/components/UI/UButton.vue";
 }
 
 .product-info {
-  max-width: 50%;
+  width: 50%;
 }
 
 .product-info h1 {

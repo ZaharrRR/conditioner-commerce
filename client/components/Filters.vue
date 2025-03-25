@@ -5,11 +5,11 @@
       <li v-for="category in categories" :key="category">
         <input
           type="checkbox"
-          :id="category"
+          :id="category.id"
           :value="category"
           v-model="selectedCategories"
         />
-        <label :for="category">{{ category }}</label>
+        <label :for="category">{{ category.name }}</label>
       </li>
     </ul>
 
@@ -28,11 +28,11 @@
       <li v-for="brand in brands" :key="brand">
         <input
           type="checkbox"
-          :id="brand"
+          :id="brand.id"
           :value="brand"
           v-model="selectedBrands"
         />
-        <label :for="brand">{{ brand }}</label>
+        <label :for="brand">{{ brand.name }}</label>
       </li>
     </ul>
 
@@ -78,6 +78,7 @@ const resetFilters = () => {
   flex-direction: column;
   gap: 20px;
   width: 300px;
+  height: fit-content;
 
   border: 2px solid var(--blue);
   padding: 20px;
