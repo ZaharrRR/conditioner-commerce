@@ -1,7 +1,38 @@
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
+<template>
+  <NuxtLayout name="admin-layout" class="admin-attributes">
+    <h1 class="header">Управление атрибутами</h1>
 
-import type { IAttribute } from "@/types/attribute";
+    <div class="create-form">
+      <h2 class="form-title">Добавить атрибут</h2>
+      <div class="form-content">
+        <input
+          v-model="newAttribute"
+          placeholder="Название атрибута"
+          class="form-input"
+          @keyup.enter="handleCreate"
+        />
+        <button class="form-button" @click="handleCreate">Добавить</button>
+      </div>
+    </div>
+
+    <div v-if="error" class="error">{{ error }}</div>
+    <div v-else class="attributes-list">
+      <div
+        v-for="attribute in attributes"
+        :key="attribute.id"
+        class="attribute-item"
+      >
+        <span class="attribute-name">{{ attribute.name }}</span>
+        <button class="delete-button" @click="handleDelete(attribute.id)">
+          Удалить
+        </button>
+      </div>
+    </div>
+  </NuxtLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from "vue";
 
 import {
   fetchAllAttributes,
@@ -9,14 +40,13 @@ import {
   deleteAttribute,
 } from "@/api/attributes";
 
-const attributes = ref<IAttribute[]>([]);
-const loading = ref(false);
-const error = ref<string | null>(null);
+const attributes = ref([]);
 const newAttribute = ref("");
+
+const error = ref(null);
 
 const loadAttributes = async () => {
   try {
-    loading.value = true;
     error.value = null;
     const result = await fetchAllAttributes();
 
@@ -27,7 +57,6 @@ const loadAttributes = async () => {
 
     attributes.value = result;
   } finally {
-    loading.value = false;
   }
 };
 
@@ -51,7 +80,7 @@ const handleCreate = async () => {
   }
 };
 
-const handleDelete = async (id: string) => {
+const handleDelete = async (id) => {
   try {
     error.value = null;
     const result = await deleteAttribute(id);
@@ -71,40 +100,6 @@ onMounted(() => {
   loadAttributes();
 });
 </script>
-
-<template>
-  <NuxtLayout name="admin-layout" class="admin-attributes">
-    <h1 class="header">Управление атрибутами</h1>
-
-    <div class="create-form">
-      <h2 class="form-title">Добавить атрибут</h2>
-      <div class="form-content">
-        <input
-          v-model="newAttribute"
-          placeholder="Название атрибута"
-          class="form-input"
-          @keyup.enter="handleCreate"
-        />
-        <button class="form-button" @click="handleCreate">Добавить</button>
-      </div>
-    </div>
-
-    <div v-if="loading" class="loading">Загрузка...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
-    <div v-else class="attributes-list">
-      <div
-        v-for="attribute in attributes"
-        :key="attribute.id"
-        class="attribute-item"
-      >
-        <span class="attribute-name">{{ attribute.name }}</span>
-        <button class="delete-button" @click="handleDelete(attribute.id)">
-          Удалить
-        </button>
-      </div>
-    </div>
-  </NuxtLayout>
-</template>
 
 <style lang="scss" scoped>
 .admin-attributes {
@@ -163,12 +158,6 @@ onMounted(() => {
         }
       }
     }
-  }
-
-  .loading {
-    text-align: center;
-    padding: 1rem;
-    color: #7f8c8d;
   }
 
   .error {

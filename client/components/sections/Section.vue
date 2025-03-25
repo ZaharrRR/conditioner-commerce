@@ -7,7 +7,7 @@
   </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 defineProps({
   label: String,
   className: String,

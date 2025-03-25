@@ -31,7 +31,7 @@
   </Section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Section from "./Section.vue";
 import UButton from "~/components/UI/UButton.vue";
 

@@ -30,7 +30,6 @@
       </div>
     </div>
 
-    <!-- Контент с описанием и характеристиками -->
     <div class="product-content" v-if="product">
       <div class="description">
         <h2>Описание</h2>
@@ -68,7 +67,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 
-import { getProductById } from "@/api/products";
+import { getProductById } from "~/api/products";
 
 import { useRoute } from "vue-router";
 
@@ -85,7 +84,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Главный блок с продуктом */
 .product-box {
   border: solid 5px var(--blue);
   border-radius: 10px;
@@ -119,7 +117,6 @@ onMounted(async () => {
   margin-bottom: 15px;
 }
 
-/* Секция характеристик */
 .product-spec {
   margin-top: 20px;
   background-color: var(--blue);
@@ -157,7 +154,6 @@ onMounted(async () => {
   color: white;
 }
 
-/* Контейнер с описанием и характеристиками */
 .product-content {
   display: flex;
   justify-content: space-between;

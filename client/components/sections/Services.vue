@@ -20,7 +20,7 @@
   </Section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Section from "./Section.vue";
 
 const services = [

@@ -26,8 +26,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import Filters from "~/components/Filters.vue";
-import ProductGrid from "~/components/ProductGrid.vue";
+
+import Filters from "@/components/Filters.vue";
+import ProductGrid from "@/components/ProductGrid.vue";
+
 import { fetchAllProducts } from "@/api/products";
 import { fetchAllBrands } from "@/api/brands";
 import { fetchAllCategories } from "@/api/categories";
@@ -35,6 +37,7 @@ import { fetchAllCategories } from "@/api/categories";
 const products = ref([]);
 const categories = ref([]);
 const brands = ref([]);
+
 const loading = ref(false);
 const error = ref(null);
 
@@ -43,7 +46,6 @@ const selectedBrands = ref([]);
 const priceRange = ref({ min: null, max: null });
 const sortBy = ref("");
 
-// Загрузка данных
 const loadData = async () => {
   try {
     loading.value = true;
@@ -73,18 +75,15 @@ const loadData = async () => {
   }
 };
 
-// Фильтрация и сортировка
 const filteredProducts = computed(() => {
   let filtered = products.value;
 
-  // Фильтрация по категориям (массив объектов)
   if (selectedCategories.value.length > 0) {
     filtered = filtered.filter((p) =>
       selectedCategories.value.some((cat) => cat.name === p.category_name)
     );
   }
 
-  // Фильтрация по брендам (массив объектов)
   if (selectedBrands.value.length > 0) {
     filtered = filtered.filter((p) =>
       selectedBrands.value.some((brand) => brand.name === p.brand_name)

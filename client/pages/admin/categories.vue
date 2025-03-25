@@ -1,7 +1,69 @@
-<script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+<template>
+  <NuxtLayout name="admin-layout" class="category-management">
+    <h1 class="title">Управление категориями</h1>
 
-import type { ICategory } from "@/types/category";
+    <div class="create-form">
+      <h2 class="form-title">Добавить категорию</h2>
+      <div class="form-content">
+        <input
+          v-model="newCategory.name"
+          placeholder="Название"
+          class="form-input"
+        />
+        <input
+          v-model="newCategory.logo_url"
+          placeholder="Ссылка на лого"
+          class="form-input"
+        />
+        <button @click="handleCreate" class="submit-button">Добавить</button>
+      </div>
+    </div>
+
+    <div v-if="error" class="error-message">{{ error }}</div>
+    <div v-else class="category-list">
+      <div
+        v-for="category in categories"
+        :key="category.id"
+        class="category-item"
+      >
+        <div class="category-info">
+          <img
+            v-if="category.logo_url"
+            :src="category.logo_url"
+            class="category-logo"
+          />
+          <span class="category-name">{{ category.name }}</span>
+        </div>
+
+        <div class="action-buttons">
+          <button @click="editCategory = { ...category }" class="edit-button">
+            Изменить
+          </button>
+          <button @click="handleDelete(category.id)" class="delete-button">
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="editCategory" class="edit-modal">
+      <div class="modal-content">
+        <h2 class="modal-title">Редактирование категории</h2>
+        <input v-model="editCategory.name" class="modal-input" />
+        <input v-model="editCategory.logo_url" class="modal-input" />
+        <div class="modal-actions">
+          <button @click="handleUpdate" class="save-button">Сохранить</button>
+          <button @click="editCategory = null" class="cancel-button">
+            Отмена
+          </button>
+        </div>
+      </div>
+    </div>
+  </NuxtLayout>
+</template>
+
+<script setup>
+import { ref, reactive, onMounted } from "vue";
 
 import {
   fetchAllCategories,
@@ -10,10 +72,10 @@ import {
   deleteCategory,
 } from "@/api/categories";
 
-const categories = ref<ICategory[]>([]);
-const loading = ref(false);
-const error = ref<string | null>(null);
-const editCategory = ref<ICategory | null>(null);
+const categories = ref([]);
+const editCategory = ref(null);
+
+const error = ref(null);
 
 const newCategory = reactive({
   name: "",
@@ -22,7 +84,6 @@ const newCategory = reactive({
 
 const loadCategories = async () => {
   try {
-    loading.value = true;
     error.value = null;
     const result = await fetchAllCategories();
 
@@ -33,7 +94,6 @@ const loadCategories = async () => {
 
     categories.value = result;
   } finally {
-    loading.value = false;
   }
 };
 
@@ -78,7 +138,7 @@ const handleUpdate = async () => {
   }
 };
 
-const handleDelete = async (id: string) => {
+const handleDelete = async (id) => {
   try {
     error.value = null;
     const result = await deleteCategory(id);
@@ -98,74 +158,6 @@ onMounted(() => {
   loadCategories();
 });
 </script>
-
-<template>
-  <NuxtLayout name="admin-layout" class="category-management">
-    <h1 class="title">Управление категориями</h1>
-
-    <!-- Форма создания -->
-    <div class="create-form">
-      <h2 class="form-title">Добавить категорию</h2>
-      <div class="form-content">
-        <input
-          v-model="newCategory.name"
-          placeholder="Название"
-          class="form-input"
-        />
-        <input
-          v-model="newCategory.logo_url"
-          placeholder="Ссылка на лого"
-          class="form-input"
-        />
-        <button @click="handleCreate" class="submit-button">Добавить</button>
-      </div>
-    </div>
-
-    <!-- Список категорий -->
-    <div v-if="loading" class="loading">Загрузка...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-    <div v-else class="category-list">
-      <div
-        v-for="category in categories"
-        :key="category.id"
-        class="category-item"
-      >
-        <div class="category-info">
-          <img
-            v-if="category.logo_url"
-            :src="category.logo_url"
-            class="category-logo"
-          />
-          <span class="category-name">{{ category.name }}</span>
-        </div>
-
-        <div class="action-buttons">
-          <button @click="editCategory = { ...category }" class="edit-button">
-            Изменить
-          </button>
-          <button @click="handleDelete(category.id)" class="delete-button">
-            Удалить
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Модалка редактирования -->
-    <div v-if="editCategory" class="edit-modal">
-      <div class="modal-content">
-        <h2 class="modal-title">Редактирование категории</h2>
-        <input v-model="editCategory.name" class="modal-input" />
-        <input v-model="editCategory.logo_url" class="modal-input" />
-        <div class="modal-actions">
-          <button @click="handleUpdate" class="save-button">Сохранить</button>
-          <button @click="editCategory = null" class="cancel-button">
-            Отмена
-          </button>
-        </div>
-      </div>
-    </div>
-  </NuxtLayout>
-</template>
 
 <style lang="scss" scoped>
 .category-management {
@@ -331,12 +323,6 @@ onMounted(() => {
         }
       }
     }
-  }
-
-  .loading {
-    text-align: center;
-    padding: 2rem;
-    color: #718096;
   }
 
   .error-message {

@@ -1,6 +1,74 @@
-<script setup lang="ts">
+<template>
+  <NuxtLayout name="admin-layout" class="brand-management">
+    <h1 class="title">Управление брендами</h1>
+
+    <div class="create-form">
+      <h2 class="form-title">Добавить бренд</h2>
+      <div class="form-content">
+        <input
+          v-model="newBrand.name"
+          placeholder="Название"
+          class="form-input"
+        />
+        <textarea
+          v-model="newBrand.description"
+          placeholder="Описание"
+          class="form-textarea"
+        ></textarea>
+        <input
+          v-model="newBrand.logo"
+          placeholder="Ссылка на лого"
+          class="form-input"
+        />
+        <button @click="handleCreate" class="submit-button">Добавить</button>
+      </div>
+    </div>
+
+    <div v-if="error" class="error-message">{{ error }}</div>
+    <div v-else class="brand-list">
+      <div v-for="brand in brands" :key="brand.id" class="brand-item">
+        <div class="brand-info">
+          <img v-if="brand.logo" :src="brand.logo" class="brand-logo" />
+          <div class="brand-details">
+            <h3 class="brand-name">{{ brand.name }}</h3>
+            <p class="brand-description">{{ brand.description }}</p>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button @click="editBrand = { ...brand }" class="edit-button">
+            Изменить
+          </button>
+          <button @click="handleDelete(brand.id)" class="delete-button">
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="editBrand" class="edit-modal">
+      <div class="modal-content">
+        <h2 class="modal-title">Редактирование бренда</h2>
+        <input v-model="editBrand.name" class="modal-input" />
+        <textarea
+          v-model="editBrand.description"
+          class="modal-textarea"
+        ></textarea>
+        <input v-model="editBrand.logo" class="modal-input" />
+        <div class="modal-actions">
+          <button @click="handleUpdate" class="save-button">Сохранить</button>
+          <button @click="editBrand = null" class="cancel-button">
+            Отмена
+          </button>
+        </div>
+      </div>
+    </div>
+  </NuxtLayout>
+</template>
+
+<script setup>
 import { ref, reactive, onMounted } from "vue";
-import type { IBrand } from "@/types/brand";
+
 import {
   fetchAllBrands,
   createBrand,
@@ -8,10 +76,10 @@ import {
   deleteBrand,
 } from "@/api/brands";
 
-const brands = ref<IBrand[]>([]);
-const loading = ref(false);
-const error = ref<string | null>(null);
-const editBrand = ref<IBrand | null>(null);
+const brands = ref([]);
+const editBrand = ref(null);
+
+const error = ref(null);
 
 const newBrand = reactive({
   name: "",
@@ -21,7 +89,6 @@ const newBrand = reactive({
 
 const loadBrands = async () => {
   try {
-    loading.value = true;
     error.value = null;
     const result = await fetchAllBrands();
 
@@ -32,7 +99,6 @@ const loadBrands = async () => {
 
     brands.value = result;
   } finally {
-    loading.value = false;
   }
 };
 
@@ -75,7 +141,7 @@ const handleUpdate = async () => {
   }
 };
 
-const handleDelete = async (id: string) => {
+const handleDelete = async (id) => {
   try {
     error.value = null;
     const result = await deleteBrand(id);
@@ -95,79 +161,6 @@ onMounted(() => {
   loadBrands();
 });
 </script>
-
-<template>
-  <NuxtLayout name="admin-layout" class="brand-management">
-    <!-- Остальная разметка без изменений -->
-    <h1 class="title">Управление брендами</h1>
-
-    <!-- Форма создания -->
-    <div class="create-form">
-      <h2 class="form-title">Добавить бренд</h2>
-      <div class="form-content">
-        <input
-          v-model="newBrand.name"
-          placeholder="Название"
-          class="form-input"
-        />
-        <textarea
-          v-model="newBrand.description"
-          placeholder="Описание"
-          class="form-textarea"
-        ></textarea>
-        <input
-          v-model="newBrand.logo"
-          placeholder="Ссылка на лого"
-          class="form-input"
-        />
-        <button @click="handleCreate" class="submit-button">Добавить</button>
-      </div>
-    </div>
-
-    <!-- Список брендов -->
-    <div v-if="loading" class="loading">Загрузка...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-    <div v-else class="brand-list">
-      <div v-for="brand in brands" :key="brand.id" class="brand-item">
-        <div class="brand-info">
-          <img v-if="brand.logo" :src="brand.logo" class="brand-logo" />
-          <div class="brand-details">
-            <h3 class="brand-name">{{ brand.name }}</h3>
-            <p class="brand-description">{{ brand.description }}</p>
-          </div>
-        </div>
-
-        <div class="action-buttons">
-          <button @click="editBrand = { ...brand }" class="edit-button">
-            Изменить
-          </button>
-          <button @click="handleDelete(brand.id)" class="delete-button">
-            Удалить
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Модалка редактирования -->
-    <div v-if="editBrand" class="edit-modal">
-      <div class="modal-content">
-        <h2 class="modal-title">Редактирование бренда</h2>
-        <input v-model="editBrand.name" class="modal-input" />
-        <textarea
-          v-model="editBrand.description"
-          class="modal-textarea"
-        ></textarea>
-        <input v-model="editBrand.logo" class="modal-input" />
-        <div class="modal-actions">
-          <button @click="handleUpdate" class="save-button">Сохранить</button>
-          <button @click="editBrand = null" class="cancel-button">
-            Отмена
-          </button>
-        </div>
-      </div>
-    </div>
-  </NuxtLayout>
-</template>
 
 <style lang="scss" scoped>
 .brand-management {
@@ -349,12 +342,6 @@ onMounted(() => {
         }
       }
     }
-  }
-
-  .loading {
-    text-align: center;
-    padding: 2rem;
-    color: #718096;
   }
 
   .error-message {

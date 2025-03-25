@@ -17,7 +17,7 @@
   </header>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import HeaderSearch from "@/components/HeaderSearch.vue";
 </script>
 

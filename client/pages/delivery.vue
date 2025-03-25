@@ -67,8 +67,7 @@
 
 <script setup>
 const orderDelivery = () => {
-  // Логика для заказа доставки
-  alert("Заказ доставки оформлен!");
+  location.href = "https://t.me/conditioner_comm_bot";
 };
 </script>
 
