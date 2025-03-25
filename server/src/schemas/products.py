@@ -5,6 +5,8 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, UUID4
 
+from schemas import ProductAttributeRead
+
 
 class ProductBase(BaseModel):
     name: Annotated[str, Field(min_length=1, max_length=200, description="Названия продукта")]
@@ -42,5 +44,6 @@ class ProductReadWithRelations(BaseModel):
     price: Annotated[Decimal, Field(...)]
     brand_name: Annotated[str, Field(...)]
     category_name: Annotated[str, Field(...)]
+    attributes: Annotated[Optional[list[ProductAttributeRead]], Field(None, description="Список характеристик (аттрибутов) продукта")]
     created_at: datetime
     updated_at: datetime

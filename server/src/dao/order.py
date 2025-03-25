@@ -50,17 +50,7 @@ class OrderDAO:
     async def get_orders(self) -> list[OrderRead]:
         """Получает все заказы с предзагрузкой услуг"""
 
-        logger.debug("🔎 Получение всех заказов")
-        try:
-            stmt = select(Order).options(selectinload(Order.services))
-            result = await self.session.execute(stmt)
-            orders = result.scalars().all()
-            logger.info(f"✅ Найдено {len(orders)} заказов")
 
-            return [OrderRead.model_validate(order, from_attributes=True) for order in orders]
-        except SQLAlchemyError as e:
-            logger.error(f"❌ Ошибка при получении заказов: {e}")
-            raise RuntimeError("Database error")
 
     async def delete_order_by_id(self, order_id: UUID) -> bool:
         """Удаляет заказ по ID"""

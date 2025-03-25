@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from dao.product import ProductDAO
 from db.database import get_session
-from schemas import ProductRead, ProductCreate, ProductReadWithRelations
+from schemas import ProductRead, ProductCreate, ProductReadWithRelations, ProductAttributeLink
 
 router = APIRouter(prefix="/product", tags=["Products"])
 
@@ -59,3 +59,30 @@ async def get_product_by_id(product_id: UUID, session: AsyncSession = Depends(ge
 
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/{product_id}", status_code=204, summary="Удаление товара по ID")
+async def delete_order(
+    product_id: UUID,
+    session: AsyncSession = Depends(get_session)
+):
+    product_dao = ProductDAO(session)
+    deleted = await product_dao.delete_product(product_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return None
+
+@router.post("/{product_id}/link-attributes", summary="Привязать аттрибуты к продукту")
+async def link_attributes_to_product(
+    product_id: UUID,
+    attributes_links: list[ProductAttributeLink],
+    session: AsyncSession = Depends(get_session)
+):
+    product_dao = ProductDAO(session)
+    try:
+        updated_product = await product_dao.link_attributes_to_product(product_id, attributes_links)
+        return updated_product
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except RuntimeError:
+        raise HTTPException(status_code=500, detail="Internal server error")

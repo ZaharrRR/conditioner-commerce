@@ -15,8 +15,12 @@ class ProductAttributeCreate(ProductAttributeBase):
 
     pass
 
+class ProductAttributeLink(BaseModel):
+    attribute_id: Annotated[UUID4, Field(..., description="ID аттрибутов, которые нужно привязать")]
+    value: Annotated[str, Field(..., description="Значение аттрибута для данного продукта")]
 
-class ProductAttributeRead(ProductAttributeBase):
-    """Схема для чтения ProductAttribute"""
 
+class ProductAttributeRead(BaseModel):
+    attribute_name: Annotated[str, Field(..., description="Название аттрибута из модели Attribute")]
+    value: Annotated[str, Field(..., description="Значение аттрибута для продукта")]
     model_config = ConfigDict(from_attributes=True)

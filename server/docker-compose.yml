@@ -4,25 +4,21 @@ services:
     image: postgres:17.2-alpine3.20
 
     env_file:
-      - .env
+      - .env.dev
+
+
 
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: conditioner
 
     ports:
-      - '5432:${POSTGRES_PORT}'
+      - '5432:5432'
     restart: always
 
     volumes:
       - ./data:/data/db
 
-  redis:
-    image: redis:latest
-    container_name: redis_cache
-    restart: always
-    ports:
-      - "6379:6379"
 volumes:
   data:

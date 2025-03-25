@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from core import settings
 from db import Base
-from models import *  # noqa: F401
+from models import *  # noqa: F401, F403
 
 DATABASE_URL = settings.get_db_url()
 

@@ -77,7 +77,7 @@ class ServiceDAO:
             return ServiceRead.model_validate(service, from_attributes=True)
         except IntegrityError:
             await self.session.rollback()
-            logger.warning(f"⚠️ Service с такими данными уже существует")
+            logger.warning("⚠️ Service с такими данными уже существует")
             raise ValueError("Service already exists")
         except SQLAlchemyError as e:
             await self.session.rollback()
