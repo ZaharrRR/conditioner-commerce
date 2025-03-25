@@ -6,9 +6,12 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
 from core import logger
+from models import OrderService, Service
 from models.order import Order
-from schemas.orders import OrderCreate, OrderRead
+from schemas.orders import OrderCreate, OrderRead, OrderServiceRead
+
 
 class OrderDAO:
     """DAO для заказов (Order)"""
@@ -22,8 +25,43 @@ class OrderDAO:
             self.session.add(new_order)
             await self.session.flush()
             await self.session.commit()
+
+            if order.services:
+                for service_id in order.services:
+                    order_service = OrderService(
+                        order_id=new_order.id,
+                        service_id=service_id
+                    )
+                    self.session.add(order_service)
+
+                await self.session.commit()
+
             logger.info(f"✅ Заказ (Order) с ID {new_order.id} создан")
-            return new_order
+
+
+            stmt_services = (
+                select(Service.id, Service.service_type, Service.base_price, Service.created_at)
+                .join(OrderService, OrderService.service_id == Service.id)
+                .where(OrderService.order_id == new_order.id)
+                .distinct()
+            )
+            result_services = await self.session.execute(stmt_services)
+
+            services = [OrderServiceRead.model_validate(service) for service in result_services]
+
+            return OrderRead(
+                id=new_order.id,
+                customer_name=new_order.customer_name,
+                customer_surname=new_order.customer_surname,
+                customer_phone=new_order.customer_phone,
+                address=new_order.address,
+                base_price=new_order.base_price,
+                total_price=new_order.total_price,
+                created_at=new_order.created_at,
+                updated_at=new_order.updated_at,
+                services=services,
+            )
+
         except IntegrityError:
             await self.session.rollback()
             logger.warning("⚠️ Заказ с такими данными уже существует")
@@ -49,7 +87,7 @@ class OrderDAO:
 
     async def get_orders(self) -> list[OrderRead]:
         """Получает все заказы с предзагрузкой услуг"""
-
+        pass
 
 
     async def delete_order_by_id(self, order_id: UUID) -> bool:

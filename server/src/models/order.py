@@ -1,8 +1,8 @@
 from uuid import UUID
 
 from sqlalchemy import String, Numeric, Text, ForeignKey
-from sqlalchemy.orm import Mapped, relationship
-from sqlalchemy.testing.schema import mapped_column
+from sqlalchemy.orm import Mapped, relationship, mapped_column
+
 from decimal import Decimal
 
 from db import Base

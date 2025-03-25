@@ -10,7 +10,7 @@ from schemas.orders import OrderRead, OrderCreate
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-@router.post("/", response_model=OrderRead, status_code=201, summary="Создание заказа")
+@router.post("/", status_code=201, summary="Создание заказа")
 async def create_order(
     order_data: OrderCreate,
     session: AsyncSession = Depends(get_session)
@@ -37,7 +37,7 @@ async def get_order(
         raise HTTPException(status_code=404, detail="Order not found")
     return order
 
-@router.get("/", response_model=list[OrderRead], summary="Получение всех заказов")
+@router.get("/", summary="Получение всех заказов")
 async def get_orders(session: AsyncSession = Depends(get_session)):
     order_dao = OrderDAO(session)
     try:

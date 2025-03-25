@@ -1,10 +1,11 @@
 import re
+import uuid
 from datetime import datetime
 from decimal import Decimal
 from typing import Optional
 from uuid import UUID
 
-from pydantic import Field, BaseModel, ConfigDict, field_validator
+from pydantic import Field, BaseModel, ConfigDict, field_validator, UUID4
 
 PHONE_REGEX = r"^\+7\d{10}$"
 
@@ -39,25 +40,37 @@ class OrderBase(BaseModel):
 
 
 
-class OrderCreate(OrderBase):
-    pass
 
 
 class OrderServiceRead(BaseModel):
     id: UUID = Field(..., description="ID услуги")
     service_type: str = Field(..., description="Тип услуги (например, 'delivery' или 'installation')")
-    price: Decimal = Field(..., description="Цена услуги")
+    base_price: Decimal = Field(..., description="Цена услуги")
     created_at: datetime = Field(..., description="Дата создания записи услуги")
 
     model_config = ConfigDict(from_attributes=True)
 
 class OrderRead(BaseModel):
     id: UUID = Field(..., description="ID заказа")
+    customer_name: str = Field(..., min_length=2, max_length=100, description="Имя клиента")
+    customer_surname: str = Field(..., min_length=2, max_length=100, description="Фамилия клиента")
+    customer_phone: str = Field(..., description="Номер телефона (форматы +7XXXXXXXXXX или 8XXXXXXXXXX)")
+    address: str = Field(..., min_length=5, max_length=300, description="Адрес доставки")
+    comment: Optional[str] = Field(None, description="Комментарий клиента")
     base_price: Decimal = Field(..., description="Базовая цена продукта")
     total_price: Decimal = Field(..., description="Итоговая цена заказа с учетом услуг")
     created_at: datetime = Field(..., description="Дата создания заказа")
     services: Optional[list[OrderServiceRead]] = Field(
-        None, description="Подробная информация о дополнительных услугах"
+        default_factory=list, description="Подробная информация о дополнительных услугах"
     )
 
     model_config = ConfigDict(from_attributes=True)
+
+class OrderServiceCreate(BaseModel):
+    id: UUID
+
+
+class OrderCreate(OrderBase):
+    services: Optional[list[uuid.UUID]] = Field(
+        default_factory=list
+    )

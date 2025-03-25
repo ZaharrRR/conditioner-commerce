@@ -1,5 +1,6 @@
 .env.prod
 .env.dev
-.idea
+.idea/
 venv
 __pycache__/
+app.log
