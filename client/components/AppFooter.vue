@@ -212,7 +212,7 @@ const links = [
     }
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     .footer-top {
       padding: 20px 12px;
       gap: 24px;

@@ -205,4 +205,115 @@ onMounted(async () => {
 .description a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 1280px) {
+  .product-box {
+    padding: 30px;
+    gap: 30px;
+  }
+
+  .product-box img {
+    width: 350px;
+  }
+
+  .product-info h1 {
+    font-size: 32px;
+  }
+
+  .product-info p {
+    font-size: 26px;
+  }
+
+  .spec-icon .icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .spec-icon p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .product-box {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .product-box img {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+  }
+
+  .product-info {
+    width: 100%;
+  }
+
+  .product-info .u-button {
+    width: 100%;
+  }
+
+  .product-content {
+    flex-direction: column;
+  }
+
+  .description,
+  .characteristics {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .spec-icons {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-box {
+    padding: 15px;
+    border-width: 3px;
+  }
+
+  .product-info h1 {
+    font-size: 24px;
+  }
+
+  .product-info p {
+    font-size: 22px;
+  }
+
+  .spec-icons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .spec-icon {
+    margin-bottom: 10px;
+  }
+
+  .product-spec {
+    padding: 10px 5px;
+  }
+
+  .product-spec h2 {
+    font-size: 20px;
+  }
+
+  .description h3 {
+    font-size: 18px;
+  }
+
+  .description p,
+  .characteristics li {
+    font-size: 14px;
+  }
+
+  .characteristics a,
+  .description a {
+    font-size: 13px;
+  }
+}
 </style>

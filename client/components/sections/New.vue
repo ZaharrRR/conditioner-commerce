@@ -114,7 +114,7 @@ const products = [
       }
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 480px) {
       grid-template-columns: 1fr; // 1 колонка
       gap: 12px;
 
@@ -195,7 +195,7 @@ const products = [
       margin-top: 24px;
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 480px) {
       margin-top: 20px;
 
       // Если нужно изменить размер кнопки

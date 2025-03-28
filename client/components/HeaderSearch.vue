@@ -69,7 +69,7 @@
     }
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     width: 100%; // Занимаем всю доступную ширину
     border-radius: 6px;
     padding: 4px;

@@ -85,7 +85,7 @@ const reasons = [
       }
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 480px) {
       gap: 12px;
 
       .reason-item {
@@ -177,7 +177,7 @@ const reasons = [
     }
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     width: 100%;
     margin-top: 24px;
     padding: 0 8px;
