@@ -61,8 +61,9 @@ class S3Config(ConfigBase):
     bucket_name: str
     endpoint: str
     region: str
+    account_id: str
 
-    model_config = SettingsConfigDict(env_prefix="s3_")
+    model_config = SettingsConfigDict(env_prefix="s3_", extra="ignore")
 
 
 class Settings(BaseSettings):

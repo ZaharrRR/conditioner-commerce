@@ -9,5 +9,6 @@ asyncpg==0.30.0
 redis==5.2.1
 greenlet==3.1.1
 loguru==0.7.3
-aioboto3==13.4.0
+boto3==1.37.22
 python-multipart==0.0.20
+aioboto3~=13.4.0

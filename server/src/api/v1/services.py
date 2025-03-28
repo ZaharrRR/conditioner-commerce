@@ -1,22 +1,39 @@
-from fastapi import APIRouter, Depends, HTTPException
+import asyncio
+
+from fastapi import APIRouter, Depends, HTTPException, Form, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
+from decimal import Decimal
 from uuid import UUID
 
 from core import logger
 from dao.service import ServiceDAO
 from db.database import get_session
 from schemas import ServiceRead, ServiceCreate, ServiceUpdate
+from services.s3 import S3Service
+from utils.utils import validate_logo
 
 router = APIRouter(prefix="/services", tags=["Services"])
 
+def get_s3_service() -> S3Service:
+    return S3Service()
+
 @router.post("/create", response_model=ServiceRead, status_code=201, summary="Создание услуги")
 async def create_service(
-    service_data: ServiceCreate,
-    session: AsyncSession = Depends(get_session)
+    logo_file: UploadFile = File(None),
+    service_type: str = Form(...),
+    base_price: Decimal = Form(...),
+    description: str = Form(None),
+    session: AsyncSession = Depends(get_session),
+    s3: S3Service = Depends(get_s3_service)
 ):
     service_dao = ServiceDAO(session)
+    logo_url = ''
     try:
+        if logo_file:
+            key, content = await validate_logo(logo_file, 'services')
+            logo_url = await asyncio.to_thread(s3.upload_file, content, key)
+        service_data = ServiceCreate(service_type=service_type, base_price=base_price, description=description, logo_url=logo_url)
         new_service = await service_dao.create_service(service_data)
         return new_service
     except ValueError as e:

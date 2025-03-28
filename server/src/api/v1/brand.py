@@ -1,3 +1,4 @@
+import asyncio
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
@@ -7,26 +8,32 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from dao import BrandDAO
 from db.database import get_session
 from schemas import BrandCreate, BrandRead, BrandUpdate
+from services.s3 import S3Service
+from utils.utils import validate_logo
 
 router = APIRouter(prefix="/brand", tags=["Brand"])
+
+
+def get_s3_service() -> S3Service:
+    return S3Service()
 
 
 @router.post("/create", response_model=BrandRead, status_code=201)
 async def create_brand(
     name: str = Form(...),
     description: str = Form(""),
-    logo: UploadFile = File(...),
+    logo_file: UploadFile = File(None),
     session: AsyncSession = Depends(get_session),
+    s3: S3Service = Depends(get_s3_service)
 ):
     brand_dao = BrandDAO(session)
-
+    logo_url = ''
     try:
-        logo_url = ""
-
+        if logo_file:
+            key, content = await validate_logo(logo_file, 'brands')
+            logo_url = await asyncio.to_thread(s3.upload_file, content, key)
         brand_data = BrandCreate(name=name, description=description, logo_url=logo_url)
-
         new_brand = await brand_dao.create_brand(brand_data)
-
         return new_brand
 
     except ValueError as e:

@@ -11,6 +11,7 @@ class Product(Base):
     """Модель Product в БД"""
 
     name: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
+    photo_url: Mapped[str] = mapped_column(String(200), nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     description: Mapped[str] = mapped_column(String(200), nullable=False)
 

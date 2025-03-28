@@ -11,7 +11,6 @@ class CategoryBase(BaseModel):
 
 class CategoryCreate(CategoryBase):
     """Схема для создания Category"""
-
     pass
 
 

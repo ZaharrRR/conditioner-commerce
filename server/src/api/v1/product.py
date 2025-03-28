@@ -1,14 +1,20 @@
+import asyncio
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException
-from fastapi.params import Depends
+from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi.params import Depends, File
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dao.product import ProductDAO
 from db.database import get_session
 from schemas import ProductRead, ProductCreate, ProductReadWithRelations, ProductAttributeLink
+from services.s3 import S3Service
+from utils.utils import validate_logo
 
 router = APIRouter(prefix="/product", tags=["Products"])
+
+def get_s3_service() -> S3Service:
+    return S3Service()
 
 
 @router.post(
@@ -29,6 +35,36 @@ async def create_product(data: ProductCreate, session: AsyncSession = Depends(ge
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/update-photo/{product_id}", status_code=201, response_model=ProductReadWithRelations)
+async def upload_product_photo(
+        product_id: UUID,
+        photo_file: UploadFile = File(...),
+        session: AsyncSession = Depends(get_session),
+        s3: S3Service = Depends(get_s3_service)):
+
+    product_dao = ProductDAO(session)
+    photo_url = ''
+    try:
+        if photo_file:
+            key, content = await validate_logo(photo_file, 'products')
+            photo_url = await asyncio.to_thread(s3.upload_file, content, key)
+            print(photo_url)
+        updated_product = await product_dao.update_product_photo(product_id, photo_url)
+        return updated_product
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/new-products", status_code=200)
+async def get_new_products(session: AsyncSession = Depends(get_session)):
+    product_dao = ProductDAO(session)
+    try:
+        products = await product_dao.get_new_products()
+        return products
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get(
     '/all',

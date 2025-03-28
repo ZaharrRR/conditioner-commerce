@@ -9,7 +9,8 @@ from db import Base
 class Service(Base):
     """Модель Service в БД"""
     __tablename__ = "services"
-
+    logo_url: Mapped[str] = mapped_column(String, nullable=True)
+    description: Mapped[str] = mapped_column(String, nullable=True)
     service_type: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     base_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
 

@@ -52,9 +52,9 @@ class ProductDAO:
             logger.info(f"✅ Продукт создан с ID {new_product.id}")
             return ProductRead.model_validate(new_product)
 
-        except IntegrityError:
+        except IntegrityError as e:
             await self.session.rollback()
-            logger.warning(f"⚠️ Продукт с таким именем уже существует: {data.name}")
+            logger.warning(f"⚠️ Продукт с таким именем уже существует: {data.name}({e})_")
             raise ValueError(f"Product '{data.name}' already exists")
 
         except SQLAlchemyError as e:
@@ -72,6 +72,7 @@ class ProductDAO:
                     Product.id,
                     Product.name,
                     Product.price,
+                    Product.photo_url,
                     Brand.name.label("brand_name"),
                     Category.name.label("category_name"),
                     Product.created_at,
@@ -110,6 +111,7 @@ class ProductDAO:
             product_read_with_relations = ProductReadWithRelations(
                 id=row.id,
                 name=row.name,
+                photo_url=row.photo_url,
                 price=row.price,
                 brand_name=row.brand_name,
                 category_name=row.category_name,
@@ -125,6 +127,35 @@ class ProductDAO:
             logger.error(f"❌ Ошибка SQLAlchemy при получении продукта: {e}")
             raise RuntimeError("Database error")
 
+    async def get_new_products(self):
+        logger.debug("🔎 Получение 4 новых записей Product")
+        try:
+            stmt = select(Product).order_by(Product.created_at.desc()).limit(4)
+
+            result = await self.session.execute(stmt)
+            rows = result.scalars().all()
+
+            return rows
+
+        except SQLAlchemyError as e:
+            logger.error(f"❌ Ошибка SQLAlchemy при получении списка Product: {e}")
+            raise RuntimeError("Database error")
+
+
+    async def update_product_photo(self, product_id: UUID, photo_url: str):
+        result = await self.session.execute(select(Product).where(Product.id == product_id))
+        product = result.scalar_one_or_none()
+        if not product:
+            raise ValueError(f"Product with {product_id} not found")
+
+        product.photo_url = photo_url
+
+        await self.session.flush()
+        await self.session.commit()
+
+        await self.session.refresh(product)
+        return await self.get_product_with_relations_by_id(product_id)
+
     async def get_all_products(self):
         """Получает все записи Product с brand_name и category_name"""
         logger.debug("🔎 Получение всех записей Product")
@@ -134,6 +165,7 @@ class ProductDAO:
                     Product.id,
                     Product.name,
                     Product.price,
+                    Product.photo_url,
                     Brand.name.label("brand_name"),
                     Category.name.label("category_name"),
                     Product.created_at,

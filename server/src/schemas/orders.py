@@ -5,7 +5,7 @@ from decimal import Decimal
 from typing import Optional
 from uuid import UUID
 
-from pydantic import Field, BaseModel, ConfigDict, field_validator, UUID4
+from pydantic import Field, BaseModel, ConfigDict, field_validator
 
 PHONE_REGEX = r"^\+7\d{10}$"
 

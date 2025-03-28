@@ -1,24 +1,36 @@
+import asyncio
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException
-from fastapi.params import Depends
+from fastapi import APIRouter, HTTPException, UploadFile, Depends
+from fastapi.params import File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dao.category import CategoryDAO
 from db.database import get_session
 from schemas import CategoryCreate, CategoryRead, CategoryUpdate
+from services.s3 import S3Service
+from utils.utils import validate_logo
 
 router = APIRouter(prefix="/category", tags=["Category"])
 
+def get_s3_service() -> S3Service:
+    return S3Service()
 
-@router.post("/create", response_model=CategoryCreate, status_code=201)
+@router.post("/create", response_model=CategoryRead, status_code=201)
 async def create_category(
-    data: CategoryCreate, session: AsyncSession = Depends(get_session)
+    name: str = Form(...),
+    logo_file: UploadFile = File(None),
+    session: AsyncSession = Depends(get_session),
+    s3: S3Service = Depends(get_s3_service),
 ):
     category_dao = CategoryDAO(session)
+    logo_url = ''
     try:
-        new_category = await category_dao.create_category(data)
-
+        if logo_file:
+            key, content = await validate_logo(logo_file, 'categories')
+            logo_url = await asyncio.to_thread(s3.upload_file, content, key)
+        category_data = CategoryCreate(name=name, logo_url=logo_url)
+        new_category = await category_dao.create_category(category_data)
         return new_category
 
     except ValueError as e:
