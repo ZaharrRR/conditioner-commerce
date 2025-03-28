@@ -14,11 +14,11 @@
           style="color: #eee; font-size: 12px; position: absolute; top: 0px"
           >Тюмень</a
         ><a
-          href="https://yandex.ru/maps/55/tyumen/?ll=65.547998%2C57.159990&utm_medium=mapframe&utm_source=maps&z=14"
+          href="https://yandex.ru/maps/55/tyumen/house/ulitsa_fedyuninskogo_60k1/YkwYcwFmQU0EQFttfX1xcX9kZg==/?indoorLevel=1&ll=65.566882%2C57.100372&utm_medium=mapframe&utm_source=maps&z=17"
           style="color: #eee; font-size: 12px; position: absolute; top: 14px"
-          >Яндекс Карты — транспорт, навигация, поиск мест</a
+          >Улица Федюнинского, 60к1 на карте Тюмени — Яндекс Карты</a
         ><iframe
-          src="https://yandex.ru/map-widget/v1/?ll=65.547998%2C57.159990&z=14"
+          src="https://yandex.ru/map-widget/v1/?indoorLevel=1&ll=65.566882%2C57.100372&mode=whatshere&whatshere%5Bpoint%5D=65.566883%2C57.100372&whatshere%5Bzoom%5D=17&z=17"
           width="560"
           height="400"
           frameborder="1"
@@ -31,14 +31,14 @@
           name="material-symbols:nest-clock-farsight-analog-outline-rounded"
           class="time-icon"
         ></Icon
-        >Режим работы: ежедневно c 8:00 до 19:00
+        >Режим работы: ежедневно c 8:00 до 20:00
       </p>
       <p>
         <Icon
           name="material-symbols:location-on-outline"
           class="locate-icon"
         ></Icon
-        >603890, Россия, Тюмень, улица Пушкина, 52
+        >625042, Россия, Тюмень, улица Федюнинского, 60к1
       </p>
     </div>
     <div class="contacts-container">
@@ -54,14 +54,14 @@
         кондиционер!<br />Свяжитесь с нами удобным способом.
       </p>
       <div class="contact-buttons">
-        <div class="contact-button">
+        <a href="https://t.me/conditioner_comm_bot" class="contact-button">
           <Icon name="mdi:telegram" class="telegam-icon"></Icon>
           <UButton>Написать</UButton>
-        </div>
-        <div class="contact-button">
+        </a>
+        <a href="tel:89124303333" class="contact-button">
           <Icon name="material-symbols:phone-in-talk" class="call-icon"></Icon>
           <UButton>Позвонить</UButton>
-        </div>
+        </a>
       </div>
     </div>
     <div class="goodbye">
@@ -76,7 +76,7 @@
   </NuxtLayout>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import UButton from "~/components/UI/UButton.vue";
 </script>
 

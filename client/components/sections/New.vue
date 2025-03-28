@@ -31,7 +31,7 @@
   </Section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Section from "./Section.vue";
 import UButton from "~/components/UI/UButton.vue";
 
@@ -87,6 +87,64 @@ const products = [
     gap: 24px;
     width: 100%;
 
+    @media (max-width: 720px) {
+      grid-template-columns: repeat(2, 1fr); // 2 колонки
+      gap: 16px;
+
+      .card {
+        .card__image {
+          height: 160px; // Уменьшаем высоту изображения
+        }
+
+        .card__content {
+          padding: 12px;
+
+          .card__title {
+            font-size: 16px; // Уменьшаем размер заголовка
+          }
+
+          .card__description {
+            font-size: 13px; // Уменьшаем размер описания
+          }
+
+          .card__price {
+            font-size: 18px; // Уменьшаем размер цены
+          }
+        }
+      }
+    }
+
+    @media (max-width: 360px) {
+      grid-template-columns: 1fr; // 1 колонка
+      gap: 12px;
+
+      .card {
+        .card__image {
+          height: 140px; // Дополнительное уменьшение высоты
+        }
+
+        .card__content {
+          padding: 10px;
+
+          .card__title {
+            font-size: 15px;
+          }
+
+          .card__description {
+            font-size: 12px;
+            display: -webkit-box; // Ограничиваем текст до 3 строк
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .card__price {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
     .card {
       background-color: white;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -132,6 +190,20 @@ const products = [
 
   .new__more-button {
     margin-top: 32px;
+
+    @media (max-width: 720px) {
+      margin-top: 24px;
+    }
+
+    @media (max-width: 360px) {
+      margin-top: 20px;
+
+      // Если нужно изменить размер кнопки
+      .u-button {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
   }
 }
 </style>

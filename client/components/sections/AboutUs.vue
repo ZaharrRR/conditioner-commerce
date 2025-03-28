@@ -18,7 +18,7 @@
   </Section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Section from "./Section.vue";
 </script>
 
@@ -27,6 +27,52 @@ import Section from "./Section.vue";
   display: flex;
   gap: 24px;
   align-items: center;
+  flex-direction: row;
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+
+    .about-us-title {
+      font-size: 28px;
+      line-height: 1.3;
+    }
+
+    .about-us-description {
+      font-size: 18px;
+      width: 100%;
+      margin: 12px auto 0;
+    }
+
+    .about-us-image {
+      width: 200px;
+      height: 200px;
+      order: -1; // Переносим изображение наверх
+    }
+  }
+
+  @media (max-width: 360px) {
+    gap: 16px;
+    padding: 0 12px;
+
+    .about-us-title {
+      font-size: 24px;
+      br {
+        display: none;
+      } // Убираем перенос строки если есть
+    }
+
+    .about-us-description {
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .about-us-image {
+      width: 180px;
+      height: 180px;
+    }
+  }
 
   .about-us-title {
     font-size: 36px;
@@ -55,6 +101,7 @@ import Section from "./Section.vue";
   }
 }
 
+// Анимации остаются без изменений
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -7,6 +7,7 @@
       <RouterLink to="/admin/categories">Категории</RouterLink>
       <RouterLink to="/admin/brands">Бренды</RouterLink>
       <RouterLink to="/admin/attributes">Атрибуты</RouterLink>
+      <RouterLink to="/admin/services">Услуги</RouterLink>
     </nav>
 
     <main>

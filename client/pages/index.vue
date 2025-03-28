@@ -8,7 +8,7 @@
   </NuxtLayout>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Slider from "~/components/Slider.vue";
 import AboutUs from "~/components/sections/AboutUs.vue";
 import Reasons from "~/components/sections/Reasons.vue";

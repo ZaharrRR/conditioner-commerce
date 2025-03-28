@@ -1,117 +1,29 @@
-<script setup lang="ts">
-import { ref, reactive, onMounted, computed } from "vue";
-import { createProduct, fetchAllProducts } from "@/api/products";
-import { fetchAllBrands } from "~/api/brands";
-import { fetchAllCategories } from "~/api/categories";
-import type { IBrand } from "@/types/brand";
-import type { ICategory } from "@/types/category";
-import type { IProduct } from "@/types/product";
-
-const brands = ref<IBrand[]>([]);
-const categories = ref<ICategory[]>([]);
-const products = ref<IProduct[]>([]);
-const loading = ref(false);
-const error = ref<string | null>(null);
-
-const form = reactive({
-  name: "",
-  price: "",
-  brand_id: "",
-  category_id: "",
-});
-
-// Загрузка данных
-const loadData = async () => {
-  try {
-    loading.value = true;
-    error.value = null;
-
-    const [brandsRes, categoriesRes, productsRes] = await Promise.all([
-      fetchAllBrands(),
-      fetchAllCategories(),
-      fetchAllProducts(),
-    ]);
-
-    if (
-      brandsRes instanceof Error ||
-      categoriesRes instanceof Error ||
-      productsRes instanceof Error
-    ) {
-      error.value = "Ошибка загрузки данных";
-      return;
-    }
-
-    brands.value = brandsRes;
-    categories.value = categoriesRes;
-    products.value = productsRes;
-  } catch (err) {
-    error.value = "Неизвестная ошибка";
-  } finally {
-    loading.value = false;
-  }
-};
-
-// Создание продукта
-const submit = async () => {
-  try {
-    error.value = null;
-
-    const numericPrice = parseFloat(form.price);
-    if (isNaN(numericPrice)) {
-      throw new Error("Некорректная цена");
-    }
-
-    const result = await createProduct({
-      ...form,
-      price: numericPrice,
-    });
-
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
-
-    // Обновляем список товаров
-    products.value.push(result);
-
-    // Сброс формы
-    Object.assign(form, {
-      name: "",
-      price: "",
-      brand_id: "",
-      category_id: "",
-    });
-
-    alert("Товар успешно создан!");
-  } catch (err) {
-    error.value = "Ошибка создания товара";
-  }
-};
-
-onMounted(() => loadData());
-</script>
-
 <template>
   <NuxtLayout name="admin-layout" class="product-create">
-    <h1>Создание нового товара</h1>
+    <h1 class="product-create__title">Создание нового товара</h1>
 
-    <div v-if="loading">Загрузка данных...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
+    <div v-if="error" class="product-create__error">{{ error }}</div>
 
-    <form v-else @submit.prevent="submit">
-      <div class="form-group">
-        <label>Название товара:</label>
-        <input v-model="form.name" required />
+    <form v-else class="product-create__form" @submit.prevent="submit">
+      <div class="product-create__form-group">
+        <label class="product-create__label">Название товара:</label>
+        <input v-model="form.name" class="product-create__input" required />
       </div>
 
-      <div class="form-group">
-        <label>Цена:</label>
-        <input v-model="form.price" type="number" step="0.01" required />
+      <div class="product-create__form-group">
+        <label class="product-create__label">Цена:</label>
+        <input
+          v-model="form.price"
+          type="number"
+          step="0.01"
+          class="product-create__input"
+          required
+        />
       </div>
 
-      <div class="form-group">
-        <label>Бренд:</label>
-        <select v-model="form.brand_id" required>
+      <div class="product-create__form-group">
+        <label class="product-create__label">Бренд:</label>
+        <select v-model="form.brand_id" class="product-create__select" required>
           <option value="">Выберите бренд</option>
           <option v-for="brand in brands" :key="brand.id" :value="brand.id">
             {{ brand.name }}
@@ -119,9 +31,13 @@ onMounted(() => loadData());
         </select>
       </div>
 
-      <div class="form-group">
-        <label>Категория:</label>
-        <select v-model="form.category_id" required>
+      <div class="product-create__form-group">
+        <label class="product-create__label">Категория:</label>
+        <select
+          v-model="form.category_id"
+          class="product-create__select"
+          required
+        >
           <option value="">Выберите категорию</option>
           <option
             v-for="category in categories"
@@ -133,14 +49,48 @@ onMounted(() => loadData());
         </select>
       </div>
 
-      <button type="submit">Создать товар</button>
+      <div class="product-create__attributes">
+        <h3 class="product-create__subtitle">Атрибуты товара</h3>
+        <div
+          v-for="(attribute, index) in form.attributes"
+          :key="index"
+          class="product-create__attribute-group"
+        >
+          <select
+            v-model="attribute.attribute_id"
+            class="product-create__select"
+            required
+          >
+            <option value="">Выберите атрибут</option>
+            <option v-for="attr in attributes" :key="attr.id" :value="attr.id">
+              {{ attr.name }}
+            </option>
+          </select>
+          <input
+            v-model="attribute.value"
+            class="product-create__input"
+            placeholder="Значение"
+            required
+          />
+        </div>
+        <button
+          type="button"
+          class="product-create__add-btn"
+          @click="addAttributeField"
+        >
+          Добавить атрибут
+        </button>
+      </div>
+
+      <button type="submit" class="product-create__submit-btn">
+        Создать товар
+      </button>
     </form>
 
     <div class="section product-list">
       <h2>Список товаров</h2>
 
-      <div v-if="loading">Загрузка товаров...</div>
-      <div v-else-if="error" class="error">{{ error }}</div>
+      <div v-if="error" class="error">{{ error }}</div>
 
       <div v-else class="table-container">
         <table class="product-table">
@@ -171,63 +121,192 @@ onMounted(() => loadData());
   </NuxtLayout>
 </template>
 
-<style scoped>
-/* Стили остаются без изменений */
+<script setup>
+import { ref, reactive, onMounted } from "vue";
+import { createProduct, fetchAllProducts } from "@/api/products";
+import { fetchAllBrands } from "@/api/brands";
+import { fetchAllCategories } from "@/api/categories";
+import { fetchAllAttributes } from "@/api/attributes";
+
+const brands = ref([]);
+const categories = ref([]);
+const attributes = ref([]);
+const products = ref([]);
+const error = ref(null);
+
+const form = reactive({
+  name: "",
+  price: "",
+  brand_id: "",
+  category_id: "",
+  attributes: [{ attribute_id: "", value: "" }],
+});
+
+const addAttributeField = () => {
+  form.attributes.push({ attribute_id: "", value: "" });
+};
+
+// В loadData добавить загрузку атрибутов
+const loadData = async () => {
+  try {
+    error.value = null;
+    const [brandsRes, categoriesRes, productsRes, attributesRes] =
+      await Promise.all([
+        fetchAllBrands(),
+        fetchAllCategories(),
+        fetchAllProducts(),
+        fetchAllAttributes(),
+      ]);
+
+    brands.value = brandsRes;
+    categories.value = categoriesRes;
+    products.value = productsRes;
+    attributes.value = attributesRes;
+  } catch (err) {
+    error.value = "Ошибка загрузки данных";
+  }
+};
+
+// В submit добавить отправку атрибутов
+const submit = async () => {
+  try {
+    const numericPrice = parseFloat(form.price);
+    if (isNaN(numericPrice)) throw new Error("Некорректная цена");
+
+    const productData = {
+      ...form,
+      price: numericPrice,
+      attributes: form.attributes.filter(
+        (attr) => attr.attribute_id && attr.value
+      ),
+    };
+
+    const result = await createProduct(productData);
+    products.value.push(result);
+    Object.assign(form, {
+      name: "",
+      price: "",
+      brand_id: "",
+      category_id: "",
+      attributes: [{ attribute_id: "", value: "" }],
+    });
+    alert("Товар успешно создан!");
+  } catch (err) {
+    error.value = err.message || "Ошибка создания товара";
+  }
+};
+
+onMounted(loadData);
+</script>
+
+<style lang="scss" scoped>
 .product-create {
-}
+  &__title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
 
-h1 {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  text-align: center;
-}
+  &__error {
+    color: #dc2626;
+    padding: 1rem;
+    background: #fee2e2;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
 
-.form-group {
-  margin-bottom: 1.5rem;
-}
+  &__form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
+  &__form-group {
+    margin-bottom: 1.5rem;
+  }
 
-input,
-select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-}
+  &__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
 
-select {
-  background: white;
-  appearance: none;
-}
+  &__input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-size: 1rem;
 
-button {
-  background: #3b82f6;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  width: 100%;
-  font-size: 1rem;
-  transition: background 0.2s;
-}
+    &:focus {
+      border-color: #3b82f6;
+      outline: none;
+    }
+  }
 
-button:hover {
-  background: #2563eb;
-}
+  &__select {
+    @extend .product-create__input;
+    appearance: none;
+    background: white
+      url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")
+      no-repeat right 0.75rem center;
+    background-size: 1em;
+  }
 
-.error {
-  color: #dc2626;
-  padding: 1rem;
-  background: #fee2e2;
-  border-radius: 0.375rem;
-  margin-bottom: 1rem;
+  &__attributes {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+  }
+
+  &__subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #4a5568;
+  }
+
+  &__attribute-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    select {
+      flex: 1;
+    }
+
+    input {
+      flex: 2;
+    }
+  }
+
+  &__add-btn {
+    background: #e2e8f0;
+    color: #4a5568;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #cbd5e0;
+    }
+  }
+
+  &__submit-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
 }
 
 .section {

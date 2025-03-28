@@ -29,11 +29,8 @@
                 гарантию на выполненные работы.
               </p>
             </div>
-            <button
-              class="service-button"
-              @click="orderService('Установка сплит-системы')"
-            >
-              Заказать услугу
+            <button class="service-button" @click="orderService()">
+              Оставить заявку
             </button>
           </div>
         </div>
@@ -80,9 +77,8 @@
 </template>
 
 <script setup>
-const orderService = (serviceName) => {
-  // Логика для заказа услуги
-  alert(`Заказ услуги "${serviceName}" оформлен!`);
+const orderService = () => {
+  location.href = "https://t.me/conditioner_comm_bot";
 };
 </script>
 
