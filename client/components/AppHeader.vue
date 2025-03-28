@@ -30,8 +30,9 @@ import HeaderSearch from "@/components/HeaderSearch.vue";
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 24px;
-    width: 1280px;
+    max-width: 1280px;
+    width: 100%;
+    padding: 8px 16px;
     margin: 0 auto;
 
     .header-logo {
@@ -50,6 +51,10 @@ import HeaderSearch from "@/components/HeaderSearch.vue";
       padding: 8px 24px;
       width: fit-content;
       margin: 0 auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 8px 16px;
+      gap: 12px;
 
       .nav-link {
         color: white;
@@ -67,6 +72,52 @@ import HeaderSearch from "@/components/HeaderSearch.vue";
           background-color: var(--blue-light);
           color: white;
         }
+      }
+    }
+  }
+
+  @media (max-width: 720px) {
+    .header-container {
+      padding: 8px 12px;
+
+      .header-logo {
+        max-height: 40px; // Уменьшаем размер логотипа
+      }
+    }
+
+    .nav-container .nav-links {
+      gap: 8px;
+      padding: 8px 12px;
+
+      .nav-link {
+        width: auto; // Убираем фиксированную ширину
+        padding: 6px 12px;
+        font-size: 14px;
+        min-width: 90px; // Минимальная ширина для кнопок
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    .header-container {
+      flex-direction: column; // Вертикальное расположение лого и поиска
+      gap: 8px;
+      padding: 12px 8px;
+
+      .header-logo {
+        max-height: 35px;
+      }
+    }
+
+    .nav-container .nav-links {
+      gap: 6px;
+      padding: 6px 8px;
+
+      .nav-link {
+        font-size: 13px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        min-width: 80px;
       }
     }
   }

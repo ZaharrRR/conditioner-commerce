@@ -25,11 +25,38 @@ defineProps({
     color: var(--blue);
     text-align: center;
     animation: fadeIn 1s ease-in-out;
+
+    @media (max-width: 720px) {
+      font-size: 28px;
+      padding: 0 16px;
+    }
+
+    @media (max-width: 360px) {
+      font-size: 24px;
+      line-height: 1.3;
+    }
   }
 
   &__content {
     padding-top: 36px;
     border-top: 4px solid var(--blue);
+
+    @media (max-width: 720px) {
+      padding-top: 24px;
+    }
+
+    @media (max-width: 360px) {
+      padding-top: 16px;
+      margin: 0 12px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    padding: 30px 0;
+  }
+
+  @media (max-width: 360px) {
+    padding: 20px 0;
   }
 }
 

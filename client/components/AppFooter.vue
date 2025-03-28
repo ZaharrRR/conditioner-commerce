@@ -175,5 +175,71 @@ const links = [
       }
     }
   }
+
+  @media (max-width: 720px) {
+    .footer-top {
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      gap: 32px;
+
+      .footer-logo {
+        height: 60px;
+      }
+
+      .footer-block {
+        text-align: center;
+        width: 100%;
+        max-width: 280px;
+
+        .footer-title {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .footer-bottom {
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      padding: 12px 16px;
+      text-align: center;
+
+      .footer-bottom-text {
+        font-size: 13px;
+        flex: 1 1 45%;
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    .footer-top {
+      padding: 20px 12px;
+      gap: 24px;
+
+      .footer-logo {
+        height: 50px;
+      }
+
+      .footer-block {
+        .footer-text,
+        .footer-link {
+          font-size: 13px;
+        }
+      }
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 8px;
+
+      .footer-bottom-text {
+        font-size: 12px;
+        width: 100%;
+        text-align: center;
+      }
+    }
+  }
 }
 </style>

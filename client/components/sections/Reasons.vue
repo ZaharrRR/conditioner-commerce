@@ -62,6 +62,52 @@ const reasons = [
     gap: 24px;
     grid-template-columns: repeat(2, 1fr);
 
+    @media (max-width: 720px) {
+      gap: 16px;
+      grid-template-columns: 1fr; // Переключаем на одну колонку
+
+      .reason-item {
+        padding: 32px 12px; // Уменьшаем внутренние отступы
+        margin: 0 8px; // Добавляем боковые отступы
+
+        .reason-icon {
+          width: 56px; // Уменьшаем размер иконок
+          height: 56px;
+        }
+
+        .reason-title {
+          font-size: 18px; // Корректируем размер шрифта
+        }
+
+        .reason-description {
+          font-size: 15px;
+        }
+      }
+    }
+
+    @media (max-width: 360px) {
+      gap: 12px;
+
+      .reason-item {
+        padding: 24px 10px;
+
+        .reason-icon {
+          width: 48px;
+          height: 48px;
+        }
+
+        .reason-title {
+          font-size: 16px;
+          margin-top: 6px;
+        }
+
+        .reason-description {
+          font-size: 14px;
+          line-height: 1.4; // Улучшаем читаемость
+        }
+      }
+    }
+
     .reason-item {
       display: flex;
       flex-direction: column;
@@ -110,6 +156,35 @@ const reasons = [
       font-weight: bold;
       color: var(--blue);
       opacity: 0.8;
+    }
+  }
+}
+
+.reasons-content {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 48px;
+
+  @media (max-width: 720px) {
+    width: 90%;
+    margin-top: 32px;
+
+    .reasons-desc {
+      font-size: 18px; // Уменьшаем размер текста
+      br {
+        display: none;
+      } // Убираем перенос строки
+    }
+  }
+
+  @media (max-width: 360px) {
+    width: 100%;
+    margin-top: 24px;
+    padding: 0 8px;
+
+    .reasons-desc {
+      font-size: 16px;
+      line-height: 1.3;
     }
   }
 }
