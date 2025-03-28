@@ -8,8 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core import logger
-from models import OrderService, Service
+from models import OrderService, Service, Product, Category, Brand
 from models.order import Order
+from schemas import ProductReadWithRelations
 from schemas.orders import OrderCreate, OrderRead, OrderServiceRead
 
 
@@ -24,7 +25,6 @@ class OrderDAO:
             new_order = Order(**order.model_dump())
             self.session.add(new_order)
             await self.session.flush()
-            await self.session.commit()
 
             if order.services:
                 for service_id in order.services:
@@ -36,7 +36,6 @@ class OrderDAO:
 
                 await self.session.commit()
 
-            logger.info(f"✅ Заказ (Order) с ID {new_order.id} создан")
 
 
             stmt_services = (
@@ -49,17 +48,47 @@ class OrderDAO:
 
             services = [OrderServiceRead.model_validate(service) for service in result_services]
 
+            stmt_product = (
+                select(
+                    Product.id,
+                    Product.name,
+                    Product.price,
+                    Product.description,
+                    Product.photo_url,
+                    Brand.name.label("brand_name"),
+                    Category.name.label("category_name"),
+                    Product.created_at,
+                    Product.updated_at
+                )
+                .join(Brand, Product.brand_id == Brand.id)
+                .join(Category, Product.category_id == Category.id)
+                .where(Product.id == order.product_id)
+            )
+            result_product = await self.session.execute(stmt_product)
+            product_record = result_product.mappings().first()
+            if not product_record:
+                logger.warning(f"⚠️ Товар с id {order.product} не найден")
+                raise ValueError("Product not found")
+
+            product = ProductReadWithRelations.model_validate(product_record)
+            base_price = product.price
+            services_total = sum(service.base_price for service in services) if services else 0
+            total_price = base_price + services_total
+            new_order.total_price = total_price
+            await self.session.commit()
+            await self.session.refresh(new_order)
+            logger.info(f"✅ Заказ (Order) с ID {new_order.id} создан")
             return OrderRead(
                 id=new_order.id,
                 customer_name=new_order.customer_name,
                 customer_surname=new_order.customer_surname,
                 customer_phone=new_order.customer_phone,
                 address=new_order.address,
-                base_price=new_order.base_price,
                 total_price=new_order.total_price,
                 created_at=new_order.created_at,
                 updated_at=new_order.updated_at,
                 services=services,
+                product=product
             )
 
         except IntegrityError:

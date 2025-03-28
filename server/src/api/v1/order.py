@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
+from bot.bot import notify_admins
 from core import logger
 from dao.order import OrderDAO
 from db.database import get_session
@@ -18,6 +19,7 @@ async def create_order(
     order_dao = OrderDAO(session)
     try:
         new_order = await order_dao.create_order(order_data)
+        await notify_admins(new_order)
         return new_order
     except ValueError as e:
         logger.warning(f"Ошибка создания заказа: {e}")

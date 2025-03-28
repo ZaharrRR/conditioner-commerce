@@ -16,7 +16,6 @@ class Order(Base):
     customer_phone: Mapped[str] = mapped_column(String, nullable=False)
     address: Mapped[str] = mapped_column(String, nullable=False)
 
-    base_price: Mapped[Numeric] = mapped_column(Numeric(10, 2), nullable=False)
     total_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
 
     comment: Mapped[str] = mapped_column(Text, nullable=False)
