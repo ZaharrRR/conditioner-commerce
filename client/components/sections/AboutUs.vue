@@ -3,8 +3,8 @@
     <div class="about-us">
       <div>
         <h1 class="about-us-title">
-          <span class="blue-text">Сибирский холод</span> – ваш надежный партнер
-          в мире комфорта и прохлады!
+          <span class="blue-text">Абсолют холод</span> – ваш надежный партнер в
+          мире комфорта и прохлады!
         </h1>
         <h2 class="about-us-description">
           Мы специализируемся на продаже, установке и обслуживании кондиционеров

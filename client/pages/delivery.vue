@@ -303,7 +303,7 @@ const orderDelivery = () => {
       }
 
       .icon {
-        font-size: 150px;
+        display: none;
       }
     }
 

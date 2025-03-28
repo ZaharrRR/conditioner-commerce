@@ -36,7 +36,7 @@ import HeaderSearch from "@/components/HeaderSearch.vue";
     margin: 0 auto;
 
     .header-logo {
-      width: auto;
+      width: 300px;
       height: auto;
     }
   }

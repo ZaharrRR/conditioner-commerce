@@ -1,41 +1,6 @@
 <template>
   <NuxtLayout name="page-layout">
     <div class="services-page">
-      <div class="services-intro">
-        <h1 class="intro-text">
-          Обеспечьте своему оборудованию долгую и надёжную работу.
-        </h1>
-        <div class="process-info">
-          <div class="process-steps">
-            <div class="step">
-              <h3><span>1.</span> Заявка</h3>
-              <p>Вы оставляете заявку на сайте или звоните нам.</p>
-            </div>
-            <div class="step">
-              <h3><span>2.</span> Диагностика</h3>
-              <p>
-                Специалист выезжает к вам, проводит диагностику и определяет
-                объём работ.
-              </p>
-            </div>
-            <div class="step">
-              <h3><span>3.</span> Ремонт и обслуживание</h3>
-              <p>Выполняем необходимые работы в кратчайшие сроки.</p>
-            </div>
-            <div class="step">
-              <h3><span>4.</span> Проверка и гарантия</h3>
-              <p>
-                Проверяем работоспособность оборудования и предоставляем
-                гарантию на выполненные работы.
-              </p>
-            </div>
-            <button class="service-button" @click="orderService()">
-              Оставить заявку
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div class="services-overview">
         <div
           class="service-card-install"
@@ -72,6 +37,40 @@
           </div>
         </div>
       </div>
+      <div class="services-intro">
+        <h1 class="intro-text">
+          Обеспечьте своему оборудованию долгую и надёжную работу.
+        </h1>
+        <div class="process-info">
+          <div class="process-steps">
+            <div class="step">
+              <h3><span>1.</span> Заявка</h3>
+              <p>Вы оставляете заявку на сайте или звоните нам.</p>
+            </div>
+            <div class="step">
+              <h3><span>2.</span> Диагностика</h3>
+              <p>
+                Специалист выезжает к вам, проводит диагностику и определяет
+                объём работ.
+              </p>
+            </div>
+            <div class="step">
+              <h3><span>3.</span> Ремонт и обслуживание</h3>
+              <p>Выполняем необходимые работы в кратчайшие сроки.</p>
+            </div>
+            <div class="step">
+              <h3><span>4.</span> Проверка и гарантия</h3>
+              <p>
+                Проверяем работоспособность оборудования и предоставляем
+                гарантию на выполненные работы.
+              </p>
+            </div>
+            <button class="service-button" @click="orderService()">
+              Оставить заявку
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </NuxtLayout>
 </template>
@@ -96,7 +95,6 @@ const orderService = () => {
     flex: 1 1 350px;
     min-width: 300px;
     padding: 20px;
-    margin-bottom: 40px;
     border: 5px solid #007bff;
     border-radius: 20px;
 
@@ -381,7 +379,7 @@ const orderService = () => {
         min-height: 180px;
 
         .card-content h2 {
-          font-size: 20px;
+          font-size: 24px;
         }
       }
     }

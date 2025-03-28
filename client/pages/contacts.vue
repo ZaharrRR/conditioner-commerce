@@ -1,69 +1,75 @@
 <template>
   <NuxtLayout name="page-layout">
-    <div class="map-container">
-      <h1>
-        <Icon
-          name="material-symbols:location-on-outline"
-          class="geo-icon"
-        ></Icon
-        >Наш офис и магазин
-      </h1>
-      <div style="position: relative; overflow: hidden">
-        <a
-          href="https://yandex.ru/maps/55/tyumen/?utm_medium=mapframe&utm_source=maps"
-          style="color: #eee; font-size: 12px; position: absolute; top: 0px"
-          >Тюмень</a
-        ><a
-          href="https://yandex.ru/maps/55/tyumen/house/ulitsa_fedyuninskogo_60k1/YkwYcwFmQU0EQFttfX1xcX9kZg==/?indoorLevel=1&ll=65.566882%2C57.100372&utm_medium=mapframe&utm_source=maps&z=17"
-          style="color: #eee; font-size: 12px; position: absolute; top: 14px"
-          >Улица Федюнинского, 60к1 на карте Тюмени — Яндекс Карты</a
-        ><iframe
-          src="https://yandex.ru/map-widget/v1/?indoorLevel=1&ll=65.566882%2C57.100372&mode=whatshere&whatshere%5Bpoint%5D=65.566883%2C57.100372&whatshere%5Bzoom%5D=17&z=17"
-          width="560"
-          height="400"
-          frameborder="1"
-          allowfullscreen="true"
-          style="position: relative"
-        ></iframe>
+    <div class="items">
+      <div class="map-container">
+        <h1>
+          <Icon
+            name="material-symbols:location-on-outline"
+            class="geo-icon"
+          ></Icon
+          >Наш офис и магазин
+        </h1>
+        <div style="position: relative; overflow: hidden">
+          <a
+            href="https://yandex.ru/maps/55/tyumen/?utm_medium=mapframe&utm_source=maps"
+            style="color: #eee; font-size: 12px; position: absolute; top: 0px"
+            >Тюмень</a
+          ><a
+            href="https://yandex.ru/maps/55/tyumen/house/ulitsa_fedyuninskogo_60k1/YkwYcwFmQU0EQFttfX1xcX9kZg==/?indoorLevel=1&ll=65.566882%2C57.100372&utm_medium=mapframe&utm_source=maps&z=17"
+            style="color: #eee; font-size: 12px; position: absolute; top: 14px"
+            >Улица Федюнинского, 60к1 на карте Тюмени — Яндекс Карты</a
+          ><iframe
+            src="https://yandex.ru/map-widget/v1/?indoorLevel=1&ll=65.566882%2C57.100372&mode=whatshere&whatshere%5Bpoint%5D=65.566883%2C57.100372&whatshere%5Bzoom%5D=17&z=17"
+            width="560"
+            height="400"
+            frameborder="1"
+            allowfullscreen="true"
+            style="position: relative"
+          ></iframe>
+        </div>
+        <p>
+          <Icon
+            name="material-symbols:nest-clock-farsight-analog-outline-rounded"
+            class="time-icon"
+          ></Icon
+          >Режим работы: ежедневно c 8:00 до 20:00
+        </p>
+        <p>
+          <Icon
+            name="material-symbols:location-on-outline"
+            class="locate-icon"
+          ></Icon
+          >625042, Россия, Тюмень, улица Федюнинского, 60к1
+        </p>
       </div>
-      <p>
-        <Icon
-          name="material-symbols:nest-clock-farsight-analog-outline-rounded"
-          class="time-icon"
-        ></Icon
-        >Режим работы: ежедневно c 8:00 до 20:00
-      </p>
-      <p>
-        <Icon
-          name="material-symbols:location-on-outline"
-          class="locate-icon"
-        ></Icon
-        >625042, Россия, Тюмень, улица Федюнинского, 60к1
-      </p>
-    </div>
-    <div class="contacts-container">
-      <h1>
-        <Icon
-          name="material-symbols:call-outline-rounded"
-          class="phone-icon"
-        ></Icon
-        >Контакты
-      </h1>
-      <p>
-        Мы всегда на связи и готовы помочь вам выбрать, купить и установить
-        кондиционер!<br />Свяжитесь с нами удобным способом.
-      </p>
-      <div class="contact-buttons">
-        <a href="https://t.me/conditioner_comm_bot" class="contact-button">
-          <Icon name="mdi:telegram" class="telegam-icon"></Icon>
-          <UButton>Написать</UButton>
-        </a>
-        <a href="tel:89124303333" class="contact-button">
-          <Icon name="material-symbols:phone-in-talk" class="call-icon"></Icon>
-          <UButton>Позвонить</UButton>
-        </a>
+      <div class="contacts-container">
+        <h1>
+          <Icon
+            name="material-symbols:call-outline-rounded"
+            class="phone-icon"
+          ></Icon
+          >Контакты
+        </h1>
+        <p>
+          Мы всегда на связи и готовы помочь вам выбрать, купить и установить
+          кондиционер!<br />Свяжитесь с нами удобным способом.
+        </p>
+        <div class="contact-buttons">
+          <a href="https://t.me/conditioner_comm_bot" class="contact-button">
+            <Icon name="mdi:telegram" class="telegam-icon"></Icon>
+            <UButton>Написать</UButton>
+          </a>
+          <a href="tel:89124303333" class="contact-button">
+            <Icon
+              name="material-symbols:phone-in-talk"
+              class="call-icon"
+            ></Icon>
+            <UButton>Позвонить</UButton>
+          </a>
+        </div>
       </div>
     </div>
+
     <div class="goodbye">
       <h1>
         <Icon
@@ -81,14 +87,15 @@ import UButton from "~/components/UI/UButton.vue";
 </script>
 
 <style lang="scss" scoped>
+.items {
+  display: flex;
+}
 /* Общие стили */
 .map-container {
-  border-bottom: 5px solid var(--blue);
   display: flex;
   align-items: center;
   flex-direction: column;
   width: 100%;
-  padding: 40px 0;
 
   .time-icon,
   .locate-icon,
@@ -108,8 +115,11 @@ import UButton from "~/components/UI/UButton.vue";
   }
 
   p {
-    margin-bottom: 10px;
     font-size: 18px;
+  }
+
+  p:first-of-type {
+    margin-top: 10px;
   }
 
   iframe {
@@ -125,12 +135,10 @@ import UButton from "~/components/UI/UButton.vue";
 }
 
 .contacts-container {
-  border-bottom: 5px solid var(--blue);
   display: flex;
   align-items: center;
   flex-direction: column;
   width: 100%;
-  padding: 40px 0;
 
   .contact-buttons {
     display: flex;
@@ -181,7 +189,7 @@ import UButton from "~/components/UI/UButton.vue";
   flex-direction: column;
   margin-top: 16px;
   padding: 40px 0;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  border: 4px solid var(--blue);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 30px;
 
@@ -214,6 +222,10 @@ import UButton from "~/components/UI/UButton.vue";
 }
 
 @media (max-width: 720px) {
+  .items {
+    display: inline;
+  }
+
   .map-container {
     padding: 30px 0;
 
@@ -276,6 +288,9 @@ import UButton from "~/components/UI/UButton.vue";
 }
 
 @media (max-width: 480px) {
+  .items {
+    display: inline;
+  }
   .map-container {
     padding: 20px 0;
 
@@ -324,6 +339,7 @@ import UButton from "~/components/UI/UButton.vue";
 
   .goodbye {
     padding: 20px 0;
+    border-radius: 20px;
 
     h1 {
       font-size: 24px;
