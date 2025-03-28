@@ -31,7 +31,7 @@ defineProps({
       padding: 0 16px;
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 480px) {
       font-size: 24px;
       line-height: 1.3;
     }
@@ -45,7 +45,7 @@ defineProps({
       padding-top: 24px;
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 480px) {
       padding-top: 16px;
       margin: 0 12px;
     }
@@ -55,7 +55,7 @@ defineProps({
     padding: 30px 0;
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     padding: 20px 0;
   }
 }

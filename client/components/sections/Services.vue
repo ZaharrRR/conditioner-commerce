@@ -90,7 +90,7 @@ const services = [
       }
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 480px) {
       grid-template-columns: 1fr; // 1 колонка
       gap: 12px;
       padding: 0 8px; // Боковые отступы

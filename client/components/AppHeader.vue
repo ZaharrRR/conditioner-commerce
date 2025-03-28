@@ -98,7 +98,7 @@ import HeaderSearch from "@/components/HeaderSearch.vue";
     }
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     .header-container {
       flex-direction: column; // Вертикальное расположение лого и поиска
       gap: 8px;

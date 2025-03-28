@@ -119,6 +119,7 @@ onMounted(() => loadData());
 .products-page {
   display: flex;
   gap: 24px;
+  padding: 20px;
 }
 
 .products {
@@ -136,24 +137,60 @@ select {
   background-color: #f9f9f9;
   font-size: 16px;
   cursor: pointer;
+  width: 100%;
+  max-width: 250px;
 }
 
-select:focus {
-  outline: none;
-  border-color: #007bff;
+@media (max-width: 1280px) {
+  .products-page {
+    gap: 20px;
+    padding: 15px;
+  }
+
+  select {
+    max-width: 200px;
+    font-size: 14px;
+  }
 }
 
-.loading {
-  padding: 20px;
-  text-align: center;
-  color: #666;
+@media (max-width: 720px) {
+  .products-page {
+    flex-direction: column;
+  }
+
+  .filters {
+    width: 100%;
+    order: -1;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  select {
+    max-width: 100%;
+  }
 }
 
-.error {
-  color: #dc2626;
-  padding: 1rem;
-  background: #fee2e2;
-  border-radius: 0.375rem;
-  margin-bottom: 1rem;
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-page {
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card__content {
+    height: auto;
+    padding: 12px;
+  }
 }
 </style>

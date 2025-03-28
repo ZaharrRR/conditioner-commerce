@@ -32,7 +32,7 @@ main {
     margin-bottom: 12px;
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     padding: 12px 8px;
     margin-top: 8px;
     margin-bottom: 8px;

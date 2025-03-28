@@ -52,7 +52,7 @@ import Section from "./Section.vue";
     }
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 480px) {
     gap: 16px;
     padding: 0 12px;
 

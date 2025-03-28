@@ -81,6 +81,7 @@ import UButton from "~/components/UI/UButton.vue";
 </script>
 
 <style lang="scss" scoped>
+/* Общие стили */
 .map-container {
   border-bottom: 5px solid var(--blue);
   display: flex;
@@ -111,12 +112,15 @@ import UButton from "~/components/UI/UButton.vue";
     font-size: 18px;
   }
 
-  &:hover {
-    .geo-icon,
-    .time-icon,
-    .locate-icon {
-      transform: scale(1.1);
-    }
+  iframe {
+    width: 100%;
+    height: 400px;
+  }
+
+  > div {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
   }
 }
 
@@ -140,6 +144,7 @@ import UButton from "~/components/UI/UButton.vue";
     align-items: center;
     margin-bottom: 16px;
     transition: transform 0.3s ease;
+    text-decoration: none;
 
     &:hover {
       transform: translateY(-10px);
@@ -178,18 +183,155 @@ import UButton from "~/components/UI/UButton.vue";
   padding: 40px 0;
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
 
   h1 {
     font-size: 40px;
     font-weight: 700;
+    text-align: center;
   }
 
   .rocket-icon {
     color: var(--blue);
     transition: transform 0.3s ease;
+  }
+}
 
-    &:hover {
-      transform: rotate(45deg);
+/* Медиазапросы */
+@media (max-width: 1280px) {
+  .map-container,
+  .contacts-container {
+    padding: 30px 0;
+
+    h1 {
+      font-size: 36px;
+    }
+
+    > div {
+      max-width: 90%;
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .map-container {
+    padding: 30px 0;
+
+    h1 {
+      font-size: 32px;
+    }
+
+    .geo-icon {
+      font-size: 32px;
+    }
+
+    iframe {
+      height: 350px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  }
+
+  .contacts-container {
+    padding: 30px 0;
+
+    h1 {
+      font-size: 32px;
+    }
+
+    .phone-icon {
+      font-size: 32px;
+    }
+
+    p {
+      width: 80%;
+      font-size: 16px;
+    }
+
+    .contact-buttons {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .telegam-icon,
+    .call-icon {
+      font-size: 80px;
+    }
+  }
+
+  .goodbye {
+    padding: 30px 0;
+
+    h1 {
+      font-size: 32px;
+      padding: 0 20px;
+    }
+
+    .rocket-icon {
+      font-size: 32px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .map-container {
+    padding: 20px 0;
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .geo-icon {
+      font-size: 24px;
+    }
+
+    iframe {
+      height: 250px;
+    }
+
+    p {
+      font-size: 14px;
+      padding: 0 10px;
+      text-align: center;
+    }
+  }
+
+  .contacts-container {
+    padding: 20px 0;
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .phone-icon {
+      font-size: 24px;
+    }
+
+    p {
+      width: 95%;
+      font-size: 14px;
+    }
+
+    .telegam-icon,
+    .call-icon {
+      font-size: 70px;
+    }
+  }
+
+  .goodbye {
+    padding: 20px 0;
+
+    h1 {
+      font-size: 24px;
+      padding: 0 10px;
+    }
+
+    .rocket-icon {
+      font-size: 24px;
     }
   }
 }

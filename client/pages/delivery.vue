@@ -55,12 +55,11 @@
             Если вы заказали установку кондиционера, наши мастера могут
             установить его сразу после доставки.
           </p>
+          <button class="order-button" @click="orderDelivery">
+            Заказать доставку
+          </button>
         </div>
       </div>
-
-      <button class="order-button" @click="orderDelivery">
-        Заказать доставку
-      </button>
     </div>
   </NuxtLayout>
 </template>
@@ -116,11 +115,6 @@ const orderDelivery = () => {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       text-align: center;
 
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      }
-
       .icon {
         font-size: 100px;
         color: var(--blue);
@@ -170,20 +164,178 @@ const orderDelivery = () => {
 
   .order-button {
     display: block;
-    width: 100%;
+    width: 200px;
     max-width: 300px;
     margin: 0 auto;
-    padding: 15px;
-    background-color: #007bff;
+    margin-top: 32px;
+    padding: 10px;
+    background-color: var(--blue);
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+  }
+}
 
-    &:hover {
-      background-color: #0056b3;
+@media (max-width: 1280px) {
+  .delivery-page {
+    .delivery-intro {
+      h1 {
+        font-size: 40px;
+      }
+
+      .intro-text {
+        font-size: 20px;
+      }
+
+      .icon {
+        font-size: 300px;
+      }
+    }
+
+    .delivery-options {
+      .delivery-card {
+        h2 {
+          font-size: 22px;
+        }
+      }
+    }
+
+    .installation-info {
+      h2 {
+        font-size: 36px;
+      }
+
+      p {
+        font-size: 18px;
+        width: 70%;
+      }
+
+      .icon {
+        font-size: 200px;
+      }
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .delivery-page {
+    padding: 15px;
+
+    .delivery-intro {
+      flex-direction: column;
+      gap: 30px;
+      text-align: center;
+
+      h1 {
+        font-size: 32px;
+      }
+
+      .intro-text {
+        font-size: 18px;
+        margin-bottom: 30px;
+      }
+
+      .icon {
+        font-size: 200px;
+      }
+    }
+
+    .delivery-options {
+      grid-template-columns: 1fr;
+      gap: 15px;
+
+      .delivery-card {
+        padding: 15px;
+
+        .icon {
+          font-size: 80px;
+        }
+
+        h2 {
+          font-size: 20px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .installation-info {
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+
+      h2 {
+        font-size: 28px;
+      }
+
+      p {
+        width: 100%;
+        font-size: 16px;
+      }
+
+      .icon {
+        font-size: 150px;
+      }
+    }
+
+    .order-button {
+      width: 100%;
+      max-width: none;
+      margin-top: 20px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .delivery-page {
+    .delivery-intro {
+      h1 {
+        font-size: 24px;
+      }
+
+      .intro-text {
+        font-size: 16px;
+      }
+
+      .icon {
+        font-size: 150px;
+      }
+    }
+
+    .delivery-options {
+      .delivery-card {
+        .icon {
+          font-size: 60px;
+        }
+
+        h2 {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .installation-info {
+      h2 {
+        font-size: 24px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .icon {
+        font-size: 100px;
+      }
+    }
+
+    .order-button {
+      font-size: 16px;
+      padding: 8px;
     }
   }
 }
