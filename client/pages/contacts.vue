@@ -178,6 +178,7 @@ import UButton from "~/components/UI/UButton.vue";
   padding: 40px 0;
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
 
   h1 {
     font-size: 40px;

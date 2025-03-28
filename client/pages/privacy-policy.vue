@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-layout">
+  <NuxtLayout name="page-layout" class="privacy-policy">
     <div class="head-politics">
       <Icon name="mdi:file-document" class="icon" />
       <h1>Политика в отношении обработки персональных данных</h1>
@@ -297,6 +297,63 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .head-politics {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .icon {
+      font-size: 72px;
+    }
+  }
+
+  .item {
+    h1 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 15px;
+    }
+
+    .sub-item {
+      margin-left: 12px;
+    }
+  }
+}
+
+// Адаптация под <= 360px
+@media (min-width: 360px) {
+  .head-politics {
+    h1 {
+      font-size: 22px;
+    }
+
+    .icon {
+      font-size: 56px;
+    }
+  }
+
+  .item {
+    h1 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    .sub-item {
+      margin-left: 8px;
+    }
   }
 }
 </style>

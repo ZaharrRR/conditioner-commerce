@@ -55,12 +55,11 @@
             Если вы заказали установку кондиционера, наши мастера могут
             установить его сразу после доставки.
           </p>
+          <button class="order-button" @click="orderDelivery">
+            Заказать доставку
+          </button>
         </div>
       </div>
-
-      <button class="order-button" @click="orderDelivery">
-        Заказать доставку
-      </button>
     </div>
   </NuxtLayout>
 </template>
@@ -170,14 +169,15 @@ const orderDelivery = () => {
 
   .order-button {
     display: block;
-    width: 100%;
+    width: 200px;
     max-width: 300px;
     margin: 0 auto;
-    padding: 15px;
-    background-color: #007bff;
+    margin-top: 32px;
+    padding: 10px;
+    background-color: var(--blue);
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s ease;
