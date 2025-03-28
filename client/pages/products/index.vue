@@ -16,9 +16,7 @@
           </select>
         </div>
 
-        <div v-if="loading" class="loading">Загрузка товаров...</div>
-        <div v-else-if="error" class="error">{{ error }}</div>
-        <ProductGrid v-else :products="filteredProducts" />
+        <ProductGrid :products="filteredProducts" />
       </div>
     </div>
   </NuxtLayout>
@@ -38,7 +36,6 @@ const products = ref([]);
 const categories = ref([]);
 const brands = ref([]);
 
-const loading = ref(false);
 const error = ref(null);
 
 const selectedCategories = ref([]);
@@ -48,7 +45,6 @@ const sortBy = ref("");
 
 const loadData = async () => {
   try {
-    loading.value = true;
     error.value = null;
 
     const [productsRes, brandsRes, categoriesRes] = await Promise.all([
@@ -70,8 +66,6 @@ const loadData = async () => {
     categories.value = categoriesRes;
   } catch (err) {
     error.value = err.message;
-  } finally {
-    loading.value = false;
   }
 };
 

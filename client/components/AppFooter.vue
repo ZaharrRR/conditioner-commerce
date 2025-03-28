@@ -3,7 +3,7 @@
     <div class="footer-top">
       <NuxtImg
         src="/logo.svg"
-        alt="Логотип компании Сибирский холод"
+        alt="Логотип компании Абсолют холод"
         class="footer-logo"
         loading="lazy"
       />
@@ -17,12 +17,6 @@
           Телефон:
           <a href="tel:89124303333" class="footer-link">+7 (912) 243-33-33</a>
         </p>
-        <!-- <p class="footer-text">
-          Email:
-          <a href="mailto:sibirskyholod@mail.com" class="footer-link"
-            >sibirskyholod@mail.com</a
-          >
-        </p> -->
         <p class="footer-text">Режим работы: ежедневно c 8:00 до 20:00</p>
       </div>
 
@@ -41,11 +35,13 @@
     </div>
 
     <div class="footer-bottom">
-      <span class="footer-bottom-text">© 2025 ООО “СИБирский холод”</span>
-      <a class="footer-bottom-text" href="/privacy-policy"
-        >Политика конфиденциальности</a
-      >
-      <a class="footer-bottom-text" href="/terms-of-use">Условия пользования</a>
+      <span class="footer-bottom-text">© 2025 ООО «Абсолют холод»</span>
+      <a class="footer-bottom-text" href="/privacy-policy">
+        Политика конфиденциальности
+      </a>
+      <a class="footer-bottom-text" href="/terms-of-use">
+        Условия пользования
+      </a>
     </div>
   </footer>
 </template>
@@ -55,60 +51,27 @@ const links = [
   {
     title: "Продукция",
     links: [
-      {
-        label: "Кондиционеры",
-        link: "/products",
-      },
-      {
-        label: "Сплит-системы",
-        link: "/products",
-      },
-      {
-        label: "Холодильное оборудование",
-        link: "/products",
-      },
-      {
-        label: "Вентиляционное оборудование",
-        link: "/products",
-      },
+      { label: "Кондиционеры", link: "/products" },
+      { label: "Сплит-системы", link: "/products" },
+      { label: "Холодильное оборудование", link: "/products" },
+      { label: "Вентиляционное оборудование", link: "/products" },
     ],
   },
   {
     title: "Услуги",
     links: [
-      {
-        label: "Монтаж и сервис",
-        link: "/services",
-      },
-      {
-        label: "Обслуживание",
-        link: "/services",
-      },
-      {
-        label: "Ремонт",
-        link: "/services",
-      },
+      { label: "Монтаж и сервис", link: "/services" },
+      { label: "Обслуживание", link: "/services" },
+      { label: "Ремонт", link: "/services" },
     ],
   },
   {
     title: "Для клиентов",
     links: [
-      {
-        label: "О нас",
-        link: "/contacts",
-      },
-      {
-        label: "Доставка и оплата",
-        link: "/delivery",
-      },
-      {
-        label: "Обратная связь",
-        link: "/contacts",
-      },
-      {
-        label: "Вопросы и ответы",
-        link: "/contacts",
-      },
+      { label: "О нас", link: "/contacts" },
+      { label: "Доставка и оплата", link: "/delivery" },
+      { label: "Обратная связь", link: "/contacts" },
+      { label: "Вопросы и ответы", link: "/contacts" },
     ],
   },
 ];
@@ -127,7 +90,7 @@ const links = [
     color: white;
 
     .footer-logo {
-      width: auto;
+      width: 300px;
       height: 80px;
     }
 
@@ -212,7 +175,8 @@ const links = [
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 470px) {
+    /* адаптация для экранов 470px */
     .footer-top {
       padding: 20px 12px;
       gap: 24px;

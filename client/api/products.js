@@ -18,6 +18,15 @@ const createProduct = async (productData) => {
   }
 };
 
+const updateProductPhoto = async (productId, file) => {
+  try {
+    const response = await api.post(`/update-photo/${productId}`, file);
+    return response.data;
+  } catch (error) {
+    return handleError(error, "Ошибка обновления фото продукта");
+  }
+};
+
 const fetchAllProducts = async () => {
   try {
     const response = await api.get("/all");
@@ -33,6 +42,15 @@ const getProductById = async (productId) => {
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка получения продукта");
+  }
+};
+
+const getNewProducts = async () => {
+  try {
+    const response = await api.get(`/new-products`);
+    return response.data;
+  } catch (error) {
+    return handleError(error, "Ошибка получения новых продуктов");
   }
 };
 
@@ -60,7 +78,9 @@ const linkProductAttributes = async (productId, attributesData) => {
 export {
   fetchAllProducts,
   getProductById,
+  getNewProducts,
   createProduct,
+  updateProductPhoto,
   deleteProduct,
   linkProductAttributes,
 };
