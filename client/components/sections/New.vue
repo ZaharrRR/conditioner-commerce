@@ -9,7 +9,7 @@
           :key="index"
         >
           <img
-            :src="product.image"
+            :src="product.image ? product.image : `/images/hisense.png`"
             :alt="product.name"
             class="card__image"
             loading="lazy"
@@ -32,47 +32,18 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from "vue";
+
 import Section from "./Section.vue";
 import UButton from "~/components/UI/UButton.vue";
 
-const products = [
-  {
-    name: "Hisense AS-24HR4SBADC005",
-    description: "Кондиционер (настенная сплит система) серии NEO Classic A",
-    price: 63314,
-    rating: 4,
-    brand: "Samsung",
-    category: "Электроника",
-    image: "/images/hisense.png",
-  },
-  {
-    name: "Hisense AS-24HR4SBADC005",
-    description: "Кондиционер (настенная сплит система) серии NEO Classic A",
-    price: 2134,
-    rating: 4.3,
-    brand: "Balu",
-    category: "Кондеи",
-    image: "/images/hisense.png",
-  },
-  {
-    name: "Hisense AS-24HR4SBADC005",
-    description: "Кондиционер (настенная сплит система) серии NEO Classic A",
-    price: 6689,
-    rating: 3,
-    brand: "Balu",
-    category: "Электроника",
-    image: "/images/hisense.png",
-  },
-  {
-    name: "Hisense AS-24HR4SBADC005",
-    description: "Кондиционер (настенная сплит система) серии NEO Classic A",
-    price: 5346,
-    rating: 4.9,
-    brand: "Samsung",
-    category: "Электроника",
-    image: "/images/hisense.png",
-  },
-];
+import { getNewProducts } from "@/api/products";
+
+const products = ref([]);
+
+onMounted(async () => {
+  products.value = await getNewProducts();
+});
 </script>
 
 <style lang="scss" scoped>
