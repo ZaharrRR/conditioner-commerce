@@ -43,6 +43,7 @@ class ProductReadWithRelations(BaseModel):
     id: UUID4
     name: Annotated[str, Field(...)]
     price: Annotated[Decimal, Field(...)]
+    description: Annotated[str, Field(...)] = None
     brand_name: Annotated[str, Field(...)]
     category_name: Annotated[str, Field(...)]
     photo_url: Optional[str] = None
