@@ -160,30 +160,26 @@ class ProductDAO:
         """Получает все записи Product с brand_name и category_name"""
         logger.debug("🔎 Получение всех записей Product")
         try:
-            stmt = (
-                select(
+            stmt = select(
                     Product.id,
                     Product.name,
                     Product.price,
+                    Product.description,
                     Product.photo_url,
                     Brand.name.label("brand_name"),
                     Category.name.label("category_name"),
                     Product.created_at,
                     Product.updated_at
-                )
-                .join(Brand, Product.brand_id == Brand.id)
-                .join(Category, Product.category_id == Category.id)
-            )
+                ).join(Brand, Product.brand_id == Brand.id).join(Category, Product.category_id == Category.id)
 
-            result = await self.session.execute(stmt)
-            rows = result.fetchall()
 
-            if not rows:
+            rows = await self.session.execute(stmt)
+            records = rows.mappings().all()
+            if not records:
                 logger.warning("⚠️ Продукты не найдены")
                 return []
 
-            products = rows
-            return products
+            return records
 
         except SQLAlchemyError as e:
             logger.error(f"❌ Ошибка SQLAlchemy при получении списка Product: {e}")

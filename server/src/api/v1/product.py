@@ -68,7 +68,6 @@ async def get_new_products(session: AsyncSession = Depends(get_session)):
 
 @router.get(
     '/all',
-    response_model=list[ProductReadWithRelations],
     summary="Получение всех записей Product",
     status_code=200,
 )
