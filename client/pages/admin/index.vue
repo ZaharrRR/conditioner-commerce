@@ -110,7 +110,13 @@
               <td>{{ product.brand_name }}</td>
               <td>{{ product.category_name }}</td>
               <td class="actions">
-                <button class="edit-btn">Изменить</button>
+                <NuxtLink
+                  :to="`/admin/products/edit/${product.id}`"
+                  class="edit-btn"
+                >
+                  Изменить
+                </NuxtLink>
+
                 <button class="delete-btn">Удалить</button>
               </td>
             </tr>

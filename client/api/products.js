@@ -18,13 +18,16 @@ const createProduct = async (productData) => {
   }
 };
 
-const updateProductPhoto = async (productId, file) => {
-  try {
-    const response = await api.post(`/update-photo/${productId}`, file);
-    return response.data;
-  } catch (error) {
-    return handleError(error, "Ошибка обновления фото продукта");
-  }
+const updateProductPhoto = (productId, formData) => {
+  return axios.post(
+    `http://localhost:3000/product/update-photo/${productId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data", // Важно!
+      },
+    }
+  );
 };
 
 const fetchAllProducts = async () => {
