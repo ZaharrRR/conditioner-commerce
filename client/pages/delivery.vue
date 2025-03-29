@@ -108,7 +108,7 @@ const orderDelivery = () => {
 
     .delivery-card {
       background-color: #fff;
-      border: 1px solid #ddd;
+      border: 4px solid var(--blue);
       border-radius: 10px;
       padding: 20px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

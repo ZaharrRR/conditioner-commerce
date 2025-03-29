@@ -105,7 +105,15 @@ import UButton from "~/components/UI/UButton.vue";
   }
 
   .geo-icon {
-    font-size: 40px;
+    font-size: 30px;
+  }
+
+  .time-icon {
+    font-size: 16px;
+  }
+
+  .locate-icon {
+    font-size: 16px;
   }
 
   h1 {
@@ -138,7 +146,14 @@ import UButton from "~/components/UI/UButton.vue";
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 100%;
+  justify-content: center;
+  width: 50%;
+  border: 4px solid var(--blue);
+  border-radius: 30px;
+
+  .phone-icon {
+    font-size: 30px;
+  }
 
   .contact-buttons {
     display: flex;
@@ -207,9 +222,13 @@ import UButton from "~/components/UI/UButton.vue";
 
 /* Медиазапросы */
 @media (max-width: 1280px) {
+  .items {
+    display: inline;
+  }
   .map-container,
   .contacts-container {
     padding: 30px 0;
+    width: 100%;
 
     h1 {
       font-size: 36px;
@@ -248,6 +267,7 @@ import UButton from "~/components/UI/UButton.vue";
 
   .contacts-container {
     padding: 30px 0;
+    width: 100%;
 
     h1 {
       font-size: 32px;
@@ -316,6 +336,7 @@ import UButton from "~/components/UI/UButton.vue";
 
   .contacts-container {
     padding: 20px 0;
+    width: 100%;
 
     h1 {
       font-size: 24px;
