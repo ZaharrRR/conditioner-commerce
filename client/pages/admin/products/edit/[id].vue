@@ -5,7 +5,6 @@
     <div v-if="error" class="product-edit__error">{{ error }}</div>
 
     <form v-else class="product-edit__form" @submit.prevent="submit">
-      <!-- Отображение информации о товаре (только для чтения) -->
       <div class="product-edit__info">
         <div class="product-edit__info-item">
           <label>Название:</label>
@@ -28,13 +27,11 @@
         </div>
       </div>
 
-      <!-- Секция атрибутов -->
       <div class="product-edit__attributes">
         <h3 class="product-edit__subtitle">Атрибуты товара</h3>
 
         <!-- Старые атрибуты (только для чтения) -->
         <div class="product-edit__existing-attributes">
-          <h4>Существующие атрибуты:</h4>
           <ul>
             <li v-for="(attr, index) in existingAttributes" :key="index">
               {{ attr.attribute_name }}: {{ attr.value }}
@@ -91,40 +88,15 @@
         </div>
       </div>
 
-      <!-- Секция изображений -->
       <div class="product-edit__images">
-        <h3 class="product-edit__subtitle">Фотография товара</h3>
-
-        <!-- Поле загрузки файла -->
-        <div class="product-edit__file-input">
-          <input
-            type="file"
-            @change="handleFileUpload"
-            accept="image/*"
-            name="photo_file"
-            class="product-edit__file-input"
-          />
-          <button
-            type="button"
-            @click="uploadPhoto"
-            class="product-edit__upload-btn"
-            :disabled="isUploading"
-          >
-            {{ isUploading ? "Загрузка..." : "Обновить фото" }}
-          </button>
-        </div>
-
-        <!-- Отображение текущего изображения -->
-        <div class="product-edit__image-list" v-if="existingImages">
-          <div class="product-edit__image-item">
-            <img
-              :src="existingImages"
-              alt="Изображение товара"
-              class="product-edit__image"
-            />
-          </div>
-        </div>
-        <div v-else>Изображение отсутствует</div>
+        <ImageUploader
+          :current-image="existingImages"
+          :entity-type="'product'"
+          :entity-id="productId"
+          title="Фотография товара"
+          alt-text="Изображение товара"
+          @upload="handleImageUpload"
+        />
       </div>
 
       <button type="submit" class="product-edit__submit-btn">
@@ -144,12 +116,10 @@ import {
   updateProductPhoto,
 } from "@/api/products";
 import { fetchAllAttributes } from "@/api/attributes";
+import ImageUploader from "~/components/admin/ImageUploader.vue";
 
 const route = useRoute();
 const productId = route.params.id;
-
-const selectedFile = ref(null);
-const isUploading = ref(false);
 
 const product = ref(null);
 const attributes = ref([]);
@@ -164,7 +134,6 @@ const form = reactive({
   newAttributes: [],
 });
 
-// Вычисляемые свойства
 const existingAttributes = computed(() => {
   return product.value?.attributes || [];
 });
@@ -176,37 +145,12 @@ const availableAttributes = computed(() => {
   );
 });
 
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file.type.startsWith("image/")) {
-    error.value = "Можно загружать только изображения";
-    return;
-  }
-  selectedFile.value = file;
-};
-const uploadPhoto = async () => {
-  if (!selectedFile.value) {
-    error.value = "Выберите файл для замены";
-    return;
-  }
-
-  isUploading.value = true;
+const handleImageUpload = async (formData) => {
   try {
-    const formData = new FormData();
-    formData.append("photo_file", selectedFile.value);
-
-    console.log(formData);
-
-    // Отправка запроса
     const { imageUrl } = await updateProductPhoto(productId, formData);
-
-    // Обновляем текущее изображение
     existingImages.value = imageUrl;
-    selectedFile.value = null;
   } catch (err) {
-    error.value = "Ошибка загрузки: " + (err.message || "");
-  } finally {
-    isUploading.value = false;
+    error.value = "Ошибка загрузки изображения: " + (err.message || "");
   }
 };
 
@@ -217,7 +161,6 @@ const loadData = async () => {
       fetchAllAttributes(),
     ]);
 
-    // Сохраняем продукт в отдельной переменной
     product.value = productRes;
 
     form.name = productRes.name;
@@ -241,7 +184,6 @@ const removeAttributeField = (index) => {
 
 const submit = async () => {
   try {
-    // Сохраняем атрибуты отдельным запросом
     if (form.newAttributes.length > 0) {
       const attributesToSend = form.newAttributes
         .filter((attr) => attr.attribute_id && attr.value)
@@ -391,7 +333,6 @@ onMounted(() => {
   }
 
   &__existing-attributes {
-    margin-bottom: 2rem;
     padding: 1rem;
     background: #f8f9fa;
     border-radius: 8px;

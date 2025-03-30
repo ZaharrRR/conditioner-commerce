@@ -2,79 +2,77 @@
   <NuxtLayout name="admin-layout" class="category-management">
     <h1 class="title">Управление категориями</h1>
 
-    <div class="create-form">
-      <h2 class="form-title">Добавить категорию</h2>
-      <div class="form-content">
-        <input
-          v-model="newCategory.name"
-          placeholder="Название"
-          class="form-input"
-        />
-        <input
-          v-model="newCategory.logo_url"
-          placeholder="Ссылка на лого"
-          class="form-input"
-        />
-        <button @click="handleCreate" class="submit-button">Добавить</button>
-      </div>
-    </div>
+    <GenericForm
+      title="Добавить категорию"
+      :form-config="createFormConfig"
+      :form-data="newCategory"
+      :submit-handler="handleCreate"
+      submit-button-text="Добавить"
+      @submitted="handleCreateSubmit"
+    />
 
     <div v-if="error" class="error-message">{{ error }}</div>
-    <div v-else class="category-list">
-      <div
-        v-for="category in categories"
-        :key="category.id"
-        class="category-item"
-      >
-        <div class="category-info">
-          <img
-            v-if="category.logo_url"
-            :src="category.logo_url"
-            class="category-logo"
-          />
-          <span class="category-name">{{ category.name }}</span>
-        </div>
 
-        <div class="action-buttons">
-          <button @click="editCategory = { ...category }" class="edit-button">
-            Изменить
-          </button>
-          <button @click="handleDelete(category.id)" class="delete-button">
-            Удалить
-          </button>
-        </div>
-      </div>
+    <div class="section category-list">
+      <h2>Список категорий</h2>
+      <DataTable
+        v-if="categories.length > 0"
+        :columns="tableColumns"
+        :rows="categories"
+      >
+        <template #logo_url="{ row }">
+          <img v-if="row.logo_url" :src="row.logo_url" class="category-logo" />
+        </template>
+        <template #actions="{ row }">
+          <div class="action-buttons">
+            <button class="edit-button" @click="openEditModal(row)">
+              Изменить
+            </button>
+            <button class="delete-button" @click="handleDelete(row.id)">
+              Удалить
+            </button>
+          </div>
+        </template>
+      </DataTable>
+      <div v-else class="empty-state">Нет доступных категорий</div>
     </div>
 
-    <div v-if="editCategory" class="edit-modal">
-      <div class="modal-content">
-        <h2 class="modal-title">Редактирование категории</h2>
-        <input v-model="editCategory.name" class="modal-input" />
-        <input v-model="editCategory.logo_url" class="modal-input" />
-        <div class="modal-actions">
-          <button @click="handleUpdate" class="save-button">Сохранить</button>
-          <button @click="editCategory = null" class="cancel-button">
-            Отмена
-          </button>
-        </div>
+    <div
+      v-if="editCategory"
+      class="edit-modal-overlay"
+      @click.self="closeModal"
+      @keyup.esc="closeModal"
+    >
+      <div class="edit-modal-content">
+        <GenericForm
+          title="Редактирование категории"
+          :form-config="editFormConfig"
+          :form-data="editCategory"
+          :submit-handler="handleUpdate"
+          submit-button-text="Сохранить"
+          cancel-button-text="Отмена"
+          @submitted="handleEditSubmit"
+          @cancel="closeModal"
+          class="edit-modal-form"
+        />
       </div>
     </div>
   </NuxtLayout>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import {
   fetchAllCategories,
   createCategory,
   updateCategory,
   deleteCategory,
 } from "@/api/categories";
+import DataTable from "@/components/admin/DataTable.vue";
+import GenericForm from "@/components/admin/GenericForm.vue";
 
 const categories = ref([]);
 const editCategory = ref(null);
-
 const error = ref(null);
 
 const newCategory = reactive({
@@ -82,76 +80,96 @@ const newCategory = reactive({
   logo_url: "",
 });
 
-const loadCategories = async () => {
-  try {
-    error.value = null;
-    const result = await fetchAllCategories();
+const createFormConfig = [
+  {
+    title: "Добавление категории",
+    fields: [
+      {
+        type: "input",
+        label: "Название категории",
+        key: "name",
+        required: true,
+        placeholder: "Введите название",
+      },
+      {
+        type: "input",
+        label: "Ссылка на логотип",
+        key: "logo_url",
+        placeholder: "Введите URL логотипа",
+      },
+    ],
+  },
+];
 
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
+const editFormConfig = [
+  {
+    title: "Редактирование категории",
+    fields: [
+      {
+        type: "input",
+        label: "Название категории",
+        key: "name",
+        required: true,
+      },
+      {
+        type: "input",
+        label: "Ссылка на логотип",
+        key: "logo_url",
+      },
+    ],
+  },
+];
 
-    categories.value = result;
-  } finally {
-  }
+const tableColumns = [
+  { title: "Лого", key: "logo_url", width: "100px", type: "image" },
+  { title: "Название", key: "name" },
+  { title: "Действия", key: "actions", width: "150px" },
+];
+
+const handleCreate = async (formData) => {
+  if (!formData.name.trim()) throw new Error("Название обязательно");
+  return await createCategory(formData);
 };
 
-const handleCreate = async () => {
-  try {
-    error.value = null;
-    const result = await createCategory(newCategory);
-
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
-
-    categories.value.push(result);
-    newCategory.name = "";
-    newCategory.logo_url = "";
-  } catch (err) {
-    error.value = "Неизвестная ошибка при создании категории";
-  }
+const handleCreateSubmit = () => {
+  Object.assign(newCategory, { name: "", logo_url: "" });
+  loadCategories();
 };
 
-const handleUpdate = async () => {
-  if (!editCategory.value) return;
+const openEditModal = (category) => {
+  editCategory.value = { ...category };
+};
 
-  try {
-    error.value = null;
-    const result = await updateCategory(
-      editCategory.value.id,
-      editCategory.value
-    );
+const handleUpdate = async (formData) => {
+  if (!formData.name.trim()) throw new Error("Название обязательно");
+  return await updateCategory(formData.id, formData);
+};
 
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
-
-    const index = categories.value.findIndex((c) => c.id === result.id);
-    if (index !== -1) categories.value.splice(index, 1, result);
-    editCategory.value = null;
-  } catch (err) {
-    error.value = "Неизвестная ошибка при обновлении";
-  }
+const handleEditSubmit = () => {
+  editCategory.value = null;
+  loadCategories();
 };
 
 const handleDelete = async (id) => {
   try {
-    error.value = null;
-    const result = await deleteCategory(id);
-
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
-
-    categories.value = categories.value.filter((c) => c.id !== id);
+    await deleteCategory(id);
+    await loadCategories();
   } catch (err) {
-    error.value = "Неизвестная ошибка при удалении";
+    error.value = "Ошибка при удалении категории";
   }
+};
+
+const loadCategories = async () => {
+  try {
+    error.value = null;
+    categories.value = await fetchAllCategories();
+  } catch (err) {
+    error.value = "Ошибка загрузки категорий";
+  }
+};
+
+const closeModal = () => {
+  editCategory.value = null;
 };
 
 onMounted(() => {
@@ -168,111 +186,66 @@ onMounted(() => {
     color: #1a1a1a;
   }
 
-  .create-form {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
+  .error-message {
+    padding: 1rem;
+    background: #fed7d7;
+    color: #c53030;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
 
-    .form-title {
+  .section {
+    margin-top: 2rem;
+
+    h2 {
       font-size: 1.25rem;
       margin-bottom: 1rem;
       color: #2d3748;
     }
+  }
 
-    .form-content {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
+  .category-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 4px;
+  }
 
-      .form-input {
-        flex: 1;
-        padding: 0.75rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        font-size: 1rem;
-        transition: border-color 0.2s;
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
 
-        &:focus {
-          outline: none;
-          border-color: #4299e1;
-          box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-        }
+    .edit-button {
+      padding: 0.5rem 1rem;
+      background: #ecc94b;
+      color: #1a202c;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.9;
       }
+    }
 
-      .submit-button {
-        padding: 0.75rem 1.5rem;
-        background: #4299e1;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background 0.2s;
-
-        &:hover {
-          background: #3182ce;
-        }
-      }
+    .delete-button {
+      @extend .edit-button;
+      background: #f56565;
+      color: white;
     }
   }
 
-  .category-list {
-    .category-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-
-      .category-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-
-        .category-logo {
-          width: 4rem;
-          height: 4rem;
-          object-fit: contain;
-        }
-
-        .category-name {
-          font-size: 1.125rem;
-          font-weight: 600;
-        }
-      }
-
-      .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-
-        .edit-button {
-          padding: 0.5rem 1rem;
-          background: #ecc94b;
-          color: #1a202c;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: opacity 0.2s;
-
-          &:hover {
-            opacity: 0.9;
-          }
-        }
-
-        .delete-button {
-          @extend .edit-button;
-          background: #f56565;
-          color: white;
-        }
-      }
-    }
+  .empty-state {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+    color: #6c757d;
   }
 
-  .edit-modal {
+  .edit-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -282,55 +255,47 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+    cursor: pointer;
 
-    .modal-content {
+    .edit-modal-content {
       background: white;
-      padding: 1.5rem;
+      padding: 2rem;
       border-radius: 8px;
-      width: 32rem;
-
-      .modal-title {
-        font-size: 1.25rem;
-        margin-bottom: 1rem;
-      }
-
-      .modal-input {
-        @extend .form-input;
-        width: 100%;
-        margin-bottom: 1rem;
-      }
-
-      .modal-actions {
-        display: flex;
-        gap: 0.5rem;
-
-        .save-button {
-          @extend .submit-button;
-          background: #48bb78;
-
-          &:hover {
-            background: #38a169;
-          }
-        }
-
-        .cancel-button {
-          @extend .submit-button;
-          background: #a0aec0;
-
-          &:hover {
-            background: #718096;
-          }
-        }
-      }
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      cursor: default;
+      position: relative;
     }
   }
 
-  .error-message {
-    padding: 1rem;
-    background: #fed7d7;
-    color: #c53030;
-    border-radius: 6px;
-    margin-bottom: 1rem;
+  .edit-modal-form {
+    :deep(.form-section) {
+      padding: 0;
+      margin: 0;
+    }
+
+    :deep(.form-title) {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    :deep(input) {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+    }
+
+    :deep(.form-actions) {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
   }
 }
 </style>
