@@ -1,6 +1,6 @@
 services:
   frontend:
-    build: .
+    build: ./client
     container_name: nuxt3-frontend
     expose:
       - "5000"
