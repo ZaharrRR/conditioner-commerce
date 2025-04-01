@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: 🚀 Deploy to VPS
 
 on:
   push:
@@ -18,23 +18,20 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Test SSH connection
-        run: |
-          ssh -o StrictHostKeyChecking=no -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-
-      - name: Deploy to server
+      - name: Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            # Ждём PostgreSQL и выполняем миграции
-            ./wait-for-postgres.sh
-            alembic upgrade head
+            cd /home/root/conditioner/conditioner-commerce
 
-            # Обновляем репозиторий и перезапускаем контейнеры
-            cd /path/to/your/project
+            echo "🔄 Обновляем код"
             git fetch origin
             git checkout prod
             git reset --hard origin/prod
+
+            echo "🐳 Перезапускаем контейнеры"
             docker-compose pull
             docker-compose down
             docker-compose up -d --build
+
+            echo "✅ Деплой завершён"
           EOF

@@ -1,30 +1,21 @@
-# Шаг сборки
-FROM node:18-alpine AS builder
+FROM python:3.13-alpine
+
+RUN apk add --no-cache \
+    build-base \
+    libffi-dev \
+    postgresql-dev \
+    netcat-openbsd
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY .npmrc* ./
-COPY nuxt.config.ts ./
-
-RUN npm install
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN npm run build
+COPY ../wait-for-postgres.sh .
+RUN chmod +x wait-for-postgres.sh
 
-# Финальный образ
-FROM node:18-alpine
 
-WORKDIR /app
-
-ENV NODE_ENV production
-ENV NITRO_HOST 0.0.0.0
-ENV NITRO_PORT 5000
-
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.output ./.output
-
-RUN npm install --production
-
-CMD ["node", ".output/server/index.mjs"]
+CMD ./wait-for-postgres.sh && alembic upgrade head && python main.py
