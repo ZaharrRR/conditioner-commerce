@@ -59,22 +59,22 @@
                 <input
                   type="checkbox"
                   v-model="selectedServices"
-                  :value="service"
+                  :value="service.id"
                   class="checkbox-input"
                 />
                 <span class="checkbox-custom"></span>
-                {{ service.name }} (+{{ service.price }} ₽)
+                {{ service.service_type }} (+{{ service.base_price }} ₽)
               </label>
             </div>
           </div>
           <div class="action-row">
-            <UButton class="submit-btn" @click="submitForm"
+            <UButton class="submit-btn" @click.prevent="submitForm()"
               >Оставить заявку</UButton
             >
             <input
               type="text"
               class="price-display"
-              :value="calculatedPrice"
+              :value="Math.floor(calculatedPrice)"
               readonly
             />
           </div>
@@ -92,25 +92,16 @@ import UButton from "~/components/UI/UButton.vue";
 import CardProduct from "~/components/CardProduct.vue";
 import { ref, computed } from "vue";
 
-// Тестовые данные товара
-const product = ref({
-  id: "1",
-  name: "Сплит-система Hisense",
-  description: "Мощная сплит-система с инверторным компрессором",
-  price: 34990,
-  photo_url: "/images/hisense.png",
-});
+import { useRoute } from "vue-router";
+import { getProductById } from "~/api/products";
+import { createOrder } from "~/api/orders";
+import { getServiceWithLogo } from "~/api/services";
 
-const services = ref([
-  { id: "1", name: "Установка сплит-системы", price: 5000, choosen: false },
-  { id: "2", name: "Обслуживание кондиционера", price: 3000, choosen: false },
-  {
-    id: "3",
-    name: "Ремонт холодильного оборудования",
-    price: 4500,
-    choosen: false,
-  },
-]);
+const route = useRoute();
+
+const product = ref();
+
+const services = ref([]);
 
 const formData = ref({
   firstName: "",
@@ -124,27 +115,50 @@ const selectedServices = ref([]);
 
 const calculatedPrice = computed(() => {
   const productPrice = product.value?.price || 0;
-  const servicesPrice = selectedServices.value.reduce(
-    (sum, service) => sum + service.price,
-    0
-  );
-  const total = productPrice + servicesPrice;
-  return new Intl.NumberFormat("ru-RU").format(total) + " ₽";
+
+  const servicesPrice = selectedServices.value.reduce((sum, serviceId) => {
+    const service = services.value.find((s) => s.id === serviceId);
+    return sum + (service ? Number(service.base_price) : 0);
+  }, 0);
+
+  return Number(productPrice) + servicesPrice;
 });
 
 const closeForm = () => {
   console.log("Форма закрыта");
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   const orderData = {
-    product: product.value,
+    product_id: product.value.id,
+    customer_name: formData.value.firstName,
+    customer_surname: formData.value.lastName,
+    customer_phone: formData.value.phone,
+    total_price: calculatedPrice.value,
+    address: formData.value.address,
+    comment: formData.value.comment,
     services: selectedServices.value,
-    customer: formData.value,
-    totalPrice: calculatedPrice.value,
   };
-  console.log("Отправка заявки:", orderData);
+
+  const response = await createOrder(orderData);
+
+  if (response.status == 200) {
+    formData.value = {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      address: "",
+      comment: "",
+    };
+
+    selectedServices.value = [];
+  }
 };
+
+onMounted(async () => {
+  product.value = await getProductById(route.params.id);
+  services.value = await getServiceWithLogo();
+});
 </script>
 
 <style lang="scss" scoped>

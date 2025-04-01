@@ -11,7 +11,7 @@ from schemas.orders import OrderRead, OrderCreate
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-@router.post("/", status_code=201, summary="Создание заказа", dependencies=[Depends(get_api_key)])
+@router.post("/", status_code=201, summary="Создание заказа")
 async def create_order(
     order_data: OrderCreate,
     session: AsyncSession = Depends(get_session)

@@ -29,7 +29,9 @@
           <meta itemprop="priceCurrency" content="RUB" />
           <link itemprop="availability" href="https://schema.org/InStock" />
         </div>
-        <UButton @click="showOrderModal">Оставить заявку</UButton>
+        <NuxtLink :to="`/products/order/${product.id}`"
+          ><UButton>Оставить заявку</UButton></NuxtLink
+        >
 
         <div class="product-spec">
           <h2>Характеристики</h2>
@@ -83,7 +85,6 @@
     </div>
 
     <Services />
-    <OrderModal :is-visible="true" @success="handleSuccess" />
 
     <SeoText :text="seoText" />
   </NuxtLayout>
