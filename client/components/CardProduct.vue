@@ -1,11 +1,13 @@
 <template>
   <RouterLink :to="`/products/${product.id}`" class="card">
-    <img
-      :src="product.photo_url ? product.photo_url : `/images/hisense.png`"
-      :alt="product.name"
-      class="card__image"
-      loading="lazy"
-    />
+    <div class="card__image-container">
+      <img
+        :src="product.photo_url ? product.photo_url : `/images/hisense.png`"
+        :alt="product.name"
+        class="card__image"
+        loading="lazy"
+      />
+    </div>
 
     <div class="card__content">
       <h3 class="card__content-title">{{ product.name }}</h3>
@@ -17,12 +19,20 @@
   </RouterLink>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { RouterLink } from "vue-router";
 
-defineProps({
-  product: Object,
-});
+interface Product {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  photo_url?: string;
+}
+
+defineProps<{
+  product: Product;
+}>();
 </script>
 
 <style lang="scss" scoped>
@@ -38,10 +48,21 @@ defineProps({
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   }
 
-  &__image {
+  &__image-container {
     width: 100%;
     height: 192px;
-    object-fit: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  &__image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
   &__content {

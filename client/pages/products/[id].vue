@@ -52,6 +52,7 @@
       </div>
     </div>
     <Services />
+    <OrderModal :is-visible="true" @success="handleSuccess" />
   </NuxtLayout>
 </template>
 
