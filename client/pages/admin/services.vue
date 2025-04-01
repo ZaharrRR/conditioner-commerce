@@ -8,7 +8,6 @@
       :form-data="newService"
       :submit-handler="handleCreate"
       submit-button-text="Добавить"
-      @submitted="handleCreateSubmit"
     />
 
     <div v-if="error" class="error-message">{{ error }}</div>
@@ -81,7 +80,7 @@ const error = ref(null);
 const newService = reactive({
   service_type: "",
   base_price: "",
-  logo_url: "",
+  description: "",
 });
 
 const createFormConfig = [
@@ -105,9 +104,10 @@ const createFormConfig = [
       },
       {
         type: "input",
-        label: "URL картинки",
+        label: "Описание услуги",
+        key: "description",
         required: true,
-        placeholder: "Введите url изображения",
+        placeholder: "Введите описание товара",
       },
     ],
   },
@@ -130,12 +130,6 @@ const editFormConfig = [
         required: true,
         step: "0.01",
       },
-      {
-        type: "input",
-        label: "URL картинки",
-        key: "logo_url",
-        placeholder: "Введите url изображения",
-      },
     ],
   },
 ];
@@ -144,6 +138,7 @@ const tableColumns = [
   { title: "Изображение", key: "logo_url", width: "100px", type: "image" },
   { title: "Тип услуги", key: "service_type" },
   { title: "Стоимость", key: "base_price" },
+  { title: "Описание", key: "description" },
   { title: "Действия", key: "actions", width: "150px" },
 ];
 
@@ -156,15 +151,21 @@ const formatPrice = (price) => {
 
 const handleCreate = async (formData) => {
   if (!formData.service_type.trim()) throw new Error("Тип услуги обязателен");
-  return await createService({
+
+  const response = await createService({
     ...formData,
     base_price: parseFloat(formData.base_price),
   });
-};
 
-const handleCreateSubmit = () => {
-  Object.assign(newService, { service_type: "", base_price: "" });
-  loadServices();
+  Object.assign(newService, {
+    service_type: "",
+    base_price: "",
+    description: "",
+  });
+
+  services.value.unshift(response);
+
+  return response;
 };
 
 const openEditModal = (service) => {

@@ -30,16 +30,22 @@
       <div class="product-edit__attributes">
         <h3 class="product-edit__subtitle">Атрибуты товара</h3>
 
-        <!-- Старые атрибуты (только для чтения) -->
         <div class="product-edit__existing-attributes">
           <ul>
             <li v-for="(attr, index) in existingAttributes" :key="index">
               {{ attr.attribute_name }}: {{ attr.value }}
+
+              <button
+                type="button"
+                class="product-edit__remove-btn"
+                @click="handleDeleteAttribute(attr.attribute_name)"
+              >
+                ×
+              </button>
             </li>
           </ul>
         </div>
 
-        <!-- Новые атрибуты (форма добавления) -->
         <div class="product-edit__new-attributes">
           <h4>Добавить новые атрибуты:</h4>
           <div
@@ -86,9 +92,14 @@
             Добавить атрибут
           </button>
         </div>
+
+        <button type="submit" class="product-edit__submit-btn">
+          Сохранить изменения
+        </button>
       </div>
 
       <div class="product-edit__images">
+        <img :src="product.photo_url" alt="" />
         <ImageUploader
           :current-image="existingImages"
           :entity-type="'product'"
@@ -98,10 +109,6 @@
           @upload="handleImageUpload"
         />
       </div>
-
-      <button type="submit" class="product-edit__submit-btn">
-        Сохранить изменения
-      </button>
     </form>
     <img :src="existingImages" alt="" />
   </NuxtLayout>
@@ -109,14 +116,18 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
+
+import ImageUploader from "~/components/admin/ImageUploader.vue";
+
 import {
   getProductById,
   linkProductAttributes,
   updateProductPhoto,
+  deleteProductAttribut,
 } from "@/api/products";
 import { fetchAllAttributes } from "@/api/attributes";
-import ImageUploader from "~/components/admin/ImageUploader.vue";
+
+import { useRoute } from "vue-router";
 
 const route = useRoute();
 const productId = route.params.id;
@@ -151,6 +162,20 @@ const handleImageUpload = async (formData) => {
     existingImages.value = imageUrl;
   } catch (err) {
     error.value = "Ошибка загрузки изображения: " + (err.message || "");
+  }
+};
+
+const handleDeleteAttribute = async (attribute_name) => {
+  try {
+    await deleteProductAttribut(productId, attribute_name);
+
+    if (product.value?.attributes) {
+      product.value.attributes = product.value.attributes.filter(
+        (attr) => attr.id !== attribute_name
+      );
+    }
+  } catch (err) {
+    error.value = "Ошибка удаления атрибута: " + (err.message || "");
   }
 };
 
@@ -192,11 +217,11 @@ const submit = async () => {
           value: attr.value,
         }));
 
-      await linkProductAttributes(productId, attributesToSend);
+      const response = await linkProductAttributes(productId, attributesToSend);
+
+      product.value?.attributes.push(...response);
     }
 
-    alert("Изменения успешно сохранены!");
-    await loadData();
     form.newAttributes = [];
   } catch (err) {
     error.value = err.message || "Ошибка сохранения изменений";
@@ -344,6 +369,10 @@ onMounted(() => {
       li {
         padding: 0.5rem 0;
         border-bottom: 1px solid #eee;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
 
         &:last-child {
           border-bottom: none;
@@ -445,6 +474,7 @@ onMounted(() => {
   &__submit-btn {
     background: #3b82f6;
     color: white;
+    margin-top: 12px;
     padding: 0.75rem 1.5rem;
     width: 100%;
     border: none;

@@ -1,28 +1,49 @@
 <template>
-  <RouterLink :to="`/products/${product.id}`" class="card">
+  <RouterLink
+    :to="`/products/${product.id}`"
+    class="card"
+    itemscope
+    itemtype="http://schema.org/Product"
+  >
     <img
-      :src="product.image ? product.image : `/images/hisense.png`"
-      :alt="product.name"
+      :src="product.photo_url || '/images/hisense.png'"
+      :alt="`Купить ${product.name} в Тюмени`"
       class="card__image"
       loading="lazy"
+      itemprop="image"
+      width="300"
+      height="200"
     />
 
     <div class="card__content">
-      <h3 class="card__content-title">{{ product.name }}</h3>
-      <p class="card__content-description">
-        {{ product.description ? product.description : "Описание..." }}
+      <h3 class="card__content-title" itemprop="name">{{ product.name }}</h3>
+      <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+        <p class="card__content-price" itemprop="price">
+          {{ product.price }} ₽
+        </p>
+        <meta itemprop="priceCurrency" content="RUB" />
+      </div>
+      <p class="card__content-description" itemprop="description">
+        {{ product.description || "Профессиональная установка кондиционеров" }}
       </p>
-      <p class="card__content-price">{{ product.price }} ₽</p>
     </div>
   </RouterLink>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { RouterLink } from "vue-router";
 
-defineProps({
-  product: Object,
-});
+interface Product {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  photo_url?: string;
+}
+
+defineProps<{
+  product: Product;
+}>();
 </script>
 
 <style lang="scss" scoped>
@@ -38,10 +59,21 @@ defineProps({
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   }
 
-  &__image {
+  &__image-container {
     width: 100%;
     height: 192px;
-    object-fit: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  &__image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
   &__content {

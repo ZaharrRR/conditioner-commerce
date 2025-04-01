@@ -17,7 +17,10 @@
       />
     </template>
 
-    <div class="product-list">
+    <p v-else>Нет брендов или Категорий</p>
+
+    <div class="section product-list">
+      <h2>Список продуктов</h2>
       <div v-if="error" class="error">{{ error }}</div>
 
       <DataTable v-else :columns="tableColumns" :rows="products">
@@ -53,6 +56,7 @@ const error = ref(null);
 
 const form = reactive({
   name: "",
+  description: "",
   price: "",
   brand_id: "",
   category_id: "",
@@ -66,6 +70,12 @@ const formConfig = [
         type: "input",
         label: "Название товара",
         key: "name",
+        required: true,
+      },
+      {
+        type: "input",
+        label: "Описание товара",
+        key: "description",
         required: true,
       },
       {
@@ -95,6 +105,7 @@ const formConfig = [
 
 const tableColumns = [
   { title: "Название", key: "name" },
+  { title: "Описание", key: "description" },
   { title: "Цена", key: "price" },
   { title: "Бренд", key: "brand_name" },
   { title: "Категория", key: "category_name" },
@@ -110,9 +121,16 @@ async function submitProduct(formData) {
     price: numericPrice,
   };
 
-  await createProduct(productData);
-  Object.assign(form, { name: "", price: "", brand_id: "", category_id: "" });
-  alert("Товар успешно создан!");
+  const response = await createProduct(productData);
+
+  Object.assign(form, {
+    name: "",
+    description: "",
+    price: "",
+    brand_id: "",
+    category_id: "",
+  });
+  products.value.unshift(response);
 }
 
 const loadData = async () => {
@@ -136,6 +154,16 @@ onMounted(loadData);
 </script>
 
 <style lang="scss" scoped>
+.section {
+  margin-top: 2rem;
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #2d3748;
+  }
+}
+
 .product-management {
   .title {
     font-size: 1.5rem;

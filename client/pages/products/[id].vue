@@ -1,29 +1,57 @@
 <template>
   <NuxtLayout name="page-layout">
-    <div class="product-box" v-if="product">
-      <img src="/images/hisense.png" :alt="product.name" />
+    <Breadcrumbs
+      :items="[
+        { name: 'Главная', path: '/' },
+        { name: 'Каталог', path: '/products' },
+        { name: product?.name, path: `${route.params.id}` },
+      ]"
+    />
+
+    <div
+      class="product-box"
+      v-if="product"
+      itemscope
+      itemtype="https://schema.org/Product"
+    >
+      <img
+        :src="product.photo_url || '/images/hisense.png'"
+        :alt="`Купить ${product.name} в Тюмени`"
+        itemprop="image"
+        loading="lazy"
+        width="600"
+        height="400"
+      />
       <div class="product-info">
-        <h1>{{ product.name }}</h1>
-        <p>{{ product.price }} ₽</p>
-        <UButton>Оставить заявку</UButton>
+        <h1 itemprop="name">{{ product.name }}</h1>
+        <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+          <p itemprop="price" :content="product.price">{{ product.price }} ₽</p>
+          <meta itemprop="priceCurrency" content="RUB" />
+          <link itemprop="availability" href="https://schema.org/InStock" />
+        </div>
+        <NuxtLink :to="`/products/order/${product.id}`"
+          ><UButton>Оставить заявку</UButton></NuxtLink
+        >
 
         <div class="product-spec">
           <h2>Характеристики</h2>
           <div class="spec-icons">
-            <div class="spec-icon">
+            <div class="spec-icon" v-if="hasAttribute('Площадь помещения')">
               <Icon name="mdi:cube-outline" class="icon" />
               <p>Площадь помещения</p>
-              <p>70 м²</p>
+              <p>{{ getAttributeValue("Площадь помещения") }}</p>
             </div>
-            <div class="spec-icon">
+
+            <div class="spec-icon" v-if="hasAttribute('Мощность охлаждения')">
               <Icon name="ri:snowflake-fill" class="icon" />
               <p>Мощность охлаждения</p>
-              <p>7.0 кВт</p>
+              <p>{{ getAttributeValue("Мощность охлаждения") }}</p>
             </div>
-            <div class="spec-icon">
+
+            <div class="spec-icon" v-if="hasAttribute('Гарантия')">
               <Icon name="material-symbols:settings" class="icon" />
               <p>Гарантия</p>
-              <p>2 года</p>
+              <p>{{ getAttributeValue("Гарантия") }}</p>
             </div>
           </div>
         </div>
@@ -31,36 +59,34 @@
     </div>
 
     <div class="product-content" v-if="product">
-      <div class="description">
+      <div class="description" itemprop="description">
         <h2>Описание</h2>
-        <h3>Сплит-система Hisense AS-24HR4SBA6DC00S</h3>
-        <p>
-          Серия NEO Classic A оснащена полностью автоматическими жалюзи 4D AUTO
-          Air, что даёт возможность регулировать распределение воздуха полностью
-          по вашему желанию с помощью пульта дистанционного управления. Ранее
-          эта функция была доступна только у моделей бизнес-класса.
-        </p>
-        <p>
-          Полнофункциональный дисплей скрыт за светопрозрачной передней панелью,
-          что делает эксплуатацию очень удобной.
-        </p>
-        <a href="#">Подробнее...</a>
+        <p>{{ product.description }}</p>
       </div>
 
       <div class="characteristics">
-        <h2>Характеристики</h2>
+        <h2>Технические параметры</h2>
         <ul>
-          <li><strong>Бренд:</strong> Hisense</li>
-          <li><strong>Серия:</strong> Neo classic A</li>
-          <li><strong>Обслуживаемая площадь, м²:</strong> 70</li>
-          <li><strong>Мощность в режиме охлаждения:</strong> 7.0 кВт</li>
-          <li><strong>Мощность в режиме обогрева:</strong> 7.2 кВт</li>
-          <li><strong>Страна производства:</strong> Китай</li>
+          <li
+            v-for="attr in product.attributes"
+            :key="attr.attribute_name"
+            itemprop="additionalProperty"
+            itemscope
+            itemtype="https://schema.org/PropertyValue"
+          >
+            <meta itemprop="name" :content="attr.attribute_name" />
+            <span itemprop="value"
+              ><strong>{{ attr.attribute_name }}: </strong
+              >{{ attr.value }}</span
+            >
+          </li>
         </ul>
-        <a href="#">Подробнее...</a>
       </div>
     </div>
+
     <Services />
+
+    <SeoText :text="seoText" />
   </NuxtLayout>
 </template>
 
@@ -71,16 +97,89 @@ import { getProductById } from "~/api/products";
 
 import { useRoute } from "vue-router";
 
-const router = useRoute();
-
 import UButton from "~/components/UI/UButton.vue";
 import Services from "~/components/sections/Services.vue";
+import Breadcrumbs from "~/components/common/Breadcrumbs.vue";
+import SeoText from "~/components/common/SeoText.vue";
 
+const route = useRoute();
 const product = ref(null);
+const seoText = ref("");
+
+const hasAttribute = (name) => {
+  return product.value?.attributes?.some(
+    (attr) => attr.attribute_name === name
+  );
+};
+
+const getAttributeValue = (name) => {
+  const attr = product.value?.attributes?.find(
+    (attr) => attr.attribute_name === name
+  );
+  return attr ? attr.value : "";
+};
+
+useSeoMeta({
+  title: computed(() => `${product.value?.name} | Купить в Тюмени`),
+  description: computed(
+    () =>
+      `${product.value?.name} по выгодной цене ${product.value?.price} руб. ` +
+      `Характеристики: ${product.value?.attributes
+        ?.map((a) => a.value)
+        .join(", ")}`
+  ),
+  ogTitle: computed(() => product.value?.name),
+  ogDescription: computed(() => product.value?.description?.substring(0, 200)),
+  ogImage: computed(() => product.value?.photo_url || "/images/hisense.png"),
+});
+
+useHead({
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: computed(() =>
+        JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.value?.name,
+          image: product.value?.photo_url,
+          description: product.value?.description,
+          brand: {
+            "@type": "Brand",
+            name: product.value?.brand_name,
+          },
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "RUB",
+            price: product.value?.price,
+            availability: "https://schema.org/InStock",
+            itemCondition: "https://schema.org/NewCondition",
+          },
+          additionalProperty: product.value?.attributes?.map((attr) => ({
+            "@type": "PropertyValue",
+            name: attr.attribute_name,
+            value: attr.value,
+          })),
+        })
+      ),
+    },
+  ],
+});
 
 onMounted(async () => {
-  product.value = await getProductById(router.params.id);
+  product.value = await getProductById(route.params.id);
+  seoText.value = generateSeoText();
 });
+
+function generateSeoText() {
+  return (
+    `Купить ${product.value.name} в Тюмени. ${product.value.description} ` +
+    `Гарантия ${getAttributeValue("Гарантия")}, площадь обслуживания ` +
+    `${getAttributeValue(
+      "Площадь помещения"
+    )}. Лучшие цены на климатическую технику.`
+  );
+}
 </script>
 
 <style scoped>
