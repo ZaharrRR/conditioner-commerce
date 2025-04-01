@@ -9,6 +9,15 @@ const fetchAllServices = async () => {
   }
 };
 
+const getServiceWithLogo = async () => {
+  try {
+    const response = await api.get(`/services/with-logo`);
+    return response.data;
+  } catch (error) {
+    return handleError(error, "Ошибка получения услуг");
+  }
+};
+
 const getServiceById = async (serviceId) => {
   try {
     const response = await api.get(`/services/get-by-id/${serviceId}`);
@@ -51,6 +60,7 @@ const deleteService = async (serviceId) => {
 export {
   createService,
   getServiceById,
+  getServiceWithLogo,
   fetchAllServices,
   updateService,
   deleteService,

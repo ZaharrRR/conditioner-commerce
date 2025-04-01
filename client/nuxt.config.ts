@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   devServer: {
     port: 5000,
   },
+  nitro: {
+    preset: "node-server",
+    serveStatic: true,
+    port: 5000,
+  },
   runtimeConfig: {
     public: {
       host: process.env.HOST,

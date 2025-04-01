@@ -1,20 +1,31 @@
 <template>
-  <RouterLink :to="`/products/${product.id}`" class="card">
-    <div class="card__image-container">
-      <img
-        :src="product.photo_url ? product.photo_url : `/images/hisense.png`"
-        :alt="product.name"
-        class="card__image"
-        loading="lazy"
-      />
-    </div>
+  <RouterLink
+    :to="`/products/${product.id}`"
+    class="card"
+    itemscope
+    itemtype="http://schema.org/Product"
+  >
+    <img
+      :src="product.photo_url || '/images/hisense.png'"
+      :alt="`Купить ${product.name} в Тюмени`"
+      class="card__image"
+      loading="lazy"
+      itemprop="image"
+      width="300"
+      height="200"
+    />
 
     <div class="card__content">
-      <h3 class="card__content-title">{{ product.name }}</h3>
-      <p class="card__content-description">
-        {{ product.description ? product.description : "Описание..." }}
+      <h3 class="card__content-title" itemprop="name">{{ product.name }}</h3>
+      <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+        <p class="card__content-price" itemprop="price">
+          {{ product.price }} ₽
+        </p>
+        <meta itemprop="priceCurrency" content="RUB" />
+      </div>
+      <p class="card__content-description" itemprop="description">
+        {{ product.description || "Профессиональная установка кондиционеров" }}
       </p>
-      <p class="card__content-price">{{ product.price }} ₽</p>
     </div>
   </RouterLink>
 </template>

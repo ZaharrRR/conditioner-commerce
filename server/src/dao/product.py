@@ -266,7 +266,7 @@ class ProductDAO:
                 logger.warning("⚠️ Аттрибут не найден или уже удалён")
                 return False
 
-            logger.info(f"✅ Аттрибут {data.attribute_id} удалён у продукта {data.product_id}")
+            logger.info(f"✅ Аттрибут {data.name} удалён у продукта {data.product_id}")
             return True
 
         except SQLAlchemyError as e:

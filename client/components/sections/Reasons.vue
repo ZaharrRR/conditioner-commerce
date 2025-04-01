@@ -1,28 +1,29 @@
 <template>
-  <Section class="reasons" label="Почему выбирают нас?">
-    <div>
+  <Section class="reasons" label="Преимущества">
+    <div itemscope itemtype="https://schema.org/ItemList">
       <div class="reasons-grid">
-        <div class="reason-item" v-for="reason in reasons" :key="reason.title">
-          <Icon :name="reason.icon" class="reason-icon" />
-          <p class="reason-title">
+        <div
+          v-for="(reason, index) in reasons"
+          :key="index"
+          class="reason-item"
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <meta itemprop="position" :content="index + 1" />
+          <Icon :name="reason.icon" class="reason-icon" aria-hidden="true" />
+          <p class="reason-title" itemprop="name">
             {{ reason.title }}
           </p>
-          <p class="reason-description">
+          <p class="reason-description" itemprop="description">
             {{ reason.description }}
           </p>
         </div>
       </div>
-
-      <div class="reasons-content">
-        <p class="reasons-desc">
-          С нами ваш комфорт – в надежных руках! <br />
-          Свяжитесь с нами сегодня, и мы подберем для вас идеальное
-          климатическое оборудование.
-        </p>
-      </div>
     </div>
   </Section>
 </template>
+>
 
 <script setup>
 import Section from "./Section.vue";
