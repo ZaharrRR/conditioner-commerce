@@ -248,13 +248,13 @@ class ProductDAO:
 
 
     async def delete_attribute_from_product(self, data: ProductAttributeDelete) -> bool:
-        logger.debug(f"🗑️ Удаление аттрибута {data.attribute_id} у продукта {data.product_id}")
+        logger.debug(f"🗑️ Удаление аттрибута {data.name} у продукта {data.product_id}")
         try:
             stmt = (
                 delete(ProductAttribute)
                 .where(
                     ProductAttribute.product_id == data.product_id,
-                    ProductAttribute.attribute_id == data.attribute_id
+                    ProductAttribute.attribute.has(name=data.name)
                 )
             )
             result = await self.session.execute(stmt)
