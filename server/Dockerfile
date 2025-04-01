@@ -1,29 +1,30 @@
-FROM python:3.13-slim
-
-ENV PYTHONUNBUFFERED=1
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Шаг сборки
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY package*.json ./
+COPY .npmrc* ./
+COPY nuxt.config.ts ./
 
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+RUN npm install
 
 COPY . .
 
-ARG ENV=production
-ENV ENV=${ENV}
+RUN npm run build
 
-EXPOSE 3000
+# Финальный образ
+FROM node:18-alpine
 
-CMD if [ "$ENV" = "development" ] ; then \
-        cd src && alembic -c alembic.ini upgrade head && \
-        uvicorn main:app --host 0.0.0.0 --port 3000 --reload ; \
-    else \
-        cd src && alembic -c alembic.ini upgrade head && \
-        uvicorn main:app --host 0.0.0.0 --port 3000 ; \
-    fi
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV NITRO_HOST 0.0.0.0
+ENV NITRO_PORT 5000
+
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/.output ./.output
+
+RUN npm install --production
+
+CMD ["node", ".output/server/index.mjs"]

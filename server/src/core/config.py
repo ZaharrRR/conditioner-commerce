@@ -6,13 +6,9 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # корневая директория проекта
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-env = os.getenv("ENV", "production")
-if env == "development":
-    env_file = f"{BASE_DIR}/.env.dev"
-else:
-    env_file = f"{BASE_DIR}/.env.prod"
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+print(BASE_DIR)
+env_file=BASE_DIR / ".env"
 
 class ConfigBase(BaseSettings):
     """Базовые настройки конфига"""
