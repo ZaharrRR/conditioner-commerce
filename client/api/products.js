@@ -51,13 +51,14 @@ const deleteProduct = async (productId) => {
 
 const deleteProductAttribut = async (productId, attribute_name) => {
   try {
-    console.log(productId);
-    console.log(attribute_name);
-
-    const response = await api.delete(`/product/`, {
+    let formData = await {
       name: attribute_name,
       product_id: productId,
-    });
+    };
+
+    console.log(formData);
+
+    const response = await api.delete(`/product/`, formData);
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка удаления атрибута");

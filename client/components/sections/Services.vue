@@ -1,18 +1,40 @@
 <template>
   <Section label="Услуги">
-    <div class="services">
+    <div class="services" itemscope itemtype="https://schema.org/ItemList">
       <div class="services__cards">
-        <div class="card" v-for="(service, index) in services" :key="index">
+        <div
+          v-for="(service, index) in services"
+          :key="index"
+          class="card"
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/Service"
+        >
+          <meta itemprop="serviceType" content="Монтаж кондиционеров" />
           <img
-            :src="service.image"
-            :alt="service.title"
+            :src="service.logo_url"
+            :alt="`${service.service_type} в Тюмени`"
             class="card__image"
             loading="lazy"
+            itemprop="image"
           />
           <div class="card__content">
-            <h3 class="card__title">{{ service.title }}</h3>
-            <p class="card__description">{{ service.description }}</p>
-            <p class="card__price">{{ service.price }} ₽</p>
+            <h3 class="card__title" itemprop="name">
+              {{ service.service_type }}
+            </h3>
+            <p class="card__description" itemprop="description">
+              {{ service.description }}
+            </p>
+            <div
+              itemprop="offers"
+              itemscope
+              itemtype="https://schema.org/Offer"
+            >
+              <p class="card__price" itemprop="price">
+                {{ service.base_price }} ₽
+              </p>
+              <meta itemprop="priceCurrency" content="RUB" />
+            </div>
           </div>
         </div>
       </div>
@@ -23,28 +45,15 @@
 <script setup>
 import Section from "./Section.vue";
 
-const services = [
-  {
-    title: "Установка сплит системы",
-    description:
-      "Профессиональная установка сплит-системы с гарантией качества.",
-    price: "1,499",
-    image: "/images/install.png",
-  },
-  {
-    title: "Обслуживание кондиционеров",
-    description:
-      "Регулярное техническое обслуживание для поддержания работоспособности.",
-    price: "999",
-    image: "/images/maintenance.png",
-  },
-  {
-    title: "Ремонт холодильного оборудования",
-    description: "Быстрый и качественный ремонт холодильных установок.",
-    price: "2,499",
-    image: "/images/repair.png",
-  },
-];
+import { getServiceWithLogo } from "~/api/services";
+
+const services = ref([]);
+
+onMounted(async () => {
+  services.value = await getServiceWithLogo();
+
+  console.log(services.value);
+});
 </script>
 
 <style lang="scss" scoped>

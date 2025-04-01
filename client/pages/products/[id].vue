@@ -1,14 +1,35 @@
 <template>
   <NuxtLayout name="page-layout">
-    <div class="product-box" v-if="product">
+    <Breadcrumbs
+      :items="[
+        { name: 'Главная', path: '/' },
+        { name: 'Каталог', path: '/products' },
+        { name: product?.name, path: `${route.params.id}` },
+      ]"
+    />
+
+    <div
+      class="product-box"
+      v-if="product"
+      itemscope
+      itemtype="https://schema.org/Product"
+    >
       <img
-        :src="product.photo_url ? product.photo_url : `/images/hisense.png`"
-        :alt="product.name"
+        :src="product.photo_url || '/images/hisense.png'"
+        :alt="`Купить ${product.name} в Тюмени`"
+        itemprop="image"
+        loading="lazy"
+        width="600"
+        height="400"
       />
       <div class="product-info">
-        <h1>{{ product.name }}</h1>
-        <p>{{ product.price }} ₽</p>
-        <UButton>Оставить заявку</UButton>
+        <h1 itemprop="name">{{ product.name }}</h1>
+        <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+          <p itemprop="price" :content="product.price">{{ product.price }} ₽</p>
+          <meta itemprop="priceCurrency" content="RUB" />
+          <link itemprop="availability" href="https://schema.org/InStock" />
+        </div>
+        <UButton @click="showOrderModal">Оставить заявку</UButton>
 
         <div class="product-spec">
           <h2>Характеристики</h2>
@@ -18,11 +39,13 @@
               <p>Площадь помещения</p>
               <p>{{ getAttributeValue("Площадь помещения") }}</p>
             </div>
+
             <div class="spec-icon" v-if="hasAttribute('Мощность охлаждения')">
               <Icon name="ri:snowflake-fill" class="icon" />
               <p>Мощность охлаждения</p>
               <p>{{ getAttributeValue("Мощность охлаждения") }}</p>
             </div>
+
             <div class="spec-icon" v-if="hasAttribute('Гарантия')">
               <Icon name="material-symbols:settings" class="icon" />
               <p>Гарантия</p>
@@ -34,24 +57,34 @@
     </div>
 
     <div class="product-content" v-if="product">
-      <div class="description">
+      <div class="description" itemprop="description">
         <h2>Описание</h2>
-        <h3>{{ product.name }}</h3>
-        <p>
-          {{ product.description }}
-        </p>
+        <p>{{ product.description }}</p>
       </div>
 
       <div class="characteristics">
-        <h2>Характеристики</h2>
+        <h2>Технические параметры</h2>
         <ul>
-          <li v-for="attr in product.attributes" :key="attr.attribute_name">
-            <strong>{{ attr.attribute_name }}:</strong> {{ attr.value }}
+          <li
+            v-for="attr in product.attributes"
+            :key="attr.attribute_name"
+            itemprop="additionalProperty"
+            itemscope
+            itemtype="https://schema.org/PropertyValue"
+          >
+            <meta itemprop="name" :content="attr.attribute_name" />
+            <span itemprop="value"
+              ><strong>{{ attr.attribute_name }}: </strong
+              >{{ attr.value }}</span
+            >
           </li>
         </ul>
       </div>
     </div>
+
     <Services />
+
+    <SeoText :text="seoText" />
   </NuxtLayout>
 </template>
 
@@ -62,12 +95,14 @@ import { getProductById } from "~/api/products";
 
 import { useRoute } from "vue-router";
 
-const router = useRoute();
-
 import UButton from "~/components/UI/UButton.vue";
 import Services from "~/components/sections/Services.vue";
+import Breadcrumbs from "~/components/common/Breadcrumbs.vue";
+import SeoText from "~/components/common/SeoText.vue";
 
+const route = useRoute();
 const product = ref(null);
+const seoText = ref("");
 
 const hasAttribute = (name) => {
   return product.value?.attributes?.some(
@@ -82,9 +117,67 @@ const getAttributeValue = (name) => {
   return attr ? attr.value : "";
 };
 
-onMounted(async () => {
-  product.value = await getProductById(router.params.id);
+useSeoMeta({
+  title: computed(() => `${product.value?.name} | Купить в Тюмени`),
+  description: computed(
+    () =>
+      `${product.value?.name} по выгодной цене ${product.value?.price} руб. ` +
+      `Характеристики: ${product.value?.attributes
+        ?.map((a) => a.value)
+        .join(", ")}`
+  ),
+  ogTitle: computed(() => product.value?.name),
+  ogDescription: computed(() => product.value?.description?.substring(0, 200)),
+  ogImage: computed(() => product.value?.photo_url || "/images/hisense.png"),
 });
+
+useHead({
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: computed(() =>
+        JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.value?.name,
+          image: product.value?.photo_url,
+          description: product.value?.description,
+          brand: {
+            "@type": "Brand",
+            name: product.value?.brand_name,
+          },
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "RUB",
+            price: product.value?.price,
+            availability: "https://schema.org/InStock",
+            itemCondition: "https://schema.org/NewCondition",
+          },
+          additionalProperty: product.value?.attributes?.map((attr) => ({
+            "@type": "PropertyValue",
+            name: attr.attribute_name,
+            value: attr.value,
+          })),
+        })
+      ),
+    },
+  ],
+});
+
+onMounted(async () => {
+  product.value = await getProductById(route.params.id);
+  seoText.value = generateSeoText();
+});
+
+function generateSeoText() {
+  return (
+    `Купить ${product.value.name} в Тюмени. ${product.value.description} ` +
+    `Гарантия ${getAttributeValue("Гарантия")}, площадь обслуживания ` +
+    `${getAttributeValue(
+      "Площадь помещения"
+    )}. Лучшие цены на климатическую технику.`
+  );
+}
 </script>
 
 <style scoped>

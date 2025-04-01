@@ -1,9 +1,16 @@
 <template>
   <NuxtLayout name="page-layout">
+    <Breadcrumbs
+      :items="[
+        { name: 'Главная', path: '/' },
+        { name: 'Доставка', path: '/delivery' },
+      ]"
+    />
+
     <div class="delivery-page">
       <div class="delivery-intro">
         <div>
-          <h1>Доставка кондиционеров и климатического оборудования</h1>
+          <h1>Доставка кондиционеров в Тюмени с установкой</h1>
           <p class="intro-text">
             Мы заботимся о вашем комфорте и предлагаем быструю и удобную
             доставку кондиционеров и сопутствующих товаров по вашему адресу.
@@ -14,7 +21,11 @@
 
       <div class="delivery-options">
         <div class="delivery-card">
-          <Icon name="mdi:truck-delivery" class="icon" />
+          <Icon
+            name="mdi:truck-delivery"
+            class="icon"
+            aria-label="Иконка доставки грузовиком"
+          />
           <h2>Доставка по городу</h2>
           <p><strong>Срок:</strong> 1–2 рабочих дня</p>
           <p>
@@ -27,6 +38,7 @@
           <Icon
             name="material-symbols:delivery-truck-bolt-outline-rounded"
             class="icon"
+            aria-label="Иконка быстрой доставки грузовиком"
           />
           <h2>Экспресс-доставка</h2>
           <p><strong>Срок:</strong> 1–2 рабочих дня</p>
@@ -37,7 +49,11 @@
         </div>
 
         <div class="delivery-card">
-          <Icon name="mdi:package-variant" class="icon" />
+          <Icon
+            name="mdi:package-variant"
+            class="icon"
+            aria-label="Иконка коробки самовывоза"
+          />
           <h2>Самовывоз</h2>
           <p><strong>Срок:</strong> 1–2 рабочих дня</p>
           <p>
@@ -55,19 +71,122 @@
             Если вы заказали установку кондиционера, наши мастера могут
             установить его сразу после доставки.
           </p>
-          <button class="order-button" @click="orderDelivery">
-            Заказать доставку
+          <button
+            class="order-button"
+            @click="orderDelivery"
+            itemprop="potentialAction"
+            itemscope
+            itemtype="https://schema.org/OrderAction"
+          >
+            <a
+              href="https://t.me/conditioner_comm_bot"
+              itemprop="url"
+              itemscope
+              itemtype="https://schema.org/ContactPoint"
+            >
+              <meta itemprop="contactType" content="sales" />
+              <meta itemprop="telegram" content="conditioner_comm_bot" />
+              Заказать в Telegram
+            </a>
           </button>
         </div>
       </div>
+
+      <FaqSection
+        title="Частые вопросы о доставке"
+        :items="[
+          {
+            question: 'Как отследить статус заказа?',
+            answer:
+              ' После оформления заказа вы получите SMS с номером для отслеживания',
+          },
+          {
+            question: 'Можно ли изменить адрес доставки?',
+            answer:
+              'Да, для изменения адреса свяжитесь с нами за 3 часа до доставки',
+          },
+        ]"
+      />
+
+      <SeoText
+        text="Быстрая и надежная доставка кондиционеров по Тюмени и области.
+        Профессиональные грузчики, аккуратная транспортировка оборудования.
+        Самовывоз со склада в центре города."
+      />
     </div>
   </NuxtLayout>
 </template>
 
 <script setup>
+import Breadcrumbs from "~/components/common/Breadcrumbs.vue";
+import FaqSection from "~/components/common/FaqSection.vue";
+import SeoText from "~/components/common/SeoText.vue";
+
 const orderDelivery = () => {
   location.href = "https://t.me/conditioner_comm_bot";
 };
+
+useSeoMeta({
+  title:
+    "Доставка кондиционеров в Тюмени | Бесплатно от 10 000₽ | Установка в день доставки",
+  description:
+    "🚚 Быстрая доставка сплит-систем по Тюмени: 1-2 дня. Бесплатно при заказе от 10 000₽. Самовывоз или монтаж в день получения. Официальная гарантия на технику и работы.",
+  keywords:
+    "доставка кондиционеров Тюмень, стоимость доставки сплит-систем, самовывоз кондиционеров, установка в день доставки, бесплатная доставка кондиционеров",
+  ogTitle: "Условия доставки кондиционеров в Тюмени | Бесплатно от 10 000₽",
+  ogDescription:
+    "✅ Закажите доставку с установкой за 1 день! ✅ Бесплатный подъем на этаж. ✅ 3 варианта получения заказа. Работаем по всей Тюмени и области.",
+  ogType: "website",
+  ogUrl: "https://ваш-сайт.ru/delivery",
+  ogImage: "https://ваш-сайт.ru/images/delivery-og.jpg",
+});
+
+useHead({
+  link: [{ rel: "canonical", href: "https://ваш-сайт.ru/delivery" }],
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ShippingDeliveryTime",
+        name: "Доставка кондиционеров",
+        areaServed: {
+          "@type": "City",
+          name: "Тюмень",
+        },
+        deliveryTime: {
+          "@type": "QuantitativeValue",
+          minValue: 1,
+          maxValue: 2,
+          unitCode: "DAY",
+        },
+        eligibleTransactionVolume: {
+          "@type": "PriceSpecification",
+          price: 10000,
+          priceCurrency: "RUB",
+        },
+        hasDeliveryMethod: ["ParcelService", "OnSitePickup"],
+      }),
+    },
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "Как отследить статус заказа?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "После оформления заказа вы получите SMS с номером для отслеживания",
+            },
+          },
+        ],
+      }),
+    },
+  ],
+});
 </script>
 
 <style lang="scss" scoped>
