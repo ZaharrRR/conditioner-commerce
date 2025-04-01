@@ -1,5 +1,5 @@
 from typing import Annotated
-
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, UUID4
 
@@ -24,3 +24,7 @@ class ProductAttributeRead(BaseModel):
     attribute_name: Annotated[str, Field(..., description="Название аттрибута из модели Attribute")]
     value: Annotated[str, Field(..., description="Значение аттрибута для продукта")]
     model_config = ConfigDict(from_attributes=True)
+
+class ProductAttributeDelete(BaseModel):
+    attribute_id: UUID
+    product_id: UUID

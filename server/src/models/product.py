@@ -23,9 +23,6 @@ class Product(Base):
     # Связи
     brand: Mapped["Brand"] = relationship("Brand", back_populates="products")
     category: Mapped["Category"] = relationship("Category", back_populates="products")
-    images: Mapped[list["ProductImage"]] = relationship(
-        "ProductImage", back_populates="product", cascade="all, delete-orphan"
-    )
     attributes: Mapped[list["ProductAttribute"]] = relationship(
         "ProductAttribute", back_populates="product", cascade="all, delete-orphan"
     )

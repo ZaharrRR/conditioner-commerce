@@ -1,13 +1,13 @@
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import logger
 from models import Brand, Category, Product, ProductAttribute, Attribute
-from schemas import ProductCreate, ProductRead, ProductReadWithRelations, ProductAttributeLink
+from schemas import ProductCreate, ProductRead, ProductReadWithRelations, ProductAttributeLink, ProductAttributeDelete
 
 
 class ProductDAO:
@@ -244,4 +244,30 @@ class ProductDAO:
         except SQLAlchemyError as e:
             await self.session.rollback()
             logger.error(f"❌ Ошибка при привязке аттрибутов к продукту: {e}")
+            raise RuntimeError("Database error")
+
+
+    async def delete_attribute_from_product(self, data: ProductAttributeDelete) -> bool:
+        logger.debug(f"🗑️ Удаление аттрибута {data.attribute_id} у продукта {data.product_id}")
+        try:
+            stmt = (
+                delete(ProductAttribute)
+                .where(
+                    ProductAttribute.product_id == data.product_id,
+                    ProductAttribute.attribute_id == data.attribute_id
+                )
+            )
+            result = await self.session.execute(stmt)
+            await self.session.commit()
+
+            if result.rowcount == 0:
+                logger.warning("⚠️ Аттрибут не найден или уже удалён")
+                return False
+
+            logger.info(f"✅ Аттрибут {data.attribute_id} удалён у продукта {data.product_id}")
+            return True
+
+        except SQLAlchemyError as e:
+            await self.session.rollback()
+            logger.error(f"❌ Ошибка при удалении аттрибута: {e}")
             raise RuntimeError("Database error")

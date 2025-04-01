@@ -75,15 +75,6 @@ async def get_brand_by_id(
     return brand
 
 
-@router.patch(
-    "/update-logo/{brand_id}",
-    response_model=BrandRead,
-    summary="Обновление logo url Brand",
-)
-async def update_brand_logo(session: AsyncSession = Depends(get_session)) -> BrandRead:
-    pass
-
-
 @router.delete(
     "/delete/{brand_id}",
     response_model=None,

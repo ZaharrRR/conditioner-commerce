@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.responses import ORJSONResponse
+from sqlalchemy.exc import DatabaseError
+from pydantic import ValidationError
 from api.v1.attribute import router as attribute_router
 from api.v1.brand import router as brand_router
 from api.v1.category import router as category_router
@@ -10,6 +12,8 @@ from api.v1.order import router as order_router
 from api.v1.product import router as product_router
 from api.v1.services import router as service_router
 from bot.bot import start_bot, stop_bot
+
+
 from core import logger, settings
 
 
@@ -20,7 +24,6 @@ origins = [
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Бот запущен")
     await start_bot()
     app.include_router(attribute_router)
     app.include_router(brand_router)
@@ -28,8 +31,8 @@ async def lifespan(app: FastAPI):
     app.include_router(product_router)
     app.include_router(order_router)
     app.include_router(service_router)
+
     yield
-    logger.info("Бот остановлен")
     await stop_bot()
 
 app = FastAPI(lifespan=lifespan)
@@ -42,6 +45,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.exception_handler(ValidationError)
+def handle_pydantic_validation_error(
+        request: Request,
+        exc: ValidationError,
+) -> ORJSONResponse:
+    return ORJSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "message": "Unhandled error",
+            "error": exc.errors(),
+        },
+    )
+
+
+@app.exception_handler(DatabaseError)
+def handle_db_error(
+        request: Request,
+        exc: ValidationError,
+) -> ORJSONResponse:
+    logger.error(
+        "Unhandled database error",
+        exc_info=exc,
+    )
+    return ORJSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "message": "An unexpected error has occurred. "
+                       "Our admins are already working on it."
+        },
+    )
 
 if __name__ == "__main__":
     import uvicorn

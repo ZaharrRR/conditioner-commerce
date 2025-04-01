@@ -83,6 +83,7 @@ class OrderDAO:
                 customer_name=new_order.customer_name,
                 customer_surname=new_order.customer_surname,
                 customer_phone=new_order.customer_phone,
+                comment=new_order.comment,
                 address=new_order.address,
                 total_price=new_order.total_price,
                 created_at=new_order.created_at,

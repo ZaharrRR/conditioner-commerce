@@ -53,17 +53,17 @@ class OrderServiceRead(BaseModel):
 
 class OrderRead(BaseModel):
     id: UUID = Field(..., description="ID заказа")
-    customer_name: str = Field(..., min_length=2, max_length=100, description="Имя клиента")
-    customer_surname: str = Field(..., min_length=2, max_length=100, description="Фамилия клиента")
+    customer_name: str = Field(..., max_length=100, description="Имя клиента")
+    customer_surname: Optional[str] = Field(None, max_length=100, description="Фамилия клиента")
     customer_phone: str = Field(..., description="Номер телефона (форматы +7XXXXXXXXXX или 8XXXXXXXXXX)")
-    address: str = Field(..., min_length=5, max_length=300, description="Адрес доставки")
+    address: str = Field(..., max_length=300, description="Адрес доставки")
     comment: Optional[str] = Field(None, description="Комментарий клиента")
     total_price: Decimal = Field(..., description="Итоговая цена заказа с учетом услуг")
     created_at: datetime = Field(..., description="Дата создания заказа")
     services: Optional[list[OrderServiceRead]] = Field(
         default_factory=list, description="Подробная информация о дополнительных услугах"
     )
-    product: "ProductReadWithRelations" = Field(description="Товары")
+    product: Optional["ProductReadWithRelations"] = Field(None, description="Товары")
 
     model_config = ConfigDict(from_attributes=True)
 

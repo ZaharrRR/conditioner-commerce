@@ -1,3 +1,6 @@
+from functools import wraps
+
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
 
@@ -16,3 +19,25 @@ async_session = async_sessionmaker(
 async def get_session() -> AsyncSession:
     async with async_session() as session:
         yield session
+
+
+def connection(isolation_level=None):
+    def decorator(method):
+        @wraps(method)
+        async def wrapper(*args, **kwargs):
+            async with async_session() as session:
+                try:
+                    if isolation_level:
+                        await session.execute(text(f"SET TRANSACTION ISOLATION LEVEL {isolation_level}"))
+
+
+                    return await method(*args, session=session, **kwargs)
+                except Exception as e:
+                    await session.rollback()
+                    raise e
+                finally:
+                    await session.close()
+
+        return wrapper
+
+    return decorator
