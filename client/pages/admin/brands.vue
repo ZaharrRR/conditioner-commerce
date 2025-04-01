@@ -8,7 +8,6 @@
       :form-data="newBrand"
       :submit-handler="handleCreate"
       submit-button-text="Добавить"
-      @submitted="handleCreateSubmit"
     />
 
     <div v-if="error" class="error-message">{{ error }}</div>
@@ -79,7 +78,6 @@ const error = ref(null);
 const newBrand = reactive({
   name: "",
   description: "",
-  logo_url: "",
 });
 
 const createFormConfig = [
@@ -98,12 +96,6 @@ const createFormConfig = [
         label: "Описание",
         key: "description",
         placeholder: "Введите описание",
-      },
-      {
-        type: "input",
-        label: "Ссылка на логотип",
-        key: "logo_url",
-        placeholder: "Введите URL логотипа",
       },
     ],
   },
@@ -124,11 +116,6 @@ const editFormConfig = [
         label: "Описание",
         key: "description",
       },
-      {
-        type: "input",
-        label: "Ссылка на логотип",
-        key: "logo_url",
-      },
     ],
   },
 ];
@@ -142,12 +129,12 @@ const tableColumns = [
 
 const handleCreate = async (formData) => {
   if (!formData.name.trim()) throw new Error("Название обязательно");
-  return await createBrand(formData);
-};
 
-const handleCreateSubmit = () => {
-  Object.assign(newBrand, { name: "", description: "", logo_url: "" });
-  loadBrands();
+  const response = await createBrand(formData);
+  Object.assign(newBrand, { name: "", description: "" });
+  brands.value.unshift(response);
+
+  return response;
 };
 
 const closeModal = () => {

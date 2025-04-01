@@ -1,13 +1,4 @@
-import axios from "axios";
-
-import { handleError } from "~/api/http/errorHandler";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000/",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { handleError, api, apiMulti } from "~/api/http";
 
 const fetchAllBrands = async () => {
   try {
@@ -20,7 +11,7 @@ const fetchAllBrands = async () => {
 
 const createBrand = async (brandData) => {
   try {
-    const response = await api.post("/brand/create", brandData);
+    const response = await apiMulti.post(`/brand/create`, brandData);
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка создания бренда");
@@ -46,15 +37,7 @@ const updateBrand = async (brandId, updateData) => {
 };
 
 const updateBrandLogo = (brandId, formData) => {
-  return axios.patch(
-    `http://localhost:3000/brand/update-logo/${brandId}`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data", // Важно!
-      },
-    }
-  );
+  return apiMulti.patch(`/brand/update-logo/${brandId}`, formData);
 };
 
 const deleteBrand = async (brandId) => {

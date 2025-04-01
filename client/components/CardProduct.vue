@@ -1,7 +1,7 @@
 <template>
   <RouterLink :to="`/products/${product.id}`" class="card">
     <img
-      :src="product.image ? product.image : `/images/hisense.png`"
+      :src="product.photo_url ? product.photo_url : `/images/hisense.png`"
       :alt="product.name"
       class="card__image"
       loading="lazy"

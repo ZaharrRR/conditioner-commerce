@@ -1,17 +1,8 @@
-import axios from "axios";
-
-import { handleError } from "~/api/http/errorHandler";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000/orders",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { handleError, api } from "~/api/http";
 
 const fetchAllOrders = async () => {
   try {
-    const response = await api.get("/");
+    const response = await api.get("/orders/");
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка загрузки заказов");
@@ -20,7 +11,7 @@ const fetchAllOrders = async () => {
 
 const createOrder = async (orderData) => {
   try {
-    const response = await api.post("/", orderData);
+    const response = await api.post("/orders/", orderData);
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка создания заказа");
@@ -29,7 +20,7 @@ const createOrder = async (orderData) => {
 
 const getOrderById = async (orderId) => {
   try {
-    const response = await api.get(`/${orderId}`);
+    const response = await api.get(`/orders/${orderId}`);
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка загрузки заказа");
@@ -38,7 +29,7 @@ const getOrderById = async (orderId) => {
 
 const deleteOrder = async (orderId) => {
   try {
-    const response = await api.delete(`/${orderId}`);
+    const response = await api.delete(`/orders/${orderId}`);
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка удаления заказа");

@@ -7,13 +7,12 @@
       :form-data="form"
       :submit-handler="handleCreate"
       submit-button-text="Добавить"
-      @submitted="handleFormSubmit"
     />
 
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div class="attributes-list">
-      <h2>Список атрибутов</h2>
+    <div class="section attributes-list">
+      <h2>Список продуктов</h2>
       <DataTable
         v-if="attributes.length > 0"
         :columns="tableColumns"
@@ -76,19 +75,14 @@ const handleCreate = async (formData) => {
   if (!name) throw new Error("Название атрибута обязательно");
 
   const result = await createAttribute(name);
-  return result;
-};
-
-const handleFormSubmit = () => {
   form.name = "";
-  loadAttributes();
+  attributes.value.unshift(result);
 };
 
 const handleDelete = async (id) => {
   try {
     error.value = null;
     await deleteAttribute(id);
-    await loadAttributes();
   } catch (err) {
     error.value = "Неизвестная ошибка при удалении";
   }
@@ -110,6 +104,16 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.section {
+  margin-top: 2rem;
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #2d3748;
+  }
+}
+
 .admin-attributes {
   .header {
     font-size: 2rem;

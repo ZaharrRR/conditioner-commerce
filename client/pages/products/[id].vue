@@ -1,7 +1,10 @@
 <template>
   <NuxtLayout name="page-layout">
     <div class="product-box" v-if="product">
-      <img src="/images/hisense.png" :alt="product.name" />
+      <img
+        :src="product.photo_url ? product.photo_url : `/images/hisense.png`"
+        :alt="product.name"
+      />
       <div class="product-info">
         <h1>{{ product.name }}</h1>
         <p>{{ product.price }} ₽</p>
@@ -10,20 +13,20 @@
         <div class="product-spec">
           <h2>Характеристики</h2>
           <div class="spec-icons">
-            <div class="spec-icon">
+            <div class="spec-icon" v-if="hasAttribute('Площадь помещения')">
               <Icon name="mdi:cube-outline" class="icon" />
               <p>Площадь помещения</p>
-              <p>70 м²</p>
+              <p>{{ getAttributeValue("Площадь помещения") }}</p>
             </div>
-            <div class="spec-icon">
+            <div class="spec-icon" v-if="hasAttribute('Мощность охлаждения')">
               <Icon name="ri:snowflake-fill" class="icon" />
               <p>Мощность охлаждения</p>
-              <p>7.0 кВт</p>
+              <p>{{ getAttributeValue("Мощность охлаждения") }}</p>
             </div>
-            <div class="spec-icon">
+            <div class="spec-icon" v-if="hasAttribute('Гарантия')">
               <Icon name="material-symbols:settings" class="icon" />
               <p>Гарантия</p>
-              <p>2 года</p>
+              <p>{{ getAttributeValue("Гарантия") }}</p>
             </div>
           </div>
         </div>
@@ -33,31 +36,19 @@
     <div class="product-content" v-if="product">
       <div class="description">
         <h2>Описание</h2>
-        <h3>Сплит-система Hisense AS-24HR4SBA6DC00S</h3>
+        <h3>{{ product.name }}</h3>
         <p>
-          Серия NEO Classic A оснащена полностью автоматическими жалюзи 4D AUTO
-          Air, что даёт возможность регулировать распределение воздуха полностью
-          по вашему желанию с помощью пульта дистанционного управления. Ранее
-          эта функция была доступна только у моделей бизнес-класса.
+          {{ product.description }}
         </p>
-        <p>
-          Полнофункциональный дисплей скрыт за светопрозрачной передней панелью,
-          что делает эксплуатацию очень удобной.
-        </p>
-        <a href="#">Подробнее...</a>
       </div>
 
       <div class="characteristics">
         <h2>Характеристики</h2>
         <ul>
-          <li><strong>Бренд:</strong> Hisense</li>
-          <li><strong>Серия:</strong> Neo classic A</li>
-          <li><strong>Обслуживаемая площадь, м²:</strong> 70</li>
-          <li><strong>Мощность в режиме охлаждения:</strong> 7.0 кВт</li>
-          <li><strong>Мощность в режиме обогрева:</strong> 7.2 кВт</li>
-          <li><strong>Страна производства:</strong> Китай</li>
+          <li v-for="attr in product.attributes" :key="attr.attribute_name">
+            <strong>{{ attr.attribute_name }}:</strong> {{ attr.value }}
+          </li>
         </ul>
-        <a href="#">Подробнее...</a>
       </div>
     </div>
     <Services />
@@ -77,6 +68,19 @@ import UButton from "~/components/UI/UButton.vue";
 import Services from "~/components/sections/Services.vue";
 
 const product = ref(null);
+
+const hasAttribute = (name) => {
+  return product.value?.attributes?.some(
+    (attr) => attr.attribute_name === name
+  );
+};
+
+const getAttributeValue = (name) => {
+  const attr = product.value?.attributes?.find(
+    (attr) => attr.attribute_name === name
+  );
+  return attr ? attr.value : "";
+};
 
 onMounted(async () => {
   product.value = await getProductById(router.params.id);

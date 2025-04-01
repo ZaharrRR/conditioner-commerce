@@ -3,13 +3,13 @@
     <div class="new">
       <div class="new__cards">
         <RouterLink
-          to="/products/1"
+          :to="`/products/${product.id}`"
           class="card"
           v-for="(product, index) in products"
           :key="index"
         >
           <img
-            :src="product.image ? product.image : `/images/hisense.png`"
+            :src="product.photo_url ? product.photo_url : `/images/hisense.png`"
             :alt="product.name"
             class="card__image"
             loading="lazy"

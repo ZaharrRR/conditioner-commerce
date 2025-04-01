@@ -1,17 +1,8 @@
-import axios from "axios";
-
-import { handleError } from "@/api/http/errorHandler";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000/attribute",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { api, handleError, adminApiKey } from "~/api/http";
 
 const fetchAllAttributes = async () => {
   try {
-    const response = await api.get("/all");
+    const response = await api.get("/attribute/all");
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка загрузки атрибутов");
@@ -20,7 +11,7 @@ const fetchAllAttributes = async () => {
 
 const getAttributeById = async (attributeId) => {
   try {
-    const response = await api.get(`/get-by-id/${attributeId}`);
+    const response = await api.get(`/attribute/get-by-id/${attributeId}`);
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка загрузки атрибутов");
@@ -29,7 +20,7 @@ const getAttributeById = async (attributeId) => {
 
 const createAttribute = async (name) => {
   try {
-    const response = await api.post("/create", { name });
+    const response = await api.post("/attribute/create", { name });
     return response.data;
   } catch (error) {
     return handleError(error, "Ошибка создания атрибута");
@@ -38,7 +29,7 @@ const createAttribute = async (name) => {
 
 const deleteAttribute = async (attributeId) => {
   try {
-    await api.delete(`/delete/${attributeId}`);
+    await api.delete(`/attribute/delete/${attributeId}`);
   } catch (error) {
     return handleError(error, "Ошибка удаления атрибута");
   }

@@ -72,6 +72,7 @@ class ProductDAO:
                     Product.id,
                     Product.name,
                     Product.price,
+                    Product.description,
                     Product.photo_url,
                     Brand.name.label("brand_name"),
                     Category.name.label("category_name"),
@@ -111,6 +112,7 @@ class ProductDAO:
             product_read_with_relations = ProductReadWithRelations(
                 id=row.id,
                 name=row.name,
+                description=row.description,
                 photo_url=row.photo_url,
                 price=row.price,
                 brand_name=row.brand_name,
