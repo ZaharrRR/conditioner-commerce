@@ -18,10 +18,19 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copy files to server
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+
+      - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /home/${{ secrets.SSH_USER }}/project-root
+            # Ждём PostgreSQL и выполняем миграции
+            ./wait-for-postgres.sh
+            alembic upgrade head
+
+            # Обновляем репозиторий и перезапускаем контейнеры
+            cd /path/to/your/project
             git fetch origin
             git checkout prod
             git reset --hard origin/prod
