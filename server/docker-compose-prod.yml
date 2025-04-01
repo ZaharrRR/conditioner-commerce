@@ -10,13 +10,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - backend
 
-  redis:
-    image: redis:7
-    container_name: prod_redis
-    command: redis-server --requirepass password
-    ports:
-      - "6379:6379"
 
   app:
     build:
@@ -31,9 +27,14 @@ services:
       - .env.prod
     environment:
       - postgres_host=db
-      - redis_host=redis
     ports:
       - "3000:3000"
+    networks:
+      - backend
 
 volumes:
   postgres_data:
+
+networks:
+  backend:
+    driver: bridge

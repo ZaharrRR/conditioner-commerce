@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
 from bot.notify.notify import notify_orders_admins
-from core import logger
+from core import logger, get_api_key
 from dao.order import OrderDAO
 from db.database import get_session
 from schemas.orders import OrderRead, OrderCreate
@@ -11,7 +11,7 @@ from schemas.orders import OrderRead, OrderCreate
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-@router.post("/", status_code=201, summary="Создание заказа")
+@router.post("/", status_code=201, summary="Создание заказа", dependencies=[Depends(get_api_key)])
 async def create_order(
     order_data: OrderCreate,
     session: AsyncSession = Depends(get_session)
@@ -49,7 +49,7 @@ async def get_orders(session: AsyncSession = Depends(get_session)):
         logger.error("Ошибка БД при получении заказов")
         raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.delete("/{order_id}", status_code=204, summary="Удаление заказа по ID")
+@router.delete("/{order_id}", status_code=204, summary="Удаление заказа по ID", dependencies=[Depends(get_api_key)])
 async def delete_order(
     order_id: UUID,
     session: AsyncSession = Depends(get_session)

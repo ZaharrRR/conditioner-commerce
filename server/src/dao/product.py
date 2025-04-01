@@ -50,7 +50,7 @@ class ProductDAO:
             await self.session.commit()
 
             logger.info(f"✅ Продукт создан с ID {new_product.id}")
-            return ProductRead.model_validate(new_product)
+            return await self.get_product_with_relations_by_id(new_product.id)
 
         except IntegrityError as e:
             await self.session.rollback()

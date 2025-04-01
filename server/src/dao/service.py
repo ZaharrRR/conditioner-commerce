@@ -100,3 +100,14 @@ class ServiceDAO:
             await self.session.rollback()
             logger.error(f"❌ Ошибка при удалении услуги Service с ID {service_id}: {e}")
             raise RuntimeError("Database error")
+    async def get_services_with_logo(self):
+        logger.debug("🔎 Получение услуг Service с заполненным logo_url")
+        try:
+            stmt = select(Service).where(Service.logo_url.isnot(None)).where(Service.logo_url != "")
+            result = await self.session.execute(stmt)
+            services = result.scalars().all()
+            logger.info(f"✅ Найдено {len(services)} услуг с logo_url")
+            return [ServiceRead.model_validate(service, from_attributes=True) for service in services]
+        except SQLAlchemyError as e:
+            logger.error(f"❌ Ошибка при получении услуг с logo_url: {e}")
+            raise RuntimeError("Database error")

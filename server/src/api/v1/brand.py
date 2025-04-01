@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from fastapi.params import File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core import get_api_key
 from dao import BrandDAO
 from db.database import get_session
 from schemas import BrandCreate, BrandRead, BrandUpdate
@@ -18,7 +19,7 @@ def get_s3_service() -> S3Service:
     return S3Service()
 
 
-@router.post("/create", response_model=BrandRead, status_code=201)
+@router.post("/create", response_model=BrandRead, status_code=201, dependencies=[Depends(get_api_key)])
 async def create_brand(
     name: str = Form(...),
     description: str = Form(""),
@@ -80,6 +81,7 @@ async def get_brand_by_id(
     response_model=None,
     status_code=204,
     summary="Удаление записи Brand по id",
+    dependencies=[Depends(get_api_key)]
 )
 async def delete_brand_by_id(
     brand_id: UUID, session: AsyncSession = Depends(get_session)
@@ -94,6 +96,7 @@ async def delete_brand_by_id(
 @router.patch(
     "/update/{brand_id}",
     response_model=BrandRead,
+    dependencies=[Depends(get_api_key)]
 )
 async def update_brand_by_id(
     brand_id: UUID,

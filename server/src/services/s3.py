@@ -19,7 +19,7 @@ class S3Service:
     def upload_file(self, file_content: bytes, key: str) -> str:
         try:
             self.s3.put_object(Bucket=self.bucket_name, Key=key, Body=file_content)
-            return f"{settings.s3.endpoint}/{key}"
+            return f"{settings.s3.endpoint}/{settings.s3.bucket_name}/{key}"
         except ClientError as e:
             logger.error(e)
             raise Exception(e)

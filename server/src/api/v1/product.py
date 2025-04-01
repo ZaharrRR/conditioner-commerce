@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, UploadFile
 from fastapi.params import Depends, File
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core import get_api_key
 from dao.product import ProductDAO
 from db.database import get_session
 from schemas import ProductRead, ProductCreate, ProductReadWithRelations, ProductAttributeLink, ProductAttributeDelete
@@ -21,7 +22,8 @@ def get_s3_service() -> S3Service:
     "/create",
     response_model=ProductRead,
     summary="Создание Product",
-    status_code=201
+    status_code=201,
+    dependencies=[Depends(get_api_key)]
 )
 async def create_product(data: ProductCreate, session: AsyncSession = Depends(get_session)):
     product_dao = ProductDAO(session)
@@ -35,7 +37,7 @@ async def create_product(data: ProductCreate, session: AsyncSession = Depends(ge
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/update-photo/{product_id}", status_code=201, response_model=ProductReadWithRelations)
+@router.post("/update-photo/{product_id}", status_code=201, response_model=ProductReadWithRelations, dependencies=[Depends(get_api_key)])
 async def upload_product_photo(
         product_id: UUID,
         photo_file: UploadFile = File(...),
@@ -82,7 +84,7 @@ async def get_products(session: AsyncSession = Depends(get_session)):
     "/get-by-id/{product_id}",
     status_code=200,
     response_model=ProductReadWithRelations,
-    summary="Получение Product с brand и category"
+    summary="Получение Product с brand и category",
 )
 async def get_product_by_id(product_id: UUID, session: AsyncSession = Depends(get_session)):
     product_dao = ProductDAO(session)
@@ -96,7 +98,7 @@ async def get_product_by_id(product_id: UUID, session: AsyncSession = Depends(ge
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/{product_id}", status_code=204, summary="Удаление товара по ID")
+@router.delete("/{product_id}", status_code=204, summary="Удаление товара по ID", dependencies=[Depends(get_api_key)])
 async def delete_order(
     product_id: UUID,
     session: AsyncSession = Depends(get_session)
@@ -107,7 +109,7 @@ async def delete_order(
         raise HTTPException(status_code=404, detail="Product not found")
     return None
 
-@router.post("/{product_id}/link-attributes", summary="Привязать аттрибуты к продукту")
+@router.post("/{product_id}/link-attributes", summary="Привязать аттрибуты к продукту", dependencies=[Depends(get_api_key)])
 async def link_attributes_to_product(
     product_id: UUID,
     attributes_links: list[ProductAttributeLink],
@@ -122,7 +124,7 @@ async def link_attributes_to_product(
     except RuntimeError:
         raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.delete("/", status_code=204, summary="Удалить аттрибут у продукта")
+@router.delete("/", status_code=204, summary="Удалить аттрибут у продукта", dependencies=[Depends(get_api_key)])
 async def delete_product_attribute(
     data: ProductAttributeDelete,
     session: AsyncSession = Depends(get_session),

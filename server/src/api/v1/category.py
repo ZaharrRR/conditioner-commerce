@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, Depends
 from fastapi.params import File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core import get_api_key
 from dao.category import CategoryDAO
 from db.database import get_session
 from schemas import CategoryCreate, CategoryRead, CategoryUpdate
@@ -16,7 +17,7 @@ router = APIRouter(prefix="/category", tags=["Category"])
 def get_s3_service() -> S3Service:
     return S3Service()
 
-@router.post("/create", response_model=CategoryRead, status_code=201)
+@router.post("/create", response_model=CategoryRead, status_code=201, dependencies=[Depends(get_api_key)])
 async def create_category(
     name: str = Form(...),
     logo_file: UploadFile = File(None),
@@ -76,6 +77,7 @@ async def get_category_by_id(
     response_model=None,
     status_code=204,
     summary="Удаление записи Category по id",
+    dependencies=[Depends(get_api_key)]
 )
 async def delete_category_by_id(
     category_id: UUID, session: AsyncSession = Depends(get_session)
@@ -90,6 +92,7 @@ async def delete_category_by_id(
 @router.patch(
     "/update/{category_id}",
     response_model=CategoryRead,
+    dependencies=[Depends(get_api_key)]
 )
 async def update_category_by_id(
     category_id: UUID,

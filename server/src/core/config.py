@@ -25,7 +25,7 @@ class ConfigBase(BaseSettings):
 class ApiConfig(ConfigBase):
     host: str
     port: int
-
+    admin_key: str
     model_config = SettingsConfigDict(env_prefix="api_")
 
 
@@ -46,15 +46,6 @@ class DatabaseConfig(ConfigBase):
     model_config = SettingsConfigDict(env_prefix="postgres_")
 
 
-class RedisConfig(ConfigBase):
-    host: str
-    port: int
-    password: str
-    database: int
-
-    model_config = SettingsConfigDict(env_prefix="redis_")
-
-
 class S3Config(ConfigBase):
     access_key: str
     secret_key: str
@@ -72,7 +63,6 @@ class Settings(BaseSettings):
     api: ApiConfig = Field(default_factory=ApiConfig)
     telegram: TelegramConfig = Field(default_factory=TelegramConfig)
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
-    redis: RedisConfig = Field(default_factory=RedisConfig)
     s3: S3Config = Field(default_factory=S3Config)
 
     def get_db_url(self) -> str:

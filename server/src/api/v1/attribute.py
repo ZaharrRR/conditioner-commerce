@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core import get_api_key
 from dao.attribute import AttributeDAO
 from db.database import get_session
 from schemas import AttributeCreate, AttributeRead
@@ -19,6 +20,7 @@ router = APIRouter(
     response_model=AttributeRead,
     status_code=201,
     summary="Создание записи Attribute",
+    dependencies=[Depends(get_api_key)]
 )
 async def create_attribute(
     attribute: AttributeCreate, session: AsyncSession = Depends(get_session)
@@ -68,6 +70,7 @@ async def get_attribute_by_id(
     response_model=None,
     status_code=204,
     summary="Удаление Attribute по id",
+    dependencies=[Depends(get_api_key)]
 )
 async def delete_attribute_by_id(
     attribute_id: UUID, session: AsyncSession = Depends(get_session)
