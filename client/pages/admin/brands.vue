@@ -2,65 +2,58 @@
   <NuxtLayout name="admin-layout" class="brand-management">
     <h1 class="title">Управление брендами</h1>
 
-    <div class="create-form">
-      <h2 class="form-title">Добавить бренд</h2>
-      <div class="form-content">
-        <input
-          v-model="newBrand.name"
-          placeholder="Название"
-          class="form-input"
-        />
-        <textarea
-          v-model="newBrand.description"
-          placeholder="Описание"
-          class="form-textarea"
-        ></textarea>
-        <input
-          v-model="newBrand.logo"
-          placeholder="Ссылка на лого"
-          class="form-input"
-        />
-        <button @click="handleCreate" class="submit-button">Добавить</button>
-      </div>
-    </div>
+    <GenericForm
+      title="Добавить бренд"
+      :form-config="createFormConfig"
+      :form-data="newBrand"
+      :submit-handler="handleCreate"
+      submit-button-text="Добавить"
+      @submitted="handleCreateSubmit"
+    />
 
     <div v-if="error" class="error-message">{{ error }}</div>
-    <div v-else class="brand-list">
-      <div v-for="brand in brands" :key="brand.id" class="brand-item">
-        <div class="brand-info">
-          <img v-if="brand.logo" :src="brand.logo" class="brand-logo" />
-          <div class="brand-details">
-            <h3 class="brand-name">{{ brand.name }}</h3>
-            <p class="brand-description">{{ brand.description }}</p>
-          </div>
-        </div>
 
-        <div class="action-buttons">
-          <button @click="editBrand = { ...brand }" class="edit-button">
-            Изменить
-          </button>
-          <button @click="handleDelete(brand.id)" class="delete-button">
-            Удалить
-          </button>
-        </div>
-      </div>
+    <div class="section brand-list">
+      <h2>Список брендов</h2>
+      <DataTable
+        v-if="brands.length > 0"
+        :columns="tableColumns"
+        :rows="brands"
+      >
+        <template #logo="{ row }">
+          <img v-if="row.logo_url" :src="row.logo_url" class="brand-logo" />
+        </template>
+        <template #actions="{ row }">
+          <div class="action-buttons">
+            <button class="edit-button" @click="openEditModal(row)">
+              Изменить
+            </button>
+            <button class="delete-button" @click="handleDelete(row.id)">
+              Удалить
+            </button>
+          </div>
+        </template>
+      </DataTable>
+      <div v-else class="empty-state">Нет доступных брендов</div>
     </div>
 
-    <div v-if="editBrand" class="edit-modal">
-      <div class="modal-content">
-        <h2 class="modal-title">Редактирование бренда</h2>
-        <input v-model="editBrand.name" class="modal-input" />
-        <textarea
-          v-model="editBrand.description"
-          class="modal-textarea"
-        ></textarea>
-        <input v-model="editBrand.logo" class="modal-input" />
-        <div class="modal-actions">
-          <button @click="handleUpdate" class="save-button">Сохранить</button>
-          <button @click="editBrand = null" class="cancel-button">
-            Отмена
-          </button>
-        </div>
+    <div
+      v-if="editBrand"
+      class="edit-modal-overlay"
+      @click.self="closeModal"
+      @keyup.esc="closeModal"
+    >
+      <div class="edit-modal-content">
+        <GenericForm
+          :form-config="editFormConfig"
+          :form-data="editBrand"
+          :submit-handler="handleUpdate"
+          submit-button-text="Сохранить"
+          cancel-button-text="Отмена"
+          @submitted="handleEditSubmit"
+          @cancel="closeModal"
+          class="edit-modal-form"
+        />
       </div>
     </div>
   </NuxtLayout>
@@ -76,84 +69,120 @@ import {
   deleteBrand,
 } from "@/api/brands";
 
+import DataTable from "@/components/admin/DataTable.vue";
+import GenericForm from "@/components/admin/GenericForm.vue";
+
 const brands = ref([]);
 const editBrand = ref(null);
-
 const error = ref(null);
 
 const newBrand = reactive({
   name: "",
   description: "",
-  logo: "",
+  logo_url: "",
 });
 
-const loadBrands = async () => {
-  try {
-    error.value = null;
-    const result = await fetchAllBrands();
+const createFormConfig = [
+  {
+    title: "Добавление бренда",
+    fields: [
+      {
+        type: "input",
+        label: "Название бренда",
+        key: "name",
+        required: true,
+        placeholder: "Введите название",
+      },
+      {
+        type: "textarea",
+        label: "Описание",
+        key: "description",
+        placeholder: "Введите описание",
+      },
+      {
+        type: "input",
+        label: "Ссылка на логотип",
+        key: "logo_url",
+        placeholder: "Введите URL логотипа",
+      },
+    ],
+  },
+];
 
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
+const editFormConfig = [
+  {
+    title: "Редактирование бренда",
+    fields: [
+      {
+        type: "input",
+        label: "Название бренда",
+        key: "name",
+        required: true,
+      },
+      {
+        type: "textarea",
+        label: "Описание",
+        key: "description",
+      },
+      {
+        type: "input",
+        label: "Ссылка на логотип",
+        key: "logo_url",
+      },
+    ],
+  },
+];
 
-    brands.value = result;
-  } finally {
-  }
+const tableColumns = [
+  { title: "Лого", key: "logo_url", width: "100px", type: "image" },
+  { title: "Название", key: "name" },
+  { title: "Описание", key: "description" },
+  { title: "Действия", key: "actions", width: "150px" },
+];
+
+const handleCreate = async (formData) => {
+  if (!formData.name.trim()) throw new Error("Название обязательно");
+  return await createBrand(formData);
 };
 
-const handleCreate = async () => {
-  try {
-    error.value = null;
-    const result = await createBrand(newBrand);
-
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
-
-    brands.value.push(result);
-    newBrand.name = "";
-    newBrand.description = "";
-    newBrand.logo = "";
-  } catch (err) {
-    error.value = "Неизвестная ошибка при создании бренда";
-  }
+const handleCreateSubmit = () => {
+  Object.assign(newBrand, { name: "", description: "", logo_url: "" });
+  loadBrands();
 };
 
-const handleUpdate = async () => {
-  if (!editBrand.value) return;
+const closeModal = () => {
+  editBrand.value = null;
+};
 
-  try {
-    error.value = null;
-    const result = await updateBrand(editBrand.value.id, editBrand.value);
+const openEditModal = (brand) => {
+  editBrand.value = { ...brand };
+};
 
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
+const handleUpdate = async (formData) => {
+  if (!formData.name.trim()) throw new Error("Название обязательно");
+  return await updateBrand(formData.id, formData);
+};
 
-    const index = brands.value.findIndex((b) => b.id === result.id);
-    if (index !== -1) brands.value.splice(index, 1, result);
-    editBrand.value = null;
-  } catch (err) {
-    error.value = "Неизвестная ошибка при обновлении";
-  }
+const handleEditSubmit = () => {
+  editBrand.value = null;
+  loadBrands();
 };
 
 const handleDelete = async (id) => {
   try {
-    error.value = null;
-    const result = await deleteBrand(id);
-
-    if (result instanceof Error) {
-      error.value = result.message;
-      return;
-    }
-
-    brands.value = brands.value.filter((b) => b.id !== id);
+    await deleteBrand(id);
+    await loadBrands();
   } catch (err) {
-    error.value = "Неизвестная ошибка при удалении";
+    error.value = "Ошибка при удалении бренда";
+  }
+};
+
+const loadBrands = async () => {
+  try {
+    error.value = null;
+    brands.value = await fetchAllBrands();
+  } catch (err) {
+    error.value = "Ошибка загрузки брендов";
   }
 };
 
@@ -176,118 +205,68 @@ onMounted(() => {
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;
+  }
 
-    .form-title {
+  .error-message {
+    padding: 1rem;
+    background: #fed7d7;
+    color: #c53030;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .section {
+    margin-top: 2rem;
+
+    h2 {
       font-size: 1.25rem;
       margin-bottom: 1rem;
       color: #2d3748;
     }
+  }
 
-    .form-content {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+  .brand-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 4px;
+  }
 
-      .form-input {
-        padding: 0.75rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        font-size: 1rem;
-        transition: border-color 0.2s;
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
 
-        &:focus {
-          outline: none;
-          border-color: #4299e1;
-          box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-        }
+    .edit-button {
+      padding: 0.5rem 1rem;
+      background: #ecc94b;
+      color: #1a202c;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.9;
       }
+    }
 
-      .form-textarea {
-        @extend .form-input;
-        height: 6rem;
-        resize: vertical;
-      }
-
-      .submit-button {
-        align-self: flex-start;
-        padding: 0.75rem 1.5rem;
-        background: #4299e1;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background 0.2s;
-
-        &:hover {
-          background: #3182ce;
-        }
-      }
+    .delete-button {
+      @extend .edit-button;
+      background: #f56565;
+      color: white;
     }
   }
 
-  .brand-list {
-    .brand-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-
-      .brand-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-
-        .brand-logo {
-          width: 4rem;
-          height: 4rem;
-          object-fit: contain;
-        }
-
-        .brand-name {
-          font-size: 1.125rem;
-          font-weight: 600;
-          margin-bottom: 0.25rem;
-        }
-
-        .brand-description {
-          color: #718096;
-          font-size: 0.875rem;
-        }
-      }
-
-      .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-
-        .edit-button {
-          padding: 0.5rem 1rem;
-          background: #ecc94b;
-          color: #1a202c;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: opacity 0.2s;
-
-          &:hover {
-            opacity: 0.9;
-          }
-        }
-
-        .delete-button {
-          @extend .edit-button;
-          background: #f56565;
-          color: white;
-        }
-      }
-    }
+  .empty-state {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+    color: #6c757d;
   }
 
-  .edit-modal {
+  .edit-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -297,59 +276,44 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    .modal-content {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      width: 32rem;
-
-      .modal-title {
-        font-size: 1.25rem;
-        margin-bottom: 1rem;
-      }
-
-      .modal-input {
-        @extend .form-input;
-        width: 100%;
-        margin-bottom: 1rem;
-      }
-
-      .modal-textarea {
-        @extend .form-textarea;
-        width: 100%;
-        margin-bottom: 1rem;
-      }
-
-      .modal-actions {
-        display: flex;
-        gap: 0.5rem;
-
-        .save-button {
-          @extend .submit-button;
-          background: #48bb78;
-          &:hover {
-            background: #38a169;
-          }
-        }
-
-        .cancel-button {
-          @extend .submit-button;
-          background: #a0aec0;
-          &:hover {
-            background: #718096;
-          }
-        }
-      }
-    }
+    z-index: 1000;
   }
 
-  .error-message {
-    padding: 1rem;
-    background: #fed7d7;
-    color: #c53030;
-    border-radius: 6px;
-    margin-bottom: 1rem;
+  .edit-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .edit-modal-form {
+    :deep(.form-section) {
+      padding: 0;
+      margin: 0;
+    }
+
+    :deep(.form-title) {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    :deep(input),
+    :deep(textarea) {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+    }
+
+    :deep(.form-actions) {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
   }
 }
 </style>

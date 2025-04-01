@@ -45,15 +45,16 @@ const updateBrand = async (brandId, updateData) => {
   }
 };
 
-const updateBrandLogo = async (brandId, logoUrl) => {
-  try {
-    const response = await api.patch(`/brand/update-logo/${brandId}`, {
-      logoUrl,
-    });
-    return response.data;
-  } catch (error) {
-    return handleError(error, "Ошибка обновления логотипа");
-  }
+const updateBrandLogo = (brandId, formData) => {
+  return axios.patch(
+    `http://localhost:3000/brand/update-logo/${brandId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data", // Важно!
+      },
+    }
+  );
 };
 
 const deleteBrand = async (brandId) => {

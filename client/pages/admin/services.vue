@@ -1,86 +1,60 @@
 <template>
   <NuxtLayout name="admin-layout" class="service-management">
-    <h1 class="service-management__title">Управление услугами</h1>
+    <h1 class="title">Управление услугами</h1>
 
-    <div class="service-management__create-form">
-      <h2 class="service-management__form-title">Добавить услугу</h2>
-      <div class="service-management__form-content">
-        <input
-          v-model="newService.service_type"
-          placeholder="Тип услуги"
-          class="service-management__input"
-        />
-        <input
-          v-model="newService.base_price"
-          type="number"
-          step="0.01"
-          placeholder="Базовая цена"
-          class="service-management__input"
-        />
-        <button @click="handleCreate" class="service-management__submit-btn">
-          Добавить
-        </button>
-      </div>
-    </div>
+    <GenericForm
+      title="Добавить услугу"
+      :form-config="createFormConfig"
+      :form-data="newService"
+      :submit-handler="handleCreate"
+      submit-button-text="Добавить"
+      @submitted="handleCreateSubmit"
+    />
 
-    <div v-if="error" class="service-management__error">{{ error }}</div>
+    <div v-if="error" class="error-message">{{ error }}</div>
 
-    <div v-else class="service-management__list">
-      <div
-        v-for="service in services"
-        :key="service.id"
-        class="service-management__item"
+    <div class="section service-list">
+      <h2>Список услуг</h2>
+      <DataTable
+        v-if="services.length > 0"
+        :columns="tableColumns"
+        :rows="services"
       >
-        <div class="service-management__info">
-          <span class="service-management__type">{{
-            service.service_type
-          }}</span>
-          <span class="service-management__price"
-            >{{ service.base_price }} ₽</span
-          >
-        </div>
-
-        <div class="service-management__actions">
-          <button
-            @click="editService = { ...service }"
-            class="service-management__edit-btn"
-          >
-            Изменить
-          </button>
-          <button
-            @click="handleDelete(service.id)"
-            class="service-management__delete-btn"
-          >
-            Удалить
-          </button>
-        </div>
-      </div>
+        <template #base_price="{ row }">
+          {{ formatPrice(row.base_price) }}
+        </template>
+        <template #actions="{ row }">
+          <div class="action-buttons">
+            <button class="edit-button" @click="openEditModal(row)">
+              Изменить
+            </button>
+            <button class="delete-button" @click="handleDelete(row.id)">
+              Удалить
+            </button>
+          </div>
+        </template>
+      </DataTable>
+      <div v-else class="empty-state">Нет доступных услуг</div>
     </div>
 
-    <div v-if="editService" class="service-management__modal">
-      <div class="service-management__modal-content">
-        <h2 class="service-management__modal-title">Редактирование услуги</h2>
-        <input
-          v-model="editService.service_type"
-          class="service-management__modal-input"
+    <div
+      v-if="editService"
+      class="edit-modal-overlay"
+      @click.self="closeModal"
+      @keyup.esc="closeModal"
+    >
+      <div class="edit-modal-content">
+        <GenericForm
+          title="Редактирование услуги"
+          :form-config="editFormConfig"
+          :form-data="editService"
+          :submit-handler="handleUpdate"
+          submit-button-text="Сохранить"
+          cancel-button-text="Отмена"
+          @submitted="handleEditSubmit"
+          @cancel="closeModal"
+          class="edit-modal-form"
         />
-        <input
-          v-model="editService.base_price"
-          type="number"
-          step="0.01"
-          class="service-management__modal-input"
-        />
-        <div class="service-management__modal-actions">
-          <button @click="handleUpdate" class="service-management__modal-save">
-            Сохранить
-          </button>
-          <button
-            @click="editService = null"
-            class="service-management__modal-cancel"
-          >
-            Отмена
-          </button>
-        </div>
       </div>
     </div>
   </NuxtLayout>
@@ -88,6 +62,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";
+
 import {
   fetchAllServices,
   createService,
@@ -95,188 +70,208 @@ import {
   deleteService,
 } from "@/api/services";
 
+import DataTable from "@/components/admin/DataTable.vue";
+import GenericForm from "@/components/admin/GenericForm.vue";
+
 const services = ref([]);
 const editService = ref(null);
+
 const error = ref(null);
 
 const newService = reactive({
   service_type: "",
   base_price: "",
+  logo_url: "",
 });
 
-const loadServices = async () => {
-  try {
-    error.value = null;
-    const result = await fetchAllServices();
-    services.value = result;
-  } catch (err) {
-    error.value = "Ошибка загрузки услуг";
-  }
+const createFormConfig = [
+  {
+    title: "Добавить услугу",
+    fields: [
+      {
+        type: "input",
+        label: "Тип услуги",
+        key: "service_type",
+        required: true,
+        placeholder: "Введите тип услуги",
+      },
+      {
+        type: "number",
+        label: "Базовая цена",
+        key: "base_price",
+        required: true,
+        step: "0.01",
+        placeholder: "Введите стоимость",
+      },
+      {
+        type: "input",
+        label: "URL картинки",
+        required: true,
+        placeholder: "Введите url изображения",
+      },
+    ],
+  },
+];
+
+const editFormConfig = [
+  {
+    title: "Редактирование услуги",
+    fields: [
+      {
+        type: "input",
+        label: "Тип услуги",
+        key: "service_type",
+        required: true,
+      },
+      {
+        type: "number",
+        label: "Базовая цена",
+        key: "base_price",
+        required: true,
+        step: "0.01",
+      },
+      {
+        type: "input",
+        label: "URL картинки",
+        key: "logo_url",
+        placeholder: "Введите url изображения",
+      },
+    ],
+  },
+];
+
+const tableColumns = [
+  { title: "Изображение", key: "logo_url", width: "100px", type: "image" },
+  { title: "Тип услуги", key: "service_type" },
+  { title: "Стоимость", key: "base_price" },
+  { title: "Действия", key: "actions", width: "150px" },
+];
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat("ru-RU", {
+    style: "currency",
+    currency: "RUB",
+  }).format(price);
 };
 
-const handleCreate = async () => {
-  try {
-    const result = await createService({
-      ...newService,
-      base_price: parseFloat(newService.base_price),
-    });
-
-    services.value.push(result);
-    newService.service_type = "";
-    newService.base_price = "";
-  } catch (err) {
-    error.value = err.message || "Ошибка создания услуги";
-  }
+const handleCreate = async (formData) => {
+  if (!formData.service_type.trim()) throw new Error("Тип услуги обязателен");
+  return await createService({
+    ...formData,
+    base_price: parseFloat(formData.base_price),
+  });
 };
 
-const handleUpdate = async () => {
-  if (!editService.value) return;
+const handleCreateSubmit = () => {
+  Object.assign(newService, { service_type: "", base_price: "" });
+  loadServices();
+};
 
-  try {
-    const result = await updateService(editService.value.id, {
-      ...editService.value,
-      base_price: parseFloat(editService.value.base_price),
-    });
+const openEditModal = (service) => {
+  editService.value = { ...service };
+};
 
-    const index = services.value.findIndex((s) => s.id === result.id);
-    if (index !== -1) services.value.splice(index, 1, result);
-    editService.value = null;
-  } catch (err) {
-    error.value = err.message || "Ошибка обновления";
-  }
+const handleUpdate = async (formData) => {
+  if (!formData.service_type.trim()) throw new Error("Тип услуги обязателен");
+  return await updateService(formData.id, {
+    ...formData,
+    base_price: parseFloat(formData.base_price),
+  });
+};
+
+const handleEditSubmit = () => {
+  editService.value = null;
+  loadServices();
 };
 
 const handleDelete = async (id) => {
   try {
     await deleteService(id);
-    services.value = services.value.filter((s) => s.id !== id);
+    await loadServices();
   } catch (err) {
-    error.value = err.message || "Ошибка удаления";
+    error.value = "Ошибка при удалении услуги";
   }
 };
 
-onMounted(() => loadServices());
+const loadServices = async () => {
+  try {
+    error.value = null;
+    services.value = await fetchAllServices();
+  } catch (err) {
+    error.value = "Ошибка загрузки услуг";
+  }
+};
+
+const closeModal = () => {
+  editService.value = null;
+};
+
+onMounted(() => {
+  loadServices();
+});
 </script>
 
 <style lang="scss" scoped>
 .service-management {
-  padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-
-  &__title {
+  .title {
     font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
     color: #1a1a1a;
-    text-align: center;
   }
 
-  &__create-form {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-  }
-
-  &__form-title {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: #2d3748;
-  }
-
-  &__form-content {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: 1fr 1fr auto;
-  }
-
-  &__input {
-    padding: 0.75rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    font-size: 1rem;
-
-    &:focus {
-      outline: none;
-      border-color: #4299e1;
-      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-    }
-  }
-
-  &__submit-btn {
-    padding: 0.75rem 1.5rem;
-    background: #4299e1;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-
-    &:hover {
-      background: #3182ce;
-    }
-  }
-
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  &__item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .error-message {
     padding: 1rem;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: #fed7d7;
+    color: #c53030;
+    border-radius: 6px;
+    margin-bottom: 1rem;
   }
 
-  &__info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  .section {
+    margin-top: 2rem;
 
-  &__type {
-    font-weight: 600;
-    font-size: 1.125rem;
-  }
-
-  &__price {
-    color: #4a5568;
-    font-size: 0.875rem;
-  }
-
-  &__actions {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  &__edit-btn {
-    padding: 0.5rem 1rem;
-    background: #ecc94b;
-    color: #1a202c;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-
-    &:hover {
-      opacity: 0.9;
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: #2d3748;
     }
   }
 
-  &__delete-btn {
-    @extend .service-management__edit-btn;
-    background: #f56565;
-    color: white;
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+
+    .edit-button {
+      padding: 0.5rem 1rem;
+      background: #ecc94b;
+      color: #1a202c;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+
+    .delete-button {
+      @extend .edit-button;
+      background: #f56565;
+      color: white;
+    }
   }
 
-  &__modal {
+  .empty-state {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+    color: #6c757d;
+  }
+
+  .edit-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -286,58 +281,47 @@ onMounted(() => loadServices());
     display: flex;
     align-items: center;
     justify-content: center;
-  }
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+    cursor: pointer;
 
-  &__modal-content {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 400px;
-  }
-
-  &__modal-title {
-    font-size: 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-
-  &__modal-input {
-    @extend .service-management__input;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-
-  &__modal-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  &__modal-save {
-    @extend .service-management__submit-btn;
-    background: #48bb78;
-
-    &:hover {
-      background: #38a169;
+    .edit-modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      cursor: default;
+      position: relative;
     }
   }
 
-  &__modal-cancel {
-    @extend .service-management__submit-btn;
-    background: #a0aec0;
-
-    &:hover {
-      background: #718096;
+  .edit-modal-form {
+    :deep(.form-section) {
+      padding: 0;
+      margin: 0;
     }
-  }
 
-  &__error {
-    padding: 1rem;
-    background: #fed7d7;
-    color: #c53030;
-    border-radius: 6px;
-    margin-bottom: 1rem;
-    text-align: center;
+    :deep(.form-title) {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    :deep(input) {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+    }
+
+    :deep(.form-actions) {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
   }
 }
 </style>
