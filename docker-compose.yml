@@ -5,9 +5,9 @@ services:
     expose:
       - "5000"
     environment:
-      - NODE_ENV=production
-      - NITRO_HOST=0.0.0.0
-      - NITRO_PORT=5000
+      NODE_ENV: production
+      NITRO_HOST: 0.0.0.0
+      NITRO_PORT: 5000
     restart: unless-stopped
 
   backend:
@@ -19,7 +19,8 @@ services:
     expose:
       - "3000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:17-alpine
@@ -31,6 +32,11 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
       - "5432:5432"
 
