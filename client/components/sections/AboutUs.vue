@@ -1,19 +1,28 @@
 <template>
   <Section>
-    <div class="about-us">
+    <div class="about-us" itemscope itemtype="https://schema.org/Organization">
+      <meta itemprop="name" content="Абсолют Холод" />
       <div>
-        <h1 class="about-us-title">
-          <span class="blue-text">Абсолют холод</span> – ваш надежный партнер в
-          мире комфорта и прохлады!
+        <h1 class="about-us-title" itemprop="description">
+          <span itemprop="legalName" class="blue-text">Абсолют холод</span> –
+          ваш надежный партнер в мире комфорта и прохлады!
         </h1>
         <h2 class="about-us-description">
-          Мы специализируемся на продаже, установке и обслуживании кондиционеров
-          для дома, офиса и коммерческих помещений. Наша миссия – создать для
-          вас комфортные климатические условия в любое время года.
+          Мы специализируемся на
+          <span itemprop="makesOffer">продаже, установке и обслуживании</span>
+          кондиционеров для <span itemprop="serviceArea">Тюмени</span> и
+          области.
         </h2>
       </div>
-
-      <NuxtImg class="about-us-image" src="/images/aboutus.png" alt="about" />
+      <NuxtImg
+        class="about-us-image"
+        src="/images/aboutus.png"
+        alt="Специалисты компании Абсолют Холод"
+        itemprop="image"
+        loading="lazy"
+        width="600"
+        height="400"
+      />
     </div>
   </Section>
 </template>

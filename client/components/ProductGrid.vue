@@ -1,9 +1,10 @@
 <template>
-  <div class="product-grid">
+  <div class="product-grid" itemscope itemtype="http://schema.org/ItemList">
     <CardProduct
       v-for="(product, index) in products"
-      :key="index"
+      :key="product.id"
       :product="product"
+      :index="index"
     />
   </div>
 </template>

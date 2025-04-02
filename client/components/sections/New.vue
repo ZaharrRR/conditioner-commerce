@@ -3,39 +3,47 @@
     <div class="new">
       <div class="new__cards">
         <RouterLink
-          to="/products/1"
-          class="card"
           v-for="(product, index) in products"
           :key="index"
+          :to="`/products/${product.id}`"
+          class="card"
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/Product"
         >
           <img
-            :src="product.image ? product.image : `/images/hisense.png`"
-            :alt="product.name"
+            :src="product.photo_url || '/images/hisense.png'"
+            :alt="`Купить ${product.name} в Тюмени`"
             class="card__image"
             loading="lazy"
+            itemprop="image"
           />
           <div class="card__content">
-            <h3 class="card__title">{{ product.name }}</h3>
-            <p class="card__description">{{ product.description }}</p>
-            <p class="card__price">{{ product.price }} ₽</p>
+            <h3 class="card__title" itemprop="name">{{ product.name }}</h3>
+            <p class="card__description" itemprop="description">
+              {{ product.description }}
+            </p>
+            <meta itemprop="brand" content="Hisense" />
+            <div
+              itemprop="offers"
+              itemscope
+              itemtype="https://schema.org/Offer"
+            >
+              <p class="card__price" itemprop="price">{{ product.price }} ₽</p>
+              <meta itemprop="priceCurrency" content="RUB" />
+              <link itemprop="availability" href="https://schema.org/InStock" />
+            </div>
           </div>
         </RouterLink>
-      </div>
-
-      <div class="new__more-button">
-        <RouterLink to="/products">
-          <UButton>Показать больше</UButton></RouterLink
-        >
       </div>
     </div>
   </Section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 
 import Section from "./Section.vue";
-import UButton from "~/components/UI/UButton.vue";
 
 import { getNewProducts } from "@/api/products";
 

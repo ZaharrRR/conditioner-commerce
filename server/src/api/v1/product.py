@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core import get_api_key
 from dao.product import ProductDAO
 from db.database import get_session
-from schemas import ProductRead, ProductCreate, ProductReadWithRelations, ProductAttributeLink, ProductAttributeDelete
+from schemas import ProductReadWithRelations, ProductCreate, ProductReadWithRelations, ProductAttributeLink, ProductAttributeDelete
 from services.s3 import S3Service
 from utils.utils import validate_logo
 
@@ -20,7 +20,7 @@ def get_s3_service() -> S3Service:
 
 @router.post(
     "/create",
-    response_model=ProductRead,
+    response_model=ProductReadWithRelations,
     summary="Создание Product",
     status_code=201,
     dependencies=[Depends(get_api_key)]

@@ -1,5 +1,12 @@
 <template>
   <NuxtLayout name="page-layout">
+    <Breadcrumbs
+      :items="[
+        { name: 'Главная', path: '/' },
+        { name: 'Каталог', path: '/products' },
+      ]"
+    />
+
     <div class="products-page">
       <Filters
         :categories="categories"
@@ -9,7 +16,7 @@
 
       <div class="products">
         <div class="sorting">
-          <select v-model="sortBy">
+          <select v-model="sortBy" aria-label="Сортировка товаров">
             <option value="">Выберите сортировку</option>
             <option value="high-price">Сначала дорогие</option>
             <option value="low-price">Сначала недорогие</option>
@@ -19,70 +26,49 @@
         <ProductGrid :products="filteredProducts" />
       </div>
     </div>
+
+    <SeoText :text="seoText" />
   </NuxtLayout>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
+import { fetchAllBrands } from "~/api/brands";
+import { fetchAllCategories } from "~/api/categories";
+import { fetchAllProducts } from "~/api/products";
+import Breadcrumbs from "~/components/common/Breadcrumbs.vue";
+import SeoText from "~/components/common/SeoText.vue";
 
-import Filters from "@/components/Filters.vue";
-import ProductGrid from "@/components/ProductGrid.vue";
-
-import { fetchAllProducts } from "@/api/products";
-import { fetchAllBrands } from "@/api/brands";
-import { fetchAllCategories } from "@/api/categories";
-
-const products = ref([]);
-const categories = ref([]);
-const brands = ref([]);
-
-const error = ref(null);
+const { data: products } = await useAsyncData("products", fetchAllProducts);
+const { data: brands } = await useAsyncData("brands", fetchAllBrands);
+const { data: categories } = await useAsyncData(
+  "categories",
+  fetchAllCategories
+);
 
 const selectedCategories = ref([]);
 const selectedBrands = ref([]);
 const priceRange = ref({ min: null, max: null });
 const sortBy = ref("");
 
-const loadData = async () => {
-  try {
-    error.value = null;
-
-    const [productsRes, brandsRes, categoriesRes] = await Promise.all([
-      fetchAllProducts(),
-      fetchAllBrands(),
-      fetchAllCategories(),
-    ]);
-
-    if (
-      productsRes instanceof Error ||
-      brandsRes instanceof Error ||
-      categoriesRes instanceof Error
-    ) {
-      throw new Error("Ошибка загрузки данных");
-    }
-
-    products.value = productsRes;
-    brands.value = brandsRes;
-    categories.value = categoriesRes;
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
 const filteredProducts = computed(() => {
-  let filtered = products.value;
+  let filtered = [...products.value];
 
+  // Фильтрация по категориям
   if (selectedCategories.value.length > 0) {
     filtered = filtered.filter((p) =>
       selectedCategories.value.some((cat) => cat.name === p.category_name)
     );
   }
 
+  // Фильтрация по брендам
   if (selectedBrands.value.length > 0) {
     filtered = filtered.filter((p) =>
       selectedBrands.value.some((brand) => brand.name === p.brand_name)
     );
   }
+
+  // Фильтрация по цене
   if (priceRange.value.min || priceRange.value.max) {
     filtered = filtered.filter(
       (p) =>
@@ -91,12 +77,11 @@ const filteredProducts = computed(() => {
     );
   }
 
-  if (sortBy.value === "high-price") {
-    return [...filtered].sort((a, b) => b.price - a.price);
-  }
-  if (sortBy.value === "low-price") {
-    return [...filtered].sort((a, b) => a.price - b.price);
-  }
+  // Сортировка
+  if (sortBy.value === "high-price")
+    return filtered.sort((a, b) => b.price - a.price);
+  if (sortBy.value === "low-price")
+    return filtered.sort((a, b) => a.price - b.price);
   return filtered;
 });
 
@@ -106,7 +91,67 @@ const applyFilters = (filters) => {
   priceRange.value = filters.priceRange;
 };
 
-onMounted(() => loadData());
+// SEO оптимизация
+const breadcrumbs = computed(() => [
+  { name: "Главная", path: "/" },
+  { name: "Каталог", path: "/products" },
+]);
+
+const seoText = computed(
+  () => `
+  Широкий выбор кондиционеров в Тюмени от ведущих брендов: ${brands.value
+    .map((b) => b.name)
+    .join(", ")}. 
+  ${categories.value
+    .map((c) => `Купить ${c.name} по выгодной цене с установкой.`)
+    .join(" ")}
+`
+);
+
+useSeoMeta({
+  title: "Купить кондиционеры в Тюмени | Каталог сплит-систем с ценами",
+  description:
+    "Большой выбор кондиционеров и сплит-систем от ведущих производителей. Профессиональная установка, гарантия до 5 лет!",
+  ogTitle: "Каталог кондиционеров с ценами в Тюмени",
+  ogDescription:
+    "Широкий ассортимент климатической техники с бесплатной доставкой и монтажом",
+});
+
+useHead({
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: filteredProducts.value
+          .slice(0, 50)
+          .map((product, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "Product",
+              name: product.name,
+              url: `${useRuntimeConfig().public.siteUrl}/products/${
+                product.id
+              }`,
+              image: product.photo_url || "/images/hisense.png",
+              brand: {
+                "@type": "Brand",
+                name: product.brand_name,
+              },
+              offers: {
+                "@type": "Offer",
+                priceCurrency: "RUB",
+                price: product.price,
+                availability: "https://schema.org/InStock",
+              },
+            },
+          })),
+      }),
+    },
+  ],
+});
 </script>
 
 <style scoped>

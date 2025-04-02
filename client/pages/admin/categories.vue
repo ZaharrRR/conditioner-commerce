@@ -8,7 +8,6 @@
       :form-data="newCategory"
       :submit-handler="handleCreate"
       submit-button-text="Добавить"
-      @submitted="handleCreateSubmit"
     />
 
     <div v-if="error" class="error-message">{{ error }}</div>
@@ -77,7 +76,6 @@ const error = ref(null);
 
 const newCategory = reactive({
   name: "",
-  logo_url: "",
 });
 
 const createFormConfig = [
@@ -90,12 +88,6 @@ const createFormConfig = [
         key: "name",
         required: true,
         placeholder: "Введите название",
-      },
-      {
-        type: "input",
-        label: "Ссылка на логотип",
-        key: "logo_url",
-        placeholder: "Введите URL логотипа",
       },
     ],
   },
@@ -111,11 +103,6 @@ const editFormConfig = [
         key: "name",
         required: true,
       },
-      {
-        type: "input",
-        label: "Ссылка на логотип",
-        key: "logo_url",
-      },
     ],
   },
 ];
@@ -128,12 +115,12 @@ const tableColumns = [
 
 const handleCreate = async (formData) => {
   if (!formData.name.trim()) throw new Error("Название обязательно");
-  return await createCategory(formData);
-};
 
-const handleCreateSubmit = () => {
-  Object.assign(newCategory, { name: "", logo_url: "" });
-  loadCategories();
+  const response = await createCategory(formData);
+  newCategory.name = "";
+  categories.value.unshift(response);
+
+  return response;
 };
 
 const openEditModal = (category) => {

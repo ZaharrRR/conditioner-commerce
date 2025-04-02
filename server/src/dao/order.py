@@ -39,7 +39,7 @@ class OrderDAO:
 
 
             stmt_services = (
-                select(Service.id, Service.service_type, Service.base_price, Service.created_at)
+                select(Service.id, Service.service_type, Service.base_price, Service.created_at).where(Service.logo_url.isnot(None)).where(Service.logo_url != "")
                 .join(OrderService, OrderService.service_id == Service.id)
                 .where(OrderService.order_id == new_order.id)
                 .distinct()
