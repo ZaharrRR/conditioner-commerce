@@ -26,6 +26,8 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      POSTGRES_PASSWORD: ${postgres_password}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -52,9 +54,12 @@ services:
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
-    command: certonly --webroot --webroot-path=/var/www/certbot \
-      --email nikita.shutnikov@gmail.com --agree-tos --no-eff-email \
-      -d абсолютхолод.рф -d api.абсолютхолод.рф
+    command: >-
+      certonly --webroot --webroot-path=/var/www/certbot
+      --email nikita.shutnikov@gmail.com --agree-tos --no-eff-email
+      -d xn--80acj1aaqbbwm7a3h.xn--p1ai
+      -d api.xn--80acj1aaqbbwm7a3h.xn--p1ai
+
 
 volumes:
   pgdata:
