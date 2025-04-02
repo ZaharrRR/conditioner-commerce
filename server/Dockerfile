@@ -14,8 +14,5 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY . .
 
-COPY ../wait-for-postgres.sh .
-RUN chmod +x wait-for-postgres.sh
 
-
-CMD ./wait-for-postgres.sh && alembic upgrade head && python main.py
+CMD alembic upgrade head && python main.py
