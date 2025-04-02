@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY . .
 
 
-CMD alembic upgrade head && python main.py
+CMD   cd src && alembic -c alembic.ini upgrade head && python main.py
