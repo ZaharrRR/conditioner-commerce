@@ -51,8 +51,6 @@ const services = ref([]);
 
 onMounted(async () => {
   services.value = await getServiceWithLogo();
-
-  console.log(services.value);
 });
 </script>
 

@@ -20,19 +20,19 @@
           />
           <div class="card__content">
             <h3 class="card__title" itemprop="name">{{ product.name }}</h3>
+
+            <meta itemprop="brand" content="Hisense" />
+            <p class="card__price" itemprop="price">{{ product.price }} ₽</p>
+            <meta itemprop="priceCurrency" content="RUB" />
+            <link itemprop="availability" href="https://schema.org/InStock" />
             <p class="card__description" itemprop="description">
               {{ product.description }}
             </p>
-            <meta itemprop="brand" content="Hisense" />
             <div
               itemprop="offers"
               itemscope
               itemtype="https://schema.org/Offer"
-            >
-              <p class="card__price" itemprop="price">{{ product.price }} ₽</p>
-              <meta itemprop="priceCurrency" content="RUB" />
-              <link itemprop="availability" href="https://schema.org/InStock" />
-            </div>
+            ></div>
           </div>
         </RouterLink>
       </div>
@@ -65,6 +65,16 @@ onMounted(async () => {
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     width: 100%;
+
+    .card__image {
+      padding: 0 12px;
+      max-width: 100%;
+      max-height: 100%;
+      margin: 0 auto;
+      width: auto;
+      height: 200px;
+      object-fit: contain;
+    }
 
     @media (max-width: 720px) {
       grid-template-columns: repeat(2, 1fr); // 2 колонки

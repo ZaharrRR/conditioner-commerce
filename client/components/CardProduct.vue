@@ -59,11 +59,12 @@ defineProps({
   }
 
   &__image {
+    padding: 0 12px;
     max-width: 100%;
     max-height: 100%;
     margin: 0 auto;
     width: auto;
-    height: auto;
+    height: 200px;
     object-fit: contain;
   }
 

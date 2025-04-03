@@ -89,7 +89,8 @@ const resetFilters = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 300px;
+  min-width: 300px;
+
   height: fit-content;
   border: 2px solid var(--blue);
   padding: 20px;

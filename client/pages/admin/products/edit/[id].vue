@@ -93,13 +93,16 @@
           </button>
         </div>
 
-        <button type="submit" class="product-edit__submit-btn">
+        <button
+          type="button"
+          @click="saveAttrs()"
+          class="product-edit__submit-btn"
+        >
           Сохранить изменения
         </button>
       </div>
 
       <div class="product-edit__images">
-        <img :src="product.photo_url" alt="" />
         <ImageUploader
           :current-image="existingImages"
           :entity-type="'product'"
@@ -160,6 +163,7 @@ const handleImageUpload = async (formData) => {
   try {
     const { imageUrl } = await updateProductPhoto(productId, formData);
     existingImages.value = imageUrl;
+    alert("Изображение успешно загружено!");
   } catch (err) {
     error.value = "Ошибка загрузки изображения: " + (err.message || "");
   }
@@ -207,7 +211,7 @@ const removeAttributeField = (index) => {
   form.newAttributes.splice(index, 1);
 };
 
-const submit = async () => {
+const saveAttrs = async () => {
   try {
     if (form.newAttributes.length > 0) {
       const attributesToSend = form.newAttributes
@@ -220,11 +224,11 @@ const submit = async () => {
       const response = await linkProductAttributes(productId, attributesToSend);
 
       product.value?.attributes.push(...response);
+      form.newAttributes = [];
+      await loadData();
     }
-
-    form.newAttributes = [];
   } catch (err) {
-    error.value = err.message || "Ошибка сохранения изменений";
+    console.log(err);
   }
 };
 
