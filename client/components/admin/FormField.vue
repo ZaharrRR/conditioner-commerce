@@ -95,7 +95,7 @@ const handleFileUpload = (e) => {
   const formData = new FormData();
   formData.append("photo_file", file);
 
-  emit("update:modelValue", formData);
+  emit("update:modelValue", file);
 
   // const reader = new FileReader();
   // reader.onload = (e) => {

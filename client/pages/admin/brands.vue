@@ -78,7 +78,7 @@ const error = ref(null);
 const newBrand = reactive({
   name: "",
   description: "",
-  photo_file: "",
+  logo_file: "",
 });
 
 const createFormConfig = [
@@ -101,7 +101,7 @@ const createFormConfig = [
       {
         type: "file",
         label: "Картинка",
-        key: "photo_file",
+        key: "logo_file",
         placeholder: "Выберите изображение",
       },
     ],
@@ -135,8 +135,6 @@ const tableColumns = [
 ];
 
 const handleCreate = async (formData) => {
-  console.log(formData);
-
   if (!formData.name.trim()) throw new Error("Название обязательно");
 
   const response = await createBrand(formData);

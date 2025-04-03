@@ -1,17 +1,17 @@
 <template>
   <nav class="breadcrumbs" aria-label="Навигационная цепочка">
-    <NuxtLink
-      v-for="(item, index) in items"
-      :key="index"
-      :to="item.path"
-      class="breadcrumbs__item"
-      :class="{ 'breadcrumbs__item--last': index === items.length - 1 }"
-    >
-      {{ item.name }}
+    <template v-for="(item, index) in items" :key="index">
+      <NuxtLink
+        :to="item.path"
+        class="breadcrumbs__item"
+        :class="{ 'breadcrumbs__item--last': index === items.length - 1 }"
+      >
+        {{ item.name }}
+      </NuxtLink>
       <span v-if="index !== items.length - 1" class="breadcrumbs__separator"
         >/</span
       >
-    </NuxtLink>
+    </template>
   </nav>
 </template>
 
