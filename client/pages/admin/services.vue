@@ -81,6 +81,7 @@ const newService = reactive({
   service_type: "",
   base_price: "",
   description: "",
+  logo_file: "",
 });
 
 const createFormConfig = [
@@ -108,6 +109,12 @@ const createFormConfig = [
         key: "description",
         required: false,
         placeholder: "Введите описание товара",
+      },
+      {
+        type: "file",
+        label: "Картинка",
+        key: "logo_file",
+        placeholder: "Выберите изображение",
       },
     ],
   },

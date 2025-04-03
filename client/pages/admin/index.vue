@@ -60,7 +60,6 @@ const form = reactive({
   price: "",
   brand_id: "",
   category_id: "",
-  photo_file: "",
 });
 
 const formConfig = [
@@ -100,18 +99,12 @@ const formConfig = [
         required: true,
         options: "categories",
       },
-      {
-        type: "file",
-        label: "Картинка",
-        key: "photo_file",
-        required: true,
-        placeholder: "Выберите изображение",
-      },
     ],
   },
 ];
 
 const tableColumns = [
+  { title: "Лого", key: "logo_url", width: "100px", type: "image" },
   { title: "Название", key: "name" },
   { title: "Описание", key: "description" },
   { title: "Цена", key: "price" },

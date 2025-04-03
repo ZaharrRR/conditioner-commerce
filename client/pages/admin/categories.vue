@@ -76,6 +76,7 @@ const error = ref(null);
 
 const newCategory = reactive({
   name: "",
+  logo_file: "",
 });
 
 const createFormConfig = [
@@ -88,6 +89,12 @@ const createFormConfig = [
         key: "name",
         required: true,
         placeholder: "Введите название",
+      },
+      {
+        type: "file",
+        label: "Картинка",
+        key: "logo_file",
+        placeholder: "Выберите изображение",
       },
     ],
   },
