@@ -106,7 +106,7 @@ const createFormConfig = [
         type: "input",
         label: "Описание услуги",
         key: "description",
-        required: true,
+        required: false,
         placeholder: "Введите описание товара",
       },
     ],

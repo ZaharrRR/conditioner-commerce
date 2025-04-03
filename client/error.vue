@@ -106,6 +106,8 @@ const contactSupport = () => {
     margin-bottom: 40px;
 
     .error-card {
+      display: flex;
+      flex-direction: column;
       background-color: #fff;
       border: 4px solid #6896eb;
       border-radius: 10px;
@@ -117,6 +119,7 @@ const contactSupport = () => {
       .icon {
         font-size: 80px;
         color: #6896eb;
+        margin: 0 auto;
         margin-bottom: 15px;
       }
 
@@ -130,6 +133,7 @@ const contactSupport = () => {
         font-size: 16px;
         margin: 10px 0 20px;
         color: #555;
+        flex-grow: 1;
       }
     }
   }

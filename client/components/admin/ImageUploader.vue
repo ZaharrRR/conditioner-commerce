@@ -105,6 +105,7 @@ const handleUpload = async () => {
     formData.append("photo_file", selectedFile.value);
     formData.append("entity_type", props.entityType);
     formData.append("entity_id", props.entityId);
+    console.log(formData);
 
     emit("upload", formData);
   } catch (err) {

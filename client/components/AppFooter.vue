@@ -8,29 +8,35 @@
         loading="lazy"
       />
 
-      <div class="footer-block">
-        <h3 class="footer-title">Контакты</h3>
-        <p class="footer-text">
-          625042, Россия, Тюмень, улица Федюнинского 60к1
-        </p>
-        <p class="footer-text">
-          Телефон:
-          <a href="tel:89124303333" class="footer-link">+7 (912) 243-33-33</a>
-        </p>
-        <p class="footer-text">Режим работы: ежедневно c 8:00 до 20:00</p>
-      </div>
+      <div class="footer-blocks">
+        <div class="footer-block">
+          <h3 class="footer-title">Контакты</h3>
+          <p class="footer-text">
+            625042, Россия, Тюмень, <br />
+            улица Федюнинского 60к1
+          </p>
+          <p class="footer-text">
+            Телефон:
+            <a href="tel:89124303333" class="footer-link">+7 (912) 243-33-33</a>
+          </p>
+          <p class="footer-text">
+            Режим работы: <br />
+            ежедневно c 8:00 до 20:00
+          </p>
+        </div>
 
-      <div class="footer-block" v-for="item in links" :key="item.title">
-        <h3 class="footer-title">{{ item.title }}</h3>
-        <RouterLink
-          class="footer-link"
-          v-for="el in item.links"
-          :key="el.label"
-          :to="el.link"
-          :aria-label="el.label"
-        >
-          {{ el.label }}
-        </RouterLink>
+        <div class="footer-block" v-for="item in links" :key="item.title">
+          <h3 class="footer-title">{{ item.title }}</h3>
+          <RouterLink
+            class="footer-link"
+            v-for="el in item.links"
+            :key="el.label"
+            :to="el.link"
+            :aria-label="el.label"
+          >
+            {{ el.label }}
+          </RouterLink>
+        </div>
       </div>
     </div>
 
@@ -38,9 +44,6 @@
       <span class="footer-bottom-text">© 2025 ООО «Абсолют холод»</span>
       <a class="footer-bottom-text" href="/privacy-policy">
         Политика конфиденциальности
-      </a>
-      <a class="footer-bottom-text" href="/terms-of-use">
-        Условия пользования
       </a>
     </div>
   </footer>
@@ -57,14 +60,7 @@ const links = [
       { label: "Вентиляционное оборудование", link: "/products" },
     ],
   },
-  {
-    title: "Услуги",
-    links: [
-      { label: "Монтаж и сервис", link: "/services" },
-      { label: "Обслуживание", link: "/services" },
-      { label: "Ремонт", link: "/services" },
-    ],
-  },
+
   {
     title: "Для клиентов",
     links: [
@@ -85,37 +81,50 @@ const links = [
   .footer-top {
     padding: 32px 24px;
     display: flex;
-    align-items: flex-start;
-    justify-content: space-evenly;
-    color: white;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+    width: fit-content;
+    margin: 0 auto;
 
     .footer-logo {
-      width: 300px;
+      width: fit-content;
+      max-width: 300px;
       height: 80px;
+      margin-bottom: 32px;
     }
 
-    .footer-block {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .footer-blocks {
+      color: white;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      width: fit-content;
+      max-width: 1280px;
 
-      .footer-title {
-        font-weight: bold;
-        margin-bottom: 8px;
-      }
+      .footer-block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
 
-      .footer-text,
-      .footer-link {
-        font-size: 14px;
-      }
+        .footer-title {
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
 
-      .footer-link {
-        cursor: pointer;
-        transition: color 0.3s ease;
+        .footer-text,
+        .footer-link {
+          font-size: 14px;
+        }
 
-        &:hover {
-          color: var(--blue-light);
-          text-decoration: underline;
+        .footer-link {
+          cursor: pointer;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: var(--blue-light);
+            text-decoration: underline;
+          }
         }
       }
     }
@@ -139,21 +148,39 @@ const links = [
     }
   }
 
+  @media (max-width: 1280px) {
+    .footer-top {
+      width: 100%;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .footer-logo {
+      width: 100%;
+    }
+
+    .footer-blocks {
+      width: 100%;
+    }
+  }
+
   @media (max-width: 720px) {
     .footer-top {
-      flex-direction: column;
-      align-items: center;
       padding: 24px 16px;
-      gap: 32px;
 
       .footer-logo {
         height: 60px;
       }
+      .footer-blocks {
+        text-align: center;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
 
       .footer-block {
-        text-align: center;
-        width: 100%;
         max-width: 280px;
+        width: 100%;
+        margin: 0 auto;
 
         .footer-title {
           font-size: 18px;
@@ -175,11 +202,9 @@ const links = [
     }
   }
 
-  @media (max-width: 470px) {
-    /* адаптация для экранов 470px */
+  @media (max-width: 480px) {
     .footer-top {
       padding: 20px 12px;
-      gap: 24px;
 
       .footer-logo {
         height: 50px;
