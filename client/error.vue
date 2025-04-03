@@ -158,7 +158,7 @@ const contactSupport = () => {
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: darken(#6896eb, 10%);
+      background-color: чё#6896eb;
     }
   }
 }
