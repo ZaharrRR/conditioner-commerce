@@ -258,6 +258,10 @@ useHead({
     transition: transform 0.3s ease;
     text-decoration: none;
 
+    button {
+      width: 140px;
+    }
+
     &:hover {
       transform: translateY(-10px);
     }

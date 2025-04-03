@@ -68,6 +68,7 @@ useHead({
   padding: 30px;
   background: #f8f9fa;
   border-radius: 15px;
+  width: 100%;
 
   &__title {
     font-size: 28px;

@@ -8,6 +8,7 @@
           :id="category.id"
           :value="category"
           v-model="selectedCategories"
+          class="filter-input"
         />
         <label :for="category">{{ category.name }}</label>
       </li>
@@ -17,8 +18,18 @@
 
     <h3>Цена</h3>
     <div class="price-range">
-      <input type="number" v-model="priceRange.min" placeholder="От 0 " />
-      <input type="number" v-model="priceRange.max" placeholder="До 99999" />
+      <input
+        type="number"
+        v-model="priceRange.min"
+        placeholder="От 0"
+        class="filter-input"
+      />
+      <input
+        type="number"
+        v-model="priceRange.max"
+        placeholder="До 99999"
+        class="filter-input"
+      />
     </div>
 
     <hr />
@@ -31,6 +42,7 @@
           :id="brand.id"
           :value="brand"
           v-model="selectedBrands"
+          class="filter-input"
         />
         <label :for="brand">{{ brand.name }}</label>
       </li>
@@ -79,7 +91,6 @@ const resetFilters = () => {
   gap: 20px;
   width: 300px;
   height: fit-content;
-
   border: 2px solid var(--blue);
   padding: 20px;
   border-radius: 12px;
@@ -105,23 +116,65 @@ ul {
 
 li {
   margin-bottom: 10px;
-}
-
-input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.price-range {
   display: flex;
-  gap: 10px;
+  align-items: center;
 }
 
-input[type="number"] {
+.filter-input {
+  transition: all 0.3s ease;
+}
+
+/* Стили для текстовых инпутов */
+input[type="number"].filter-input {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+}
+
+input[type="number"].filter-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Стили для чекбоксов */
+input[type="checkbox"].filter-input {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  appearance: none;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+}
+
+input[type="checkbox"].filter-input:checked {
+  background-color: var(--blue);
+  border-color: var(--blue);
+}
+
+input[type="checkbox"].filter-input:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Кастомная галочка для чекбокса */
+input[type="checkbox"].filter-input:checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.price-range {
+  display: flex;
+  gap: 10px;
 }
 
 button {
@@ -137,5 +190,10 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+/* Стиль для заполненных полей */
+input[type="number"].filter-input:not(:placeholder-shown) {
+  border-color: var(--blue);
 }
 </style>

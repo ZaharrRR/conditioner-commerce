@@ -169,11 +169,41 @@ select {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ddd;
-  background-color: #f9f9f9;
+  background-color: white;
   font-size: 16px;
   cursor: pointer;
   width: 100%;
   max-width: 250px;
+}
+
+/* Общие стили для всех инпутов */
+select,
+input[type="text"],
+input[type="number"],
+input[type="checkbox"] {
+  transition: border-color 0.3s ease;
+}
+
+/* Стили при фокусе */
+select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); /* Необязательно: мягкая тень */
+}
+
+/* Для чекбоксов можно сделать кастомный стиль */
+input[type="checkbox"]:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Стиль при активном состоянии (если нужно) */
+select:active,
+input[type="text"]:active,
+input[type="number"]:active {
+  border-color: var(--blue);
 }
 
 @media (max-width: 1280px) {
