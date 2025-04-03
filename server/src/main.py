@@ -18,11 +18,7 @@ from core import logger, settings
 
 
 origins = [
-    "http://localhost",
-    "http://localhost:5000",
     "https://xn--80acj1aaqbbwm7a3h.xn--p1ai",
-    "https://api.xn--80acj1aaqbbwm7a3h.xn--p1ai",
-    "http://frontend:5000"
 ]
 
 
