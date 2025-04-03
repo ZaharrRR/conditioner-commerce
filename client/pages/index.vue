@@ -31,12 +31,12 @@ useSeoMeta({
   ogTitle: "Абсолют Холод - официальный дилер кондиционеров в Тюмени",
   ogDescription:
     "🚚 Бесплатная доставка. ⏱ Монтаж за 3 часа. 🔧 Гарантия на оборудование и работы. Выгодные цены от производителей",
-  ogImage: "https://ваш-сайт.ru/images/og-main.jpg",
-  twitterCard: "summary_large_image",
+  ogUrl: "https://абсолютхолод.рф",
+  ogImage: "https://абсолютхолод.рф/images/og.jpg",
 });
 
 useHead({
-  link: [{ rel: "canonical", href: "https://ваш-сайт.ru/" }],
+  link: [{ rel: "canonical", href: "https://абсолютхолод.рф/" }],
   script: [
     {
       type: "application/ld+json",
@@ -45,8 +45,8 @@ useHead({
         "@type": "LocalBusiness",
         name: "Абсолют Холод",
         image: [
-          "https://ваш-сайт.ru/images/logo.jpg",
-          "https://ваш-сайт.ru/images/showroom.jpg",
+          "https://абсолютхолод.рф/images/logo.jpg",
+          "https://абсолютхолод.рф/images/showroom.jpg",
         ],
         priceRange: "₽₽-₽₽₽",
         address: {

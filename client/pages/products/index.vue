@@ -91,12 +91,6 @@ const applyFilters = (filters) => {
   priceRange.value = filters.priceRange;
 };
 
-// SEO оптимизация
-const breadcrumbs = computed(() => [
-  { name: "Главная", path: "/" },
-  { name: "Каталог", path: "/products" },
-]);
-
 const seoText = computed(
   () => `
   Широкий выбор кондиционеров в Тюмени от ведущих брендов: ${brands.value
@@ -115,6 +109,8 @@ useSeoMeta({
   ogTitle: "Каталог кондиционеров с ценами в Тюмени",
   ogDescription:
     "Широкий ассортимент климатической техники с бесплатной доставкой и монтажом",
+  ogUrl: "https://абсолютхолод.рф/products",
+  ogImage: "https://абсолютхолод.рф/images/og.jpg",
 });
 
 useHead({

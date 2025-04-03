@@ -96,14 +96,9 @@
         title="Частые вопросы о доставке"
         :items="[
           {
-            question: 'Как отследить статус заказа?',
-            answer:
-              ' После оформления заказа вы получите SMS с номером для отслеживания',
-          },
-          {
             question: 'Можно ли изменить адрес доставки?',
             answer:
-              'Да, для изменения адреса свяжитесь с нами за 3 часа до доставки',
+              'Да, для изменения адреса свяжитесь с нами по телефону +7 (912) 243-33-33',
           },
         ]"
       />
@@ -137,12 +132,12 @@ useSeoMeta({
   ogDescription:
     "✅ Закажите доставку с установкой за 1 день! ✅ Бесплатный подъем на этаж. ✅ 3 варианта получения заказа. Работаем по всей Тюмени и области.",
   ogType: "website",
-  ogUrl: "https://ваш-сайт.ru/delivery",
-  ogImage: "https://ваш-сайт.ru/images/delivery-og.jpg",
+  ogUrl: "https://абсолютхолод.рф/delivery",
+  ogImage: "https://абсолютхолод.рф/images/og.jpg",
 });
 
 useHead({
-  link: [{ rel: "canonical", href: "https://ваш-сайт.ru/delivery" }],
+  link: [{ rel: "canonical", href: "https://абсолютхолод.рф/delivery" }],
   script: [
     {
       type: "application/ld+json",

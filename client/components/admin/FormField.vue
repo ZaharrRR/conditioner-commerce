@@ -43,6 +43,17 @@
         :required="required"
         :rows="3"
       ></textarea>
+
+      <input
+        v-else-if="type === 'file'"
+        type="file"
+        @change="handleFileUpload"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
+        class="form-control"
+        :required="required"
+        accept="image/*"
+      />
     </div>
   </div>
 </template>
@@ -55,7 +66,7 @@ defineProps({
     type: String,
     default: "input",
     validator: (value) =>
-      ["input", "select", "textarea", "number"].includes(value),
+      ["input", "select", "textarea", "number", "file"].includes(value),
   },
   required: Boolean,
   step: String,
@@ -75,6 +86,23 @@ const handleInput = (e) => {
 
 const handleChange = (e) => {
   emit("update:modelValue", e.target.value);
+};
+
+const handleFileUpload = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("photo_file", file);
+
+  emit("update:modelValue", formData);
+
+  // const reader = new FileReader();
+  // reader.onload = (e) => {
+  //   const arrayBuffer = e.target.result;
+  //   emit("update:modelValue", arrayBuffer);
+  // };
+  // reader.readAsArrayBuffer(file);
 };
 </script>
 
@@ -148,6 +176,25 @@ textarea.form-control {
 .has-focus .label-text {
   transform: translateY(-2px);
   color: #3b82f6;
+}
+
+input[type="file"] {
+  padding: 0.8rem 1.2rem;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: #e5e7eb;
 }
 
 /* Анимация ввода */

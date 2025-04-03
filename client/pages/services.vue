@@ -141,13 +141,12 @@ useSeoMeta({
   ogDescription:
     "✅ Монтаж за 3 часа ✅ Чистка кондиционеров от 1500₽ ✅ Ремонт с выездом в день обращения. Работаем с 2010 года!",
   ogType: "website",
-  ogUrl: "https://ваш-сайт.ru/services",
-  ogImage: "https://ваш-сайт.ru/images/services-og.jpg",
-  twitterCard: "summary_large_image",
+  ogUrl: "https://абсолютхолод.рф/services",
+  ogImage: "https://абсолютхолод.рф/images/og.jpg",
 });
 
 useHead({
-  link: [{ rel: "canonical", href: "https://ваш-сайт.ru/services" }],
+  link: [{ rel: "canonical", href: "https://абсолютхолод.рф/services" }],
   script: [
     {
       type: "application/ld+json",
