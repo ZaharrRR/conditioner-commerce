@@ -27,11 +27,6 @@ def upgrade() -> None:
                     existing_type=sa.String(length=200),
                     type_=sa.Text(),
                     existing_nullable=True)
-    op.alter_column('categories', 'description',
-                    existing_type=sa.String(length=200),
-                    type_=sa.Text(),
-                    existing_nullable=True)
-
 
 
 def downgrade() -> None:
@@ -40,10 +35,6 @@ def downgrade() -> None:
                     type_=sa.String(200),
                     existing_nullable=True)
     op.alter_column('brands', 'description',
-                    existing_type=sa.Text(),
-                    type_=sa.String(200),
-                    existing_nullable=True)
-    op.alter_column('categories', 'description',
                     existing_type=sa.Text(),
                     type_=sa.String(200),
                     existing_nullable=True)
