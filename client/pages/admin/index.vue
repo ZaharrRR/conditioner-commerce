@@ -75,9 +75,10 @@ const formConfig = [
         required: true,
       },
       {
-        type: "input",
+        type: "textarea",
         label: "Описание товара",
         key: "description",
+        max: 200,
         required: true,
       },
       {
@@ -106,7 +107,7 @@ const formConfig = [
 ];
 
 const tableColumns = [
-  { title: "Лого", key: "logo_url", width: "100px", type: "image" },
+  { title: "Лого", key: "photo_url", width: "100px", type: "image" },
   { title: "Название", key: "name" },
   { title: "Описание", key: "description" },
   { title: "Цена", key: "price" },
