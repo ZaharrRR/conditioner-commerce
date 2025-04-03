@@ -102,8 +102,6 @@ const formatCell = (value, column) => {
 
 // Обработка сортировки
 const toggleSort = (column) => {
-  console.log(column);
-
   if (sortedColumn.value === column.key) {
     sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
   } else {

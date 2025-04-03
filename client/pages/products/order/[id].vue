@@ -155,10 +155,6 @@ const calculatedPrice = computed(() => {
   return Number(productPrice) + servicesPrice;
 });
 
-const closeForm = () => {
-  console.log("Форма закрыта");
-};
-
 const submitForm = async () => {
   const error = validatePhone(formData.value.phone);
   if (error) {

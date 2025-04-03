@@ -41,6 +41,7 @@
         @blur="isFocused = false"
         class="form-control"
         :required="required"
+        :maxlength="max"
         :rows="3"
       ></textarea>
 
@@ -70,6 +71,7 @@ defineProps({
   },
   required: Boolean,
   step: String,
+  max: Number,
   options: {
     type: Array,
     default: () => [],
