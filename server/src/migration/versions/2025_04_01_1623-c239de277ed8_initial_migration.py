@@ -31,7 +31,7 @@ def upgrade() -> None:
     )
     op.create_table('brands',
     sa.Column('name', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.String(length=200), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
     sa.Column('logo_url', sa.String(length=300), nullable=True),
     sa.Column('id', sa.UUID(), server_default=sa.text('uuid_generate_v4()'), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text("timezone('UTC-5', now())"), nullable=False),
@@ -73,7 +73,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(length=200), nullable=False),
     sa.Column('photo_url', sa.String(length=200), nullable=True),
     sa.Column('price', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('description', sa.String(length=200), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
     sa.Column('brand_id', sa.UUID(), nullable=False),
     sa.Column('category_id', sa.UUID(), nullable=False),
     sa.Column('id', sa.UUID(), server_default=sa.text('uuid_generate_v4()'), nullable=False),

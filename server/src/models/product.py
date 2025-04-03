@@ -13,7 +13,7 @@ class Product(Base):
     name: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
     photo_url: Mapped[str] = mapped_column(String(200), nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
-    description: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=False)
 
     brand_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("brands.id"), nullable=False)
     category_id: Mapped[uuid.UUID] = mapped_column(
