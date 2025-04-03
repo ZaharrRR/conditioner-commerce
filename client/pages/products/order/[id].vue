@@ -79,9 +79,9 @@
             </p>
           </div>
 
-          <UButton class="submit-btn" @click.prevent="submitForm()"
-            >Оставить заявку</UButton
-          >
+          <UButton class="submit-btn" @click.prevent="submitForm()">
+            Оставить заявку
+          </UButton>
         </div>
 
         <!-- Карточка товара -->
@@ -94,7 +94,7 @@
 <script setup>
 import UButton from "~/components/UI/UButton.vue";
 import CardProduct from "~/components/CardProduct.vue";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 import { useRoute } from "vue-router";
 import { getProductById } from "~/api/products";
@@ -186,6 +186,9 @@ const submitForm = async () => {
     };
 
     selectedServices.value = [];
+
+    // Добавление алерта после успешной отправки формы
+    alert("Заявка успешно оставлена. Ожидайте звонка!");
   }
 };
 

@@ -17,7 +17,7 @@
           </p>
           <p class="footer-text">
             Телефон:
-            <a href="tel:89124303333" class="footer-link">+7 (912) 243-33-33</a>
+            <a href="tel:89124303333" class="footer-link">+7 (912) 430-33-33</a>
           </p>
           <p class="footer-text">
             Режим работы: <br />
@@ -42,6 +42,7 @@
 
     <div class="footer-bottom">
       <span class="footer-bottom-text">© 2025 ООО «Абсолют холод»</span>
+      <p>ИП Болгарь О.И.</p>
       <a class="footer-bottom-text" href="/privacy-policy">
         Политика конфиденциальности
       </a>
@@ -90,7 +91,7 @@ const links = [
       width: fit-content;
       max-width: 300px;
       height: 80px;
-      margin-bottom: 32px;
+      margin-bottom: 16px;
     }
 
     .footer-blocks {
