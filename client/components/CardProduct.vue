@@ -30,20 +30,10 @@
   </RouterLink>
 </template>
 
-<script setup lang="ts">
-import { RouterLink } from "vue-router";
-
-interface Product {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  photo_url?: string;
-}
-
-defineProps<{
-  product: Product;
-}>();
+<script setup>
+defineProps({
+  product: Object,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -71,6 +61,7 @@ defineProps<{
   &__image {
     max-width: 100%;
     max-height: 100%;
+    margin: 0 auto;
     width: auto;
     height: auto;
     object-fit: contain;

@@ -30,7 +30,9 @@
               Изменить
             </NuxtLink>
 
-            <button class="delete-btn">Удалить</button>
+            <button @click="handleDelete(row.id)" class="delete-btn">
+              Удалить
+            </button>
           </div>
         </template>
       </DataTable>
@@ -41,7 +43,7 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 
-import { createProduct, fetchAllProducts } from "@/api/products";
+import { createProduct, deleteProduct, fetchAllProducts } from "@/api/products";
 import { fetchAllBrands } from "@/api/brands";
 import { fetchAllCategories } from "@/api/categories";
 
@@ -112,6 +114,15 @@ const tableColumns = [
   { title: "Категория", key: "category_name" },
   { title: "Действия", key: "actions" },
 ];
+
+const handleDelete = async (id) => {
+  try {
+    await deleteProduct(id);
+    await loadData();
+  } catch (err) {
+    error.value = "Ошибка при удалении товара";
+  }
+};
 
 async function submitProduct(formData) {
   const numericPrice = parseFloat(formData.price);

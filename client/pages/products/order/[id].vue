@@ -31,16 +31,20 @@
                 v-model="formData.lastName"
               />
             </div>
+            {{ formData.phone }}
             <input
               type="tel"
               placeholder="+7(___)-___-__-__"
               class="tel"
+              :class="{ invalid: phoneError }"
               v-model="formData.phone"
             />
+            <div v-if="phoneError" class="error-message">{{ phoneError }}</div>
             <input
               type="text"
               placeholder="Адрес доставки"
               class="adress"
+              minlength="5"
               v-model="formData.address"
             />
             <textarea
@@ -67,17 +71,17 @@
               </label>
             </div>
           </div>
-          <div class="action-row">
-            <UButton class="submit-btn" @click.prevent="submitForm()"
-              >Оставить заявку</UButton
-            >
-            <input
-              type="text"
-              class="price-display"
-              :value="Math.floor(calculatedPrice)"
-              readonly
-            />
+
+          <div class="total-sum">
+            <p>
+              <strong>Общая сумма заказа:</strong>
+              {{ Math.floor(calculatedPrice) }}₽
+            </p>
           </div>
+
+          <UButton class="submit-btn" @click.prevent="submitForm()"
+            >Оставить заявку</UButton
+          >
         </div>
 
         <!-- Карточка товара -->
@@ -90,7 +94,7 @@
 <script setup>
 import UButton from "~/components/UI/UButton.vue";
 import CardProduct from "~/components/CardProduct.vue";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 import { useRoute } from "vue-router";
 import { getProductById } from "~/api/products";
@@ -113,6 +117,33 @@ const formData = ref({
 
 const selectedServices = ref([]);
 
+const phoneError = ref("");
+
+function validatePhone(phone) {
+  const cleaned = phone.replace(/[^\d+]/g, "");
+
+  if (!cleaned.startsWith("+7") && !cleaned.startsWith("8")) {
+    return "Номер должен начинаться с +7 или 8";
+  }
+
+  if (cleaned.startsWith("+7") && cleaned.length !== 12) {
+    return "Номер должен содержать 10 цифр после +7";
+  }
+
+  if (cleaned.startsWith("8") && cleaned.length !== 11) {
+    return "Номер должен содержать 10 цифр после 8";
+  }
+
+  return "";
+}
+
+watch(
+  () => formData.value.phone,
+  (newVal) => {
+    phoneError.value = validatePhone(newVal);
+  }
+);
+
 const calculatedPrice = computed(() => {
   const productPrice = product.value?.price || 0;
 
@@ -129,6 +160,13 @@ const closeForm = () => {
 };
 
 const submitForm = async () => {
+  const error = validatePhone(formData.value.phone);
+  if (error) {
+    phoneError.value = error;
+    alert(error);
+    return;
+  }
+
   const orderData = {
     product_id: product.value.id,
     customer_name: formData.value.firstName,
@@ -142,7 +180,7 @@ const submitForm = async () => {
 
   const response = await createOrder(orderData);
 
-  if (response.status == 200) {
+  if (response) {
     formData.value = {
       firstName: "",
       lastName: "",
@@ -183,6 +221,17 @@ onMounted(async () => {
   gap: 30px;
   width: 100%;
   max-width: 1200px;
+}
+
+.invalid {
+  border-color: #ef4444 !important;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
 }
 
 .order-container {
@@ -285,22 +334,27 @@ onMounted(async () => {
         border-color: var(--blue);
       }
     }
+  }
+  .total-sum {
+    margin: 12px 0;
+  }
 
-    .submit-btn {
-      padding: 14px 24px;
-      height: auto;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 10px;
-      white-space: nowrap;
-      transition: all 0.3s ease;
-      background-color: var(--blue);
-      color: white;
-      border: 1px solid var(--blue);
+  .submit-btn {
+    padding: 14px 24px;
+    height: auto;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    background-color: var(--blue);
+    color: white;
+    border: 1px solid var(--blue);
+    width: 100%;
 
-      &:hover {
-        background-color: var(--blue-hover);
-      }
+    &:hover {
+      background-color: var(--blue-hover);
+      color: black;
     }
   }
 

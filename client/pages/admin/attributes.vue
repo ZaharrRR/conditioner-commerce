@@ -83,6 +83,7 @@ const handleDelete = async (id) => {
   try {
     error.value = null;
     await deleteAttribute(id);
+    await loadAttributes();
   } catch (err) {
     error.value = "Неизвестная ошибка при удалении";
   }

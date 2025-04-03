@@ -54,7 +54,6 @@ const links = [
   {
     title: "Продукция",
     links: [
-      { label: "Кондиционеры", link: "/products" },
       { label: "Сплит-системы", link: "/products" },
       { label: "Холодильное оборудование", link: "/products" },
       { label: "Вентиляционное оборудование", link: "/products" },
