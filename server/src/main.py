@@ -39,7 +39,11 @@ async def lifespan(app: FastAPI):
     yield
     await stop_bot()
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    docs_url=None,
+    redoc_url=None
+)
 
 app.add_middleware(
     CORSMiddleware,
