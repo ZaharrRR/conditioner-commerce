@@ -2,7 +2,7 @@ import axios from "axios";
 
 export let adminApiKey = null;
 
-export const host = "https://backend:3000";
+export const host = "https://api.xn--80acj1aaqbbwm7a3h.xn--p1ai";
 
 export const setAdminApiKey = (key) => {
   adminApiKey = key;
