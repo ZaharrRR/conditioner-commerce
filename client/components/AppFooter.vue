@@ -41,7 +41,6 @@
     </div>
 
     <div class="footer-bottom">
-      <span class="footer-bottom-text">© 2025 ООО «Абсолют холод»</span>
       <p>ИП Болгарь О.И.</p>
       <a class="footer-bottom-text" href="/privacy-policy">
         Политика конфиденциальности
@@ -137,6 +136,10 @@ const links = [
     justify-content: space-between;
     color: white;
     background-color: var(--blue-dark);
+
+    p {
+      font-size: 14px;
+    }
 
     .footer-bottom-text {
       font-size: 14px;
