@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core import get_api_key
 from dao.product import ProductDAO
 from db.database import get_session
-from schemas import ProductReadWithRelations, ProductCreate, ProductReadWithRelations, ProductAttributeLink, ProductAttributeDelete
+from schemas import ProductReadWithRelations, ProductCreate, ProductReadWithRelations, ProductAttributeLink
 from services.s3 import S3Service
 from utils.utils import validate_logo
 
@@ -124,14 +124,15 @@ async def link_attributes_to_product(
     except RuntimeError:
         raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.delete("/", status_code=204, summary="Удалить аттрибут у продукта", dependencies=[Depends(get_api_key)])
+@router.delete("/{product_id}/{name}", status_code=204, summary="Удалить аттрибут у продукта", dependencies=[Depends(get_api_key)])
 async def delete_product_attribute(
-    data: ProductAttributeDelete,
+    product_id: UUID,
+    name: str,
     session: AsyncSession = Depends(get_session),
 ):
     dao = ProductDAO(session)
     try:
-        success = await dao.delete_attribute_from_product(data)
+        success = await dao.delete_attribute_from_product(product_id, name)
         if not success:
             raise HTTPException(
                 status_code=404,

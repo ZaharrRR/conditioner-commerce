@@ -24,7 +24,3 @@ class ProductAttributeRead(BaseModel):
     attribute_name: Annotated[str, Field(..., description="Название аттрибута из модели Attribute")]
     value: Annotated[str, Field(..., description="Значение аттрибута для продукта")]
     model_config = ConfigDict(from_attributes=True)
-
-class ProductAttributeDelete(BaseModel):
-    name: str
-    product_id: UUID
