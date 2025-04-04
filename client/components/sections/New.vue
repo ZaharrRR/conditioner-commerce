@@ -55,6 +55,10 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+.card {
+  max-height: 300px;
+}
+
 .new {
   display: flex;
   flex-direction: column;
@@ -114,7 +118,6 @@ onMounted(async () => {
 
         .card__content {
           padding: 10px;
-          max-height: 300px;
 
           .card__title {
             font-size: 15px;
