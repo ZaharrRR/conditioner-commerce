@@ -57,6 +57,10 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .card {
   max-height: 400px;
+
+  .card__content {
+    max-height: 200px;
+  }
 }
 
 .new {
