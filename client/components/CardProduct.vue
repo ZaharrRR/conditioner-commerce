@@ -43,27 +43,18 @@ defineProps({
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &:hover {
     transform: translateY(-10px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   }
 
-  &__image-container {
-    width: 100%;
-    height: 192px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-  }
-
   &__image {
     padding: 0 12px;
-    max-width: 100%;
-    max-height: 100%;
-    margin: 0 auto;
-    width: auto;
+    width: 100%;
     height: 200px;
     object-fit: contain;
   }
@@ -71,27 +62,106 @@ defineProps({
   &__content {
     display: flex;
     flex-direction: column;
-    height: 200px;
     padding: 16px;
+    flex-grow: 1;
+    position: relative;
 
     &-title {
       font-size: 18px;
       font-weight: 600;
       color: #1a202c;
+      margin-bottom: 8px;
     }
 
     &-description {
       font-size: 14px;
       color: #4a5568;
-      margin-top: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 8px;
       flex-grow: 1;
+      min-height: 60px;
+      position: relative;
+
+      // Градиентная тень внизу текста
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.9) 100%
+        );
+      }
     }
 
     &-price {
       font-size: 20px;
       font-weight: bold;
       color: var(--blue);
-      margin-top: 8px;
+      margin-top: auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__image {
+      height: 160px;
+    }
+
+    &__content {
+      padding: 12px;
+
+      &-title {
+        font-size: 16px;
+      }
+
+      &-description {
+        font-size: 13px;
+        min-height: 54px;
+
+        &::after {
+          height: 15px;
+        }
+      }
+
+      &-price {
+        font-size: 18px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__image {
+      height: 140px;
+    }
+
+    &__content {
+      padding: 10px;
+
+      &-title {
+        font-size: 15px;
+      }
+
+      &-description {
+        font-size: 12px;
+        -webkit-line-clamp: 2;
+        min-height: 48px;
+
+        &::after {
+          height: 12px;
+        }
+      }
+
+      &-price {
+        font-size: 16px;
+      }
     }
   }
 }
