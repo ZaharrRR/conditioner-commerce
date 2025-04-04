@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import logger
 from models import Brand, Category, Product, ProductAttribute, Attribute
-from schemas import ProductCreate, ProductRead, ProductReadWithRelations, ProductAttributeLink, ProductAttributeDelete
+from schemas import ProductCreate, ProductRead, ProductReadWithRelations, ProductAttributeLink
 
 
 class ProductDAO:
@@ -249,14 +249,14 @@ class ProductDAO:
             raise RuntimeError("Database error")
 
 
-    async def delete_attribute_from_product(self, data: ProductAttributeDelete) -> bool:
-        logger.debug(f"🗑️ Удаление аттрибута {data.name} у продукта {data.product_id}")
+    async def delete_attribute_from_product(self, product_id: UUID, name: str) -> bool:
+        logger.debug(f"🗑️ Удаление аттрибута {name} у продукта {product_id}")
         try:
             stmt = (
                 delete(ProductAttribute)
                 .where(
-                    ProductAttribute.product_id == data.product_id,
-                    ProductAttribute.attribute.has(name=data.name)
+                    ProductAttribute.product_id == product_id,
+                    ProductAttribute.attribute.has(name=name)
                 )
             )
             result = await self.session.execute(stmt)
@@ -266,7 +266,7 @@ class ProductDAO:
                 logger.warning("⚠️ Аттрибут не найден или уже удалён")
                 return False
 
-            logger.info(f"✅ Аттрибут {data.name} удалён у продукта {data.product_id}")
+            logger.info(f"✅ Аттрибут {name} удалён у продукта {product_id}")
             return True
 
         except SQLAlchemyError as e:
