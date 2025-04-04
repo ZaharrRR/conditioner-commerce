@@ -55,150 +55,151 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.card {
-  max-height: 400px;
+.new__cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  width: 100%;
 
-  .card__content {
-    max-height: 200px;
-  }
-}
+  .card {
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
-.new {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .new__cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    width: 100%;
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
 
     .card__image {
       padding: 0 12px;
-      max-width: 100%;
-      max-height: 100%;
-      margin: 0 auto;
-      width: auto;
+      width: 100%;
       height: 200px;
       object-fit: contain;
     }
 
-    @media (max-width: 720px) {
-      grid-template-columns: repeat(2, 1fr); // 2 колонки
-      gap: 16px;
+    .card__content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      position: relative; // Для градиентной тени
 
-      .card {
-        .card__image {
-          height: 160px; // Уменьшаем высоту изображения
-        }
+      .card__title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 8px;
+      }
 
-        .card__content {
-          padding: 12px;
+      .card__description {
+        font-size: 14px;
+        color: #4a5568;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 8px;
+        flex-grow: 1;
+        min-height: 60px;
+        position: relative;
 
-          .card__title {
-            font-size: 16px; // Уменьшаем размер заголовка
-          }
-
-          .card__description {
-            font-size: 13px; // Уменьшаем размер описания
-          }
-
-          .card__price {
-            font-size: 18px; // Уменьшаем размер цены
-          }
+        // Градиентная тень внизу текста
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 20px;
+          background: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.9) 100%
+          );
         }
       }
-    }
 
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr; // 1 колонка
-      gap: 12px;
-
-      .card {
-        .card__image {
-          height: 140px; // Дополнительное уменьшение высоты
-        }
-
-        .card__content {
-          padding: 10px;
-
-          .card__title {
-            font-size: 15px;
-          }
-
-          .card__description {
-            font-size: 12px;
-            display: -webkit-box; // Ограничиваем текст до 3 строк
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          }
-
-          .card__price {
-            font-size: 16px;
-          }
-        }
+      .card__price {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--blue);
+        margin-top: auto;
       }
     }
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 720px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
 
     .card {
-      background-color: white;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-      &:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-      }
-
       .card__image {
-        width: 100%;
-        height: 192px;
-        object-fit: cover;
+        height: 160px;
       }
 
       .card__content {
-        padding: 16px;
+        padding: 12px;
 
         .card__title {
-          font-size: 18px;
-          font-weight: 600;
-          color: #1a202c;
+          font-size: 16px;
         }
 
         .card__description {
-          font-size: 14px;
-          color: #4a5568;
-          margin-top: 8px;
+          font-size: 13px;
+          min-height: 54px;
+
+          &::after {
+            height: 15px;
+          }
         }
 
         .card__price {
-          font-size: 20px;
-          font-weight: bold;
-          color: var(--blue);
-          margin-top: 8px;
+          font-size: 18px;
         }
       }
     }
   }
 
-  .new__more-button {
-    margin-top: 32px;
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
 
-    @media (max-width: 720px) {
-      margin-top: 24px;
-    }
+    .card {
+      .card__image {
+        height: 140px;
+      }
 
-    @media (max-width: 480px) {
-      margin-top: 20px;
+      .card__content {
+        padding: 10px;
 
-      // Если нужно изменить размер кнопки
-      .u-button {
-        padding: 10px 20px;
-        font-size: 14px;
+        .card__title {
+          font-size: 15px;
+        }
+
+        .card__description {
+          font-size: 12px;
+          -webkit-line-clamp: 2;
+          min-height: 48px;
+
+          &::after {
+            height: 12px;
+          }
+        }
+
+        .card__price {
+          font-size: 16px;
+        }
       }
     }
   }
