@@ -242,11 +242,15 @@ function generateSeoText() {
   flex-direction: column;
 }
 
-.spec-icon:first-of-type {
+.spec-icon span {
+  margin: 0 auto;
+}
+
+.spec-icon p:first-of-type {
   flex-grow: 1;
 }
 
-.spec-icon:first-child {
+.spec-icon p:first-child {
   flex-grow: 1;
 }
 
@@ -390,7 +394,6 @@ function generateSeoText() {
   }
 
   .spec-icons {
-    flex-direction: column;
     align-items: center;
     gap: 8px;
   }
