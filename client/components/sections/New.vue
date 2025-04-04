@@ -114,6 +114,7 @@ onMounted(async () => {
 
         .card__content {
           padding: 10px;
+          max-height: 300px;
 
           .card__title {
             font-size: 15px;
@@ -125,7 +126,6 @@ onMounted(async () => {
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            max-height: 300px;
           }
 
           .card__price {
