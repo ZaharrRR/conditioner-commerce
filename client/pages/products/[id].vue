@@ -238,6 +238,16 @@ function generateSeoText() {
 .spec-icon {
   text-align: center;
   max-width: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.spec-icon:first-of-type {
+  flex-grow: 1;
+}
+
+.spec-icon:first-child {
+  flex-grow: 1;
 }
 
 .spec-icon p {
@@ -379,18 +389,18 @@ function generateSeoText() {
     font-size: 24px;
   }
 
-  .product-info p {
-    font-size: 22px;
-  }
-
   .spec-icons {
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 8px;
   }
 
   .spec-icon {
     margin-bottom: 10px;
+  }
+
+  .spec-icon p {
+    font-size: 12px;
   }
 
   .product-spec {
