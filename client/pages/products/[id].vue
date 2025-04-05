@@ -103,7 +103,7 @@ import Breadcrumbs from "~/components/common/Breadcrumbs.vue";
 import SeoText from "~/components/common/SeoText.vue";
 
 const route = useRoute();
-const product = ref(null);
+const product = ref({});
 const seoText = ref("");
 
 const hasAttribute = (name) => {
@@ -120,16 +120,20 @@ const getAttributeValue = (name) => {
 };
 
 useSeoMeta({
-  title: computed(() => `${product.value?.name} | Купить в Тюмени`),
-  description: computed(
-    () =>
-      `${product.value?.name} по выгодной цене ${product.value?.price} руб. ` +
-      `Характеристики: ${product.value?.attributes
-        ?.map((a) => a.value)
-        .join(", ")}`
+  title: computed(() =>
+    product.value?.name ? `${product.value.name} | Купить в Тюмени` : ""
   ),
-  ogTitle: computed(() => product.value?.name),
-  ogDescription: computed(() => product.value?.description?.substring(0, 200)),
+  description: computed(() => {
+    if (!product.value) return "";
+    return (
+      `${product.value.name} по выгодной цене ${product.value.price} руб. ` +
+      `Характеристики: ${
+        product.value.attributes?.map((a) => a.value).join(", ") || ""
+      }`
+    );
+  }),
+  ogTitle: computed(() => product.value?.name || ""),
+  ogDescription: computed(() => product.value?.description || ""),
   ogImage: computed(() => product.value?.photo_url || "/images/hisense.png"),
 });
 
@@ -141,21 +145,21 @@ useHead({
         JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
-          name: product.value?.name,
-          image: product.value?.photo_url,
-          description: product.value?.description,
+          name: product.value.name,
+          image: product.value.photo_url,
+          description: product.value.description,
           brand: {
             "@type": "Brand",
-            name: product.value?.brand_name,
+            name: product.value.brand_name,
           },
           offers: {
             "@type": "Offer",
             priceCurrency: "RUB",
-            price: product.value?.price,
+            price: product.value.price,
             availability: "https://schema.org/InStock",
             itemCondition: "https://schema.org/NewCondition",
           },
-          additionalProperty: product.value?.attributes?.map((attr) => ({
+          additionalProperty: product.value.attributes?.map((attr) => ({
             "@type": "PropertyValue",
             name: attr.attribute_name,
             value: attr.value,
@@ -172,12 +176,13 @@ onMounted(async () => {
 });
 
 function generateSeoText() {
+  if (!product.value) return "";
   return (
     `Купить ${product.value.name} в Тюмени. ${product.value.description} ` +
     `Гарантия ${getAttributeValue("Гарантия")}, площадь обслуживания ` +
-    `${getAttributeValue(
-      "Площадь помещения"
-    )}. Лучшие цены на климатическую технику.`
+    `${
+      getAttributeValue("Площадь помещения") || ""
+    }. Лучшие цены на климатическую технику.`
   );
 }
 </script>
