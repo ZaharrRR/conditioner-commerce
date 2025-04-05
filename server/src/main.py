@@ -19,7 +19,7 @@ from core import logger, settings
 
 origins = [
     "https://xn--80acj1aaqbbwm7a3h.xn--p1ai",
-    "http://localhost:5000/"
+    "http://localhost:5000"
 ]
 
 

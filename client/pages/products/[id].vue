@@ -119,23 +119,33 @@ const getAttributeValue = (name) => {
   return attr ? attr.value : "";
 };
 
-useSeoMeta({
-  title: computed(() =>
-    product.value?.name ? `${product.value.name} | Купить в Тюмени` : ""
-  ),
-  description: computed(() => {
-    if (!product.value) return "";
-    return (
-      `${product.value.name} по выгодной цене ${product.value.price} руб. ` +
-      `Характеристики: ${
-        product.value.attributes?.map((a) => a.value).join(", ") || ""
-      }`
-    );
-  }),
-  ogTitle: computed(() => product.value?.name || ""),
-  ogDescription: computed(() => product.value?.description || ""),
-  ogImage: computed(() => product.value?.photo_url || "/images/hisense.png"),
-});
+watch(
+  product.value,
+  () => {
+    if (product.value.name) {
+      useSeoMeta({
+        title: computed(() =>
+          product.value?.name ? `${product.value.name} | Купить в Тюмени` : ""
+        ),
+        description: computed(() => {
+          if (!product.value) return "";
+          return (
+            `${product.value.name} по выгодной цене ${product.value.price} руб. ` +
+            `Характеристики: ${
+              product.value.attributes?.map((a) => a.value).join(", ") || ""
+            }`
+          );
+        }),
+        ogTitle: computed(() => product.value?.name || ""),
+        ogDescription: computed(() => product.value?.description || ""),
+        ogImage: computed(
+          () => product.value?.photo_url || "/images/hisense.png"
+        ),
+      });
+    }
+  },
+  { deep: true }
+);
 
 useHead({
   script: [
