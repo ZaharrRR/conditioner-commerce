@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-layout">
+  <NuxtLayout name="page-layout" v-if="product">
     <Breadcrumbs
       :items="[
         { name: 'Главная', path: '/' },
@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, computed } from "vue";
 
 import { getProductById } from "~/api/products";
 
@@ -103,50 +103,50 @@ import Breadcrumbs from "~/components/common/Breadcrumbs.vue";
 import SeoText from "~/components/common/SeoText.vue";
 
 const route = useRoute();
-const product = ref({});
 const seoText = ref("");
 
-const hasAttribute = (name) => {
-  return product.value?.attributes?.some(
-    (attr) => attr.attribute_name === name
-  );
-};
-
-const getAttributeValue = (name) => {
-  const attr = product.value?.attributes?.find(
-    (attr) => attr.attribute_name === name
-  );
-  return attr ? attr.value : "";
-};
-
-watch(
-  product.value,
-  () => {
-    if (product.value.name) {
-      useSeoMeta({
-        title: computed(() =>
-          product.value?.name ? `${product.value.name} | Купить в Тюмени` : ""
-        ),
-        description: computed(() => {
-          if (!product.value) return "";
-          return (
-            `${product.value.name} по выгодной цене ${product.value.price} руб. ` +
-            `Характеристики: ${
-              product.value.attributes?.map((a) => a.value).join(", ") || ""
-            }`
-          );
-        }),
-        ogTitle: computed(() => product.value?.name || ""),
-        ogDescription: computed(() => product.value?.description || ""),
-        ogImage: computed(
-          () => product.value?.photo_url || "/images/hisense.png"
-        ),
-      });
-    }
-  },
-  { deep: true }
+// Загрузка данных продукта
+const { data: product } = await useAsyncData("product", () =>
+  getProductById(route.params.id)
 );
 
+// Генерация SEO текста
+const generateSeoText = (productData) => {
+  if (!productData) return "";
+  const getAttr = (name) =>
+    productData.attributes?.find((a) => a.attribute_name === name)?.value || "";
+
+  return (
+    `Купить ${productData.name} в Тюмени. ${productData.description} ` +
+    `Гарантия ${getAttr("Гарантия")}, площадь обслуживания ` +
+    `${getAttr("Площадь помещения")}. Лучшие цены на климатическую технику.`
+  );
+};
+
+seoText.value = generateSeoText(product.value);
+
+// SEO метаданные
+useSeoMeta({
+  title: computed(() =>
+    product.value?.name ? `${product.value.name} | Купить в Тюмени` : "Каталог"
+  ),
+  description: computed(() => {
+    if (!product.value) return "Широкий выбор климатической техники";
+    return `${product.value.name} - ${product.value.description?.slice(
+      0,
+      150
+    )}...`;
+  }),
+  ogTitle: computed(() => product.value?.name || "Климатическая техника"),
+  ogDescription: computed(
+    () => product.value?.description?.slice(0, 160) || "Описание товара"
+  ),
+  ogImage: computed(
+    () => product.value?.photo_url || "/images/default-product.jpg"
+  ),
+});
+
+// Структурированные данные
 useHead({
   script: [
     {
@@ -155,46 +155,45 @@ useHead({
         JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
-          name: product.value.name,
-          image: product.value.photo_url,
-          description: product.value.description,
-          brand: {
-            "@type": "Brand",
-            name: product.value.brand_name,
-          },
+          name: product.value?.name,
+          image: product.value?.photo_url,
+          description: product.value?.description,
+          brand: product.value?.brand_name
+            ? {
+                "@type": "Brand",
+                name: product.value.brand_name,
+              }
+            : undefined,
           offers: {
             "@type": "Offer",
             priceCurrency: "RUB",
-            price: product.value.price,
+            price: product.value?.price,
             availability: "https://schema.org/InStock",
             itemCondition: "https://schema.org/NewCondition",
           },
-          additionalProperty: product.value.attributes?.map((attr) => ({
-            "@type": "PropertyValue",
-            name: attr.attribute_name,
-            value: attr.value,
-          })),
+          additionalProperty:
+            product.value?.attributes?.map((attr) => ({
+              "@type": "PropertyValue",
+              name: attr.attribute_name,
+              value: attr.value,
+            })) || [],
         })
       ),
     },
   ],
 });
 
-onMounted(async () => {
-  product.value = await getProductById(route.params.id);
-  seoText.value = generateSeoText();
-});
+// Методы для работы с атрибутами
+const hasAttribute = (name) => {
+  return product.value?.attributes?.some((a) => a.attribute_name === name);
+};
 
-function generateSeoText() {
-  if (!product.value) return "";
+const getAttributeValue = (name) => {
   return (
-    `Купить ${product.value.name} в Тюмени. ${product.value.description} ` +
-    `Гарантия ${getAttributeValue("Гарантия")}, площадь обслуживания ` +
-    `${
-      getAttributeValue("Площадь помещения") || ""
-    }. Лучшие цены на климатическую технику.`
+    product.value?.attributes?.find((a) => a.attribute_name === name)?.value ||
+    ""
   );
-}
+};
 </script>
 
 <style scoped>
