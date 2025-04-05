@@ -72,6 +72,19 @@
   }
 }
 
+@media (max-width: 720px) {
+  .slider-gradient-right {
+    width: 10% !important;
+  }
+
+  .slider-gradient-left {
+    width: 10% !important;
+  }
+}
+
+@media (max-width: 480px) {
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
