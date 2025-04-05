@@ -25,25 +25,45 @@
           <label>Категория:</label>
           <p>{{ form.category_name }}</p>
         </div>
+
+        <div class="product-edit__info-item">
+          <label>Описание:</label>
+          <p>{{ form.description }}</p>
+        </div>
       </div>
 
       <div class="product-edit__attributes">
         <h3 class="product-edit__subtitle">Атрибуты товара</h3>
 
         <div class="product-edit__existing-attributes">
-          <ul>
-            <li v-for="(attr, index) in existingAttributes" :key="index">
-              {{ attr.attribute_name }}: {{ attr.value }}
-
+          <div v-if="existingAttributes.length" class="attributes-list">
+            <div
+              v-for="(attr, index) in existingAttributes"
+              :key="index"
+              class="attributes-list__item"
+            >
+              <div class="attributes-list__info">
+                <span class="attributes-list__name">{{
+                  attr.attribute_name
+                }}</span>
+                <span class="attributes-list__value">{{ attr.value }}</span>
+              </div>
               <button
                 type="button"
-                class="product-edit__remove-btn"
+                class="attributes-list__remove-btn"
                 @click="handleDeleteAttribute(attr.attribute_name)"
               >
-                ×
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                  <path
+                    d="M13 1L1 13M1 1L13 13"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
               </button>
-            </li>
-          </ul>
+            </div>
+          </div>
+          <div v-else class="attributes-empty">Нет добавленных атрибутов</div>
         </div>
 
         <div class="product-edit__new-attributes">
@@ -104,7 +124,7 @@
 
       <div class="product-edit__images">
         <ImageUploader
-          :current-image="existingImages"
+          :current-image="originalImage"
           :entity-type="'product'"
           :entity-id="productId"
           title="Фотография товара"
@@ -113,7 +133,6 @@
         />
       </div>
     </form>
-    <img :src="existingImages" alt="" />
   </NuxtLayout>
 </template>
 
@@ -140,11 +159,15 @@ const attributes = ref([]);
 const existingImages = ref("");
 const error = ref(null);
 
+const originalImage = ref("");
+const updatedImage = ref("");
+
 const form = reactive({
   name: "",
   price: "",
   brand_name: "",
   category_name: "",
+  description: "",
   newAttributes: [],
 });
 
@@ -161,8 +184,10 @@ const availableAttributes = computed(() => {
 
 const handleImageUpload = async (formData) => {
   try {
-    const { imageUrl } = await updateProductPhoto(productId, formData);
-    existingImages.value = imageUrl;
+    const response = await updateProductPhoto(productId, formData);
+
+    originalImage.value = response.data.photo_url;
+    existingImages.value = response.data.photo_url;
     alert("Изображение успешно загружено!");
   } catch (err) {
     error.value = "Ошибка загрузки изображения: " + (err.message || "");
@@ -175,7 +200,7 @@ const handleDeleteAttribute = async (attribute_name) => {
 
     if (product.value?.attributes) {
       product.value.attributes = product.value.attributes.filter(
-        (attr) => attr.id !== attribute_name
+        (attr) => attr.attribute_name !== attribute_name
       );
     }
   } catch (err) {
@@ -192,12 +217,15 @@ const loadData = async () => {
 
     product.value = productRes;
 
+    originalImage.value = productRes.photo_url;
+
     form.name = productRes.name;
     form.price = productRes.price;
     form.brand_name = productRes.brand_name;
     form.category_name = productRes.category_name;
+    form.description = productRes.description;
     attributes.value = attributesRes;
-    existingImages.value = productRes.image;
+    existingImages.value = productRes.photo_url;
   } catch (err) {
     error.value = "Ошибка загрузки данных";
   }
@@ -221,14 +249,14 @@ const saveAttrs = async () => {
           value: attr.value,
         }));
 
-      const response = await linkProductAttributes(productId, attributesToSend);
+      await linkProductAttributes(productId, attributesToSend);
 
-      product.value?.attributes.push(...response);
       form.newAttributes = [];
       await loadData();
     }
   } catch (err) {
     console.log(err);
+    alert("Ошибка при сохранении атрибутов");
   }
 };
 
@@ -240,168 +268,142 @@ onMounted(() => {
 <style lang="scss" scoped>
 .product-edit {
   &__title {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
   }
 
-  .product-edit__image-list {
-    margin-top: 1rem;
-  }
-
-  .product-edit__image-item {
-    max-width: 300px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .product-edit__image {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  &__file-input {
-    margin: 1rem 0;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-
-    input[type="file"] {
-      padding: 0.5rem;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.375rem;
-    }
-  }
-
-  &__upload-btn {
-    background: #10b981;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background 0.2s;
-
-    &:hover {
-      background: #059669;
-    }
-
-    &:disabled {
-      background: #6ee7b7;
-      cursor: not-allowed;
-    }
-  }
-
+  /* Блок с основной информацией */
   &__info {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 2rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2.5rem;
+    overflow: hidden;
 
     &-item {
-      margin-bottom: 1rem;
-      label {
-        font-weight: 500;
-        color: #64748b;
-        margin-right: 0.5rem;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #f7fafc;
+      background: linear-gradient(to right, #f8fafc 0%, #ffffff 10%);
+
+      &:last-child {
+        border-bottom: none;
       }
+
+      label {
+        display: block;
+        font-size: 0.875rem;
+        color: #718096;
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+      }
+
       p {
-        margin: 0.5rem 0 0;
-        font-size: 1.1rem;
-        color: #1e293b;
+        font-size: 1.125rem;
+        color: #2d3748;
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: -0.025em;
       }
     }
   }
 
-  &__error {
-    color: #dc2626;
-    padding: 1rem;
-    background: #fee2e2;
-    border-radius: 0.375rem;
-    margin-bottom: 1rem;
-  }
-
+  /* Общие стили для форм и элементов */
   &__form {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    display: grid;
+    gap: 2.5rem;
   }
 
-  &__form-group {
-    margin-bottom: 1.5rem;
-  }
-
-  &__label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-  }
-
-  &__input {
+  &__input,
+  &__select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.75rem 1rem;
     border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
+    border-radius: 8px;
     font-size: 1rem;
+    transition: all 0.2s;
 
     &:focus {
-      border-color: #3b82f6;
+      border-color: #4299e1;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
       outline: none;
     }
   }
 
   &__select {
-    @extend .product-edit__input;
     appearance: none;
-    background: white
-      url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")
-      no-repeat right 0.75rem center;
-    background-size: 1em;
+    background: white url("data:image/svg+xml;charset=UTF-8,%3csvg...")
+      no-repeat right 1rem center;
   }
 
-  &__existing-attributes {
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 8px;
+  /* Секция с атрибутами */
+  &__attributes {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
 
-    ul {
-      list-style: none;
-      padding: 0;
+  &__subtitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
 
-      li {
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        justify-content: space-between;
+  /* Список существующих атрибутов */
+  .attributes-list {
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      transition: all 0.2s;
 
-        &:last-child {
-          border-bottom: none;
-        }
+      &:hover {
+        background: #f0f4f8;
+      }
+    }
+
+    &__info {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    &__name {
+      font-weight: 500;
+      color: #2d3748;
+      min-width: 180px;
+    }
+
+    &__value {
+      color: #718096;
+      font-size: 0.95em;
+    }
+
+    &__remove-btn {
+      color: #cbd5e0;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+
+      &:hover {
+        color: #f56565;
+        background: rgba(245, 101, 101, 0.1);
       }
     }
   }
 
-  &__new-attributes {
-    margin-top: 2rem;
-  }
-
-  &__attributes {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-  }
-
-  &__subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    color: #4a5568;
-  }
-
+  /* Блок добавления новых атрибутов */
   &__attribute-group {
     display: flex;
     gap: 1rem;
@@ -409,86 +411,99 @@ onMounted(() => {
     align-items: center;
 
     select {
-      flex: 1;
+      flex: 1 1 40%;
     }
 
     input {
-      flex: 2;
-    }
-  }
-
-  &__remove-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #f56565;
-    padding: 0 0.5rem;
-
-    &:hover {
-      color: #e53e3e;
+      flex: 2 1 60%;
     }
   }
 
   &__add-btn {
-    background: #e2e8f0;
-    color: #4a5568;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background 0.2s;
+    width: 100%;
+    padding: 0.75rem;
+    background: #f7fafc;
+    color: #718096;
+    border: 1px dashed #cbd5e0;
+    border-radius: 8px;
+    transition: all 0.2s;
 
     &:hover {
-      background: #cbd5e0;
+      background: #ebf8ff;
+      border-color: #90cdf4;
+      color: #4299e1;
     }
   }
 
-  &__images {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-  }
-
-  &__image-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-
-  &__image-item {
-    position: relative;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    overflow: hidden;
-  }
-
-  &__image {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-  }
-
-  &__file-input {
-    margin-top: 1rem;
-  }
-
+  /* Кнопки действий */
   &__submit-btn {
-    background: #3b82f6;
+    background: #4299e1;
     color: white;
-    margin-top: 12px;
-    padding: 0.75rem 1.5rem;
-    width: 100%;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background 0.2s;
+    padding: 0.875rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-top: 1.5rem;
 
     &:hover {
-      background: #2563eb;
+      background: #3182ce;
+      transform: translateY(-1px);
     }
+  }
+
+  /* Загрузка изображений */
+  &__images {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .images-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+
+    .image-preview {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      h4 {
+        margin: 0 0 1rem 0;
+        font-size: 1.1rem;
+        color: #2d3748;
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+      }
+    }
+  }
+
+  /* Сообщения об ошибках */
+  &__error {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid #feb2b2;
+  }
+
+  /* Состояния пустых блоков */
+  .attributes-empty {
+    color: #cbd5e0;
+    text-align: center;
+    padding: 2rem;
+    border: 2px dashed #e2e8f0;
+    border-radius: 8px;
+    margin: 1rem 0;
   }
 }
 </style>
