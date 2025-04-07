@@ -13,6 +13,17 @@ export default defineNuxtConfig({
       host: process.env.HOST,
     },
   },
+  app: {
+    head: {
+      meta: [
+        {
+          name: "yandex-verification",
+          content: "a694d0451ae6f0d3",
+        },
+      ],
+    },
+  },
+
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@nuxt/icon", "@nuxt/image"],
