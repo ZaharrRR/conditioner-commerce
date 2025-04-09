@@ -105,10 +105,12 @@ import SeoText from "~/components/common/SeoText.vue";
 const route = useRoute();
 const seoText = ref("");
 
+// Загрузка данных продукта
 const { data: product } = await useAsyncData("product", () =>
   getProductById(route.params.id)
 );
 
+// Генерация SEO текста
 const generateSeoText = (productData) => {
   if (!productData) return "";
   const getAttr = (name) =>
@@ -123,6 +125,7 @@ const generateSeoText = (productData) => {
 
 seoText.value = generateSeoText(product.value);
 
+// SEO метаданные
 useSeoMeta({
   title: computed(() =>
     product.value?.name ? `${product.value.name} | Купить в Тюмени` : "Каталог"
@@ -143,6 +146,7 @@ useSeoMeta({
   ),
 });
 
+// Структурированные данные
 useHead({
   script: [
     {
@@ -179,6 +183,7 @@ useHead({
   ],
 });
 
+// Методы для работы с атрибутами
 const hasAttribute = (name) => {
   return product.value?.attributes?.some((a) => a.attribute_name === name);
 };

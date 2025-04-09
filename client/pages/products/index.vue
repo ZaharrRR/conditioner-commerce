@@ -54,18 +54,21 @@ const sortBy = ref("");
 const filteredProducts = computed(() => {
   let filtered = [...products.value];
 
+  // Фильтрация по категориям
   if (selectedCategories.value.length > 0) {
     filtered = filtered.filter((p) =>
       selectedCategories.value.some((cat) => cat.name === p.category_name)
     );
   }
 
+  // Фильтрация по брендам
   if (selectedBrands.value.length > 0) {
     filtered = filtered.filter((p) =>
       selectedBrands.value.some((brand) => brand.name === p.brand_name)
     );
   }
 
+  // Фильтрация по цене
   if (priceRange.value.min || priceRange.value.max) {
     filtered = filtered.filter(
       (p) =>
@@ -74,6 +77,7 @@ const filteredProducts = computed(() => {
     );
   }
 
+  // Сортировка
   if (sortBy.value === "high-price")
     return filtered.sort((a, b) => b.price - a.price);
   if (sortBy.value === "low-price")
@@ -101,10 +105,8 @@ const seoText = computed(
 useSeoMeta({
   title: "Купить кондиционеры в Тюмени | Каталог сплит-систем с ценами",
   description:
-    "Большой выбор кондиционеров в Тюмени с ценами и характеристиками. Бесплатная консультация.",
+    "Большой выбор кондиционеров и сплит-систем от ведущих производителей. Профессиональная установка, гарантия до 5 лет!",
   ogTitle: "Каталог кондиционеров с ценами в Тюмени",
-  keywords:
-    "купить кондиционер в тюмени, кондиционер цена тюмень, кондиционер тюмень недорого, установка кондиционера в тюмени цена ",
   ogDescription:
     "Широкий ассортимент климатической техники с бесплатной доставкой и монтажом",
   ogUrl: "https://абсолютхолод.рф/products",
