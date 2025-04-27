@@ -50,27 +50,18 @@
         </p>
       </div>
       <div class="contacts-container">
-        <h1>
-          <Icon
-            name="material-symbols:call-outline-rounded"
-            class="phone-icon"
-          ></Icon
-          >Контакты
-        </h1>
+        <h1>Контакты</h1>
         <p>
           Мы всегда на связи и готовы помочь вам выбрать, купить и установить
           кондиционер!<br />Свяжитесь с нами удобным способом.
         </p>
         <div class="contact-buttons">
           <a href="https://t.me/conditioner_comm_bot" class="contact-button">
-            <Icon name="mdi:telegram" class="telegam-icon"></Icon>
+            <img src="/icons/telegram.svg" alt="" class="telegam-icon" />
             <UButton>Написать</UButton>
           </a>
           <a href="tel:89124303333" class="contact-button">
-            <Icon
-              name="material-symbols:phone-in-talk"
-              class="call-icon"
-            ></Icon>
+            <img src="/icons/phone.svg" alt="" class="call-icon" />
             <UButton>Позвонить</UButton>
           </a>
         </div>
@@ -270,7 +261,7 @@ useHead({
   .telegam-icon,
   .call-icon {
     color: var(--blue);
-    font-size: 100px;
+    width: 100px;
     transition: color 0.3s ease;
   }
 

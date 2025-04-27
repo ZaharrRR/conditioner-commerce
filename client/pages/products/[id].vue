@@ -37,19 +37,19 @@
           <h2>Характеристики</h2>
           <div class="spec-icons">
             <div class="spec-icon" v-if="hasAttribute('Площадь помещения')">
-              <Icon name="mdi:cube-outline" class="icon" />
+              <img src="/icons/cube.svg" alt="" class="icon" />
               <p>Площадь помещения</p>
               <p>{{ getAttributeValue("Площадь помещения") }}</p>
             </div>
 
             <div class="spec-icon" v-if="hasAttribute('Мощность охлаждения')">
-              <Icon name="ri:snowflake-fill" class="icon" />
+              <img src="/icons/snowflake.svg" alt="" class="icon" />
               <p>Мощность охлаждения</p>
               <p>{{ getAttributeValue("Мощность охлаждения") }}</p>
             </div>
 
             <div class="spec-icon" v-if="hasAttribute('Гарантия')">
-              <Icon name="material-symbols:settings" class="icon" />
+              <img src="/icons/settings.svg" alt="" class="icon" />
               <p>Гарантия</p>
               <p>{{ getAttributeValue("Гарантия") }}</p>
             </div>

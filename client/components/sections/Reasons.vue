@@ -11,7 +11,7 @@
           itemtype="https://schema.org/ListItem"
         >
           <meta itemprop="position" :content="index + 1" />
-          <Icon :name="reason.icon" class="reason-icon" aria-hidden="true" />
+          <img :src="reason.icon" class="reason-icon" aria-hidden="true" />
           <p class="reason-title" itemprop="name">
             {{ reason.title }}
           </p>
@@ -30,25 +30,25 @@ import Section from "./Section.vue";
 
 const reasons = [
   {
-    icon: "solar:shop-minimalistic-outline",
+    icon: "./icons/shop.svg",
     title: "Широкий ассортимент",
     description:
       "В наличии кондиционеры ведущих брендов под любые задачи и бюджет.",
   },
   {
-    icon: "material-symbols:manage-accounts-outline",
+    icon: "./icons/manage.svg",
     title: "Профессиональная установка",
     description:
       "Сертифицированные специалисты обеспечат качественный монтаж и настройку оборудования.",
   },
   {
-    icon: "material-symbols:docs-outline",
+    icon: "./icons/docs.svg",
     title: "Гарантия и сервис",
     description:
       "Предоставляем гарантию на все работы и предлагаем услуги регулярного обслуживания.",
   },
   {
-    icon: "fa6-regular:handshake",
+    icon: "./icons/handshake.svg",
     title: "Индивидуальный подход",
     description:
       "Помогаем выбрать оптимальное решение, учитывая ваши пожелания и особенности помещения.",
@@ -129,6 +129,10 @@ const reasons = [
         height: 64px;
         color: var(--blue);
         animation: fadeIn 1s ease-in-out;
+      }
+
+      svg path {
+        stroke: #3b82f6 !important;
       }
 
       .reason-title {
